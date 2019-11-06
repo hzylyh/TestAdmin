@@ -1,0 +1,9 @@
+jobs:
+  -
+    jobname: job1
+    cron: 0 30 17 * * ?
+    command:
+      - echo job2; sleep 15
+      - echo job2; sleep 15
+      - echo job2; sleep 15
+      - echo job2; sleep 15

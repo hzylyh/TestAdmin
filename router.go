@@ -4,16 +4,18 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"salotto/controller"
+	"salotto/controller/SchedulePartCtl"
 )
 
 /**
-
- */
+路由控制
+*/
 func MapRoutes() *gin.Engine {
 	var (
-		router  *gin.Engine
-		apiRoot *gin.RouterGroup
-		authApi *gin.RouterGroup
+		router      *gin.Engine
+		apiRoot     *gin.RouterGroup
+		authApi     *gin.RouterGroup
+		scheduleApi *gin.RouterGroup
 	)
 	router = gin.New()
 
@@ -28,5 +30,9 @@ func MapRoutes() *gin.Engine {
 	authApi = apiRoot.Group("/user")
 	authApi.POST("/login", controller.Login)
 
+	scheduleApi = apiRoot.Group("/schedule")
+	scheduleApi.POST("/run", SchedulePartCtl.RunSchedule)
+	scheduleApi.POST("/stop", SchedulePartCtl.StopSchedule)
+	scheduleApi.POST("/getScheduleList", SchedulePartCtl.GetScheduleList)
 	return router
 }

@@ -12,7 +12,7 @@ func Login(c *gin.Context) {
 		err   error
 	)
 	if token, err = service.Auth.VerifyUser(c); err != nil {
-		utils.ResponseOk(c, err.Error())
+		utils.ResponseFailOther(c, "20001", err.Error())
 	} else {
 		utils.ResponseOk(c, token)
 	}
