@@ -7,4 +7,5 @@ type ScheduleJob struct {
 	JobId   int
 	TaskId  int
 	Command string
+	Depends string
 }
