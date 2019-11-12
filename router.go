@@ -18,6 +18,7 @@ func MapRoutes() *gin.Engine {
 		authApi          *gin.RouterGroup
 		scheduleApi      *gin.RouterGroup
 		interfaceTestApi *gin.RouterGroup
+		itfTestCaseApi   *gin.RouterGroup
 	)
 	router = gin.New()
 
@@ -25,6 +26,11 @@ func MapRoutes() *gin.Engine {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{"Origin", "Authorization", "Content-Type"},
 	}))
+
+	router.LoadHTMLGlob("web/dist/*.html")          // 添加入口index.html
+	router.LoadHTMLFiles("web/static/*/*")          // 添加资源路径
+	router.Static("/static", "./web/dist/static")   // 添加资源路径
+	router.StaticFile("/", "./web/dist/index.html") //前端接口
 
 	// 创建根路由
 	apiRoot = router.Group("/salotto")
@@ -41,6 +47,9 @@ func MapRoutes() *gin.Engine {
 	// 接口测试部分
 	interfaceTestApi = apiRoot.Group("/itfPart")
 	interfaceTestApi.POST("/test", InterfaceTestPartCtl.Test)
+	// 用例部分
+	itfTestCaseApi = interfaceTestApi.Group("/case")
+	itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
 
 	return router
 }
