@@ -9,6 +9,7 @@ import (
 func OneCronMulCommand(jobId int, parallel int) *cron.Cron {
 	var (
 		myCh      chan int
+		waitChan  chan TaskInfo
 		myCron    *cron.Cron
 		newJob    *ScheduleJob
 		cronExp   string
@@ -19,10 +20,12 @@ func OneCronMulCommand(jobId int, parallel int) *cron.Cron {
 	taskInfos = getTaskInfos(jobId)
 
 	myCh = make(chan int, parallel)
+	waitChan = make(chan TaskInfo, len(taskInfos))
 	myCron = cron.New()
 
 	newJob = &ScheduleJob{
 		taskChan: myCh,
+		waitChan: waitChan,
 		//cmdList:  cmdList,
 		taskInfos: taskInfos,
 	}
@@ -65,9 +68,25 @@ func getTaskInfos(jobId int) (taskInfos []TaskInfo) {
 	return taskInfos
 }
 
+func CheckDepends(taskIds []int) bool {
+	var (
+		status int
+		row    *sql.Row
+	)
+	for _, taskId := range taskIds {
+		row = CronDB.Table("schedule_jobs").Where("task_id = ?", taskId).Select("status").Row()
+		row.Scan(&status)
+		if status != 0 {
+			return false
+		}
+	}
+
+	return true
+}
+
 func Run(jobId int) *cron.Cron {
 
-	c := OneCronMulCommand(jobId, 3)
+	c := OneCronMulCommand(jobId, 1)
 
 	return c
 }
