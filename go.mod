@@ -21,6 +21,7 @@ require (
 	github.com/spf13/cobra v0.0.5 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stamblerre/gocode v0.0.0-20190327203809-810592086997 // indirect
+	github.com/tidwall/gjson v1.3.4
 	github.com/ugorji/go v1.1.7 // indirect
 	go.starlark.net v0.0.0-20191021185836-28350e608555 // indirect
 	golang.org/x/arch v0.0.0-20191101135251-a0d8588395bd // indirect
