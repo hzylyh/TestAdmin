@@ -2,6 +2,6 @@ package InterfaceTestPartEntity
 
 import "github.com/jinzhu/gorm"
 
-type TestCaseEntity struct {
+type ItfInfoEntity struct {
 	gorm.Model
 }
