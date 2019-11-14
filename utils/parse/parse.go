@@ -1,29 +1,29 @@
-package main
+package parse
 
 import (
 	"fmt"
 	"strings"
 )
 
-func main() {
-	var properties = map[string]string{"name": "houzheyu", "age": "2222"}
-	var Ihandler TokenHandler
-	Ihandler = &VariableTokenHandler{
-		variables: properties,
-	}
-	a := GenericTokenParser{
-		openToken:  "${",
-		closeToken: "}",
-		handler:    Ihandler,
-	}
-	parse := a.Parse("my name is ${name}, my age is ${age}")
-	fmt.Println(parse)
-	//index := strings.Index("my name is ${name}, my age is ${age}", "${")
-	//fmt.Println(index)
-
-	//end := indexOf("my name is ${name}", "}", 17)
-	//fmt.Println(end)
-}
+//func main() {
+//	var properties = map[string]string{"name": "houzheyu", "age": "2222"}
+//	var Ihandler TokenHandler
+//	Ihandler = &VariableTokenHandler{
+//		variables: properties,
+//	}
+//	a := GenericTokenParser{
+//		openToken:  "${",
+//		closeToken: "}",
+//		handler:    Ihandler,
+//	}
+//	parse := a.Parse("my name is ${name}, my age is ${age}")
+//	fmt.Println(parse)
+//	//index := strings.Index("my name is ${name}, my age is ${age}", "${")
+//	//fmt.Println(index)
+//
+//	//end := indexOf("my name is ${name}", "}", 17)
+//	//fmt.Println(end)
+//}
 
 type GenericTokenParser struct {
 	openToken  string
