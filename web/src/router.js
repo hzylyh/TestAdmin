@@ -11,11 +11,24 @@ export default new Router({
     //     path: '404',
     //     component: () => import('@/views/404.vue')
     // },
-    /* {
-            path: '/login',
-            name: 'Login',
-            component: () => import('@/views/Login')
-        }, */
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('@/views/Login')
+    },
+    {
+      path: '/overview',
+      name: 'Overview',
+      component: Layout,
+      children: [
+        {
+          // 总览首页
+          path: 'index',
+          name: 'OverviewIndex',
+          component: () => import('@/views/Overview')
+        }
+      ]
+    },
     {
       // 接口测试部分
       path: '/itf',
