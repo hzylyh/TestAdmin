@@ -4,17 +4,6 @@
   </div>
 </template>
 
-<!--<script>-->
-<!--import HelloWorld from './components/HelloWorld.vue'-->
-
-<!--export default {-->
-<!--  name: 'app',-->
-<!--  components: {-->
-<!--    HelloWorld-->
-<!--  }-->
-<!--}-->
-<!--</script>-->
-
 <style>
   html {
     width: 100%;
@@ -39,5 +28,6 @@
     width: 100%;
     margin: 0px;
     padding: 0px;
+  }
 
 </style>
