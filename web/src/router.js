@@ -41,18 +41,18 @@ export default new Router({
           name: 'itfPart',
           component: () => import('@/views/InterfaceTestPart/ItfTestIndex.vue'),
           children: [
-            // {
-            //   // 接口部分仪表盘
-            //   path: 'dashboard',
-            //   name: 'dashboard',
-            //   component: () => import('@/views/InterfaceTestPart/Dashboard/index.vue')
-            // },
-            // {
-            //   // 接口部分用例管理
-            //   path: 'caseManage',
-            //   name: 'caseManage',
-            //   component: () => import('@/views/InterfaceTestPart/CaseManage/index.vue')
-            // }
+            {
+              // 接口部分仪表盘
+              path: 'dashboard',
+              name: 'ItfDashboard',
+              component: () => import('@/views/InterfaceTestPart/ItfDashboard.vue')
+            },
+            {
+              // 接口部分用例管理
+              path: 'caseManage',
+              name: 'ItfCaseManage',
+              component: () => import('@/views/InterfaceTestPart/ItfCaseManage.vue')
+            }
           ]
         }
       ]

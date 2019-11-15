@@ -15,8 +15,8 @@
                   text-color="#fff"
                   router
                   active-text-color="#ffd04b">
-            <el-menu-item index="1">总览</el-menu-item>
-            <el-menu-item index="2" :route="{name: 'itfPart'}">接口自动化</el-menu-item>
+            <el-menu-item index="1" :route="{name: 'OverviewIndex'}">总览</el-menu-item>
+            <el-menu-item index="2" :route="{name: 'ItfDashboard'}">接口自动化</el-menu-item>
             <el-menu-item index="3">性能测试</el-menu-item>
             <el-menu-item index="4">云真机</el-menu-item>
           </el-menu>
@@ -36,6 +36,11 @@ export default {
     return {
       activeIndex: '1',
       activeIndex2: '1'
+    }
+  },
+  methods: {
+    handleSelect () {
+      console.log('select')
     }
   }
 }
