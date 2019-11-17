@@ -17,7 +17,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.6 // indirect
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/robfig/cron v1.2.0
-	github.com/sirupsen/logrus v1.4.2 // indirect
+	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/cobra v0.0.5 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stamblerre/gocode v0.0.0-20190327203809-810592086997 // indirect
@@ -26,7 +26,7 @@ require (
 	go.starlark.net v0.0.0-20191021185836-28350e608555 // indirect
 	golang.org/x/arch v0.0.0-20191101135251-a0d8588395bd // indirect
 	golang.org/x/crypto v0.0.0-20191029031824-8986dd9e96cf // indirect
-	golang.org/x/sys v0.0.0-20191104094858-e8c54fb511f6 // indirect
+	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
 	golang.org/x/tools v0.0.0-20190606050223-4d9ae51c2468 // indirect
 	gopkg.in/yaml.v2 v2.2.5 // indirect
 )

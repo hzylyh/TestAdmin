@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 func ConnectDB() {
 	var err error
-	DB, err = gorm.Open("sqlite3", "test_h.db")
+	DB, err = gorm.Open("sqlite3", "salottoDB.db")
 	if err = DB.AutoMigrate(model.Models...).Error; nil != err {
 		log.Fatal("auto migrate tables failed: " + err.Error())
 	}
