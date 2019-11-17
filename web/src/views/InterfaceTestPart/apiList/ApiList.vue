@@ -15,6 +15,8 @@
                      icon="el-icon-search">搜索</el-button>
           <el-button type="primary"
                      icon="el-icon-search">重置</el-button>
+          <el-button type="primary"
+                     icon="el-icon-plus">新增接口</el-button>
         </el-row>
         <span>
         </span>
@@ -42,6 +44,7 @@
                        size="small">查看</el-button>
             <el-button type="text"
                        size="small">编辑</el-button>
+
           </template>
         </el-table-column>
       </el-table>

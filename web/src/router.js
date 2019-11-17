@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Layout from '@/views/Layout/index.vue'
-
 Vue.use(Router)
 
 export default new Router({
@@ -70,7 +69,36 @@ export default new Router({
           ]
         }
       ]
+    },
+    {
+      path: '/performanceTesting',
+      name: 'performanceTesting',
+      redirect: '/performanceTesting/index',
+      component: Layout,
+      children: [
+        {
+          // 总览首页
+          path: 'index',
+          name: 'performanceTestingIndex',
+          component: () => import('@/components/Dev/undeveloped.vue')
+        }
+      ]
+    },
+    {
+      path: '/realMachine',
+      name: 'realMachine',
+      redirect: '/realMachine/index',
+      component: Layout,
+      children: [
+        {
+          // 总览首页
+          path: 'index',
+          name: 'realMachineIndex',
+          component: () => import('@/components/Dev/undeveloped.vue')
+        }
+      ]
     }
+
     /* {
             // 定时任务部分
             path: '/schedule',
