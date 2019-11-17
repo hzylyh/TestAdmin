@@ -6,8 +6,8 @@ import (
 
 type InterfaceInfo struct {
 	conf.Model
-	Name string
-	Url  string
-	Type string
-	Desc string
+	Name string `json:"name"`
+	Url  string `json:"url"`
+	Type string `json:"type"`
+	Desc string `json:"desc"`
 }
