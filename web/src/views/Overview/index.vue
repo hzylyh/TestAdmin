@@ -9,8 +9,13 @@
           <li v-for="(item,index) in projectList"
               :key="index"
               class="child-item">
-            <i class="el-icon-plus addicon"
-               @click="addPoject"></i>
+            <div v-if="!item.isAdd">
+              <div>{{item.projectName}}</div>
+              <div>{{item.projetcDesc}}</div>
+            </div>
+            <i v-else
+               class="el-icon-plus addicon"
+               @click="addPojectClick"></i>
           </li>
         </ul>
       </el-tab-pane>
@@ -22,19 +27,18 @@
     <el-dialog title="新建项目"
                :visible.sync="
                dialogVisible"
-               width="30%"
-               :before-close="handleClose">
+               width="30%">
       <el-form ref="form"
                :model="form"
                label-width="80px">
         <el-form-item label="项目名称">
-          <el-input v-model="form.name"></el-input>
+          <el-input v-model="form.projectName"></el-input>
         </el-form-item>
         <el-form-item label="项目描述">
-          <el-input v-model="form.name"
+          <el-input v-model="form.projetcDesc"
                     type="textarea"></el-input>
         </el-form-item>
-        <el-form-item label="图片">
+        <!-- <el-form-item label="图片">
           <el-upload action="https://jsonplaceholder.typicode.com/posts/"
                      :show-file-list="false"
                      :on-success="handleAvatarSuccess"
@@ -45,13 +49,13 @@
             <i v-else
                class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
       <span slot="footer"
             class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="dialogVisible = false">确 定</el-button>
+                   @click="addPojectAction">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -59,6 +63,7 @@
 
 <script>
 import undeveloped from '@/components/Dev/undeveloped.vue'
+import { addProject, getProjectList } from '@/api/overView.js'
 export default {
   name: 'index',
   components: {
@@ -66,17 +71,48 @@ export default {
   },
   data () {
     return {
-      projectList: [1, 2, 3, 4, 4, 4, 4, 44, 4, 44, 5],
+      projectList: [],
       dialogVisible: false,
       form: {
-
+        projectName: '',
+        projetcDesc: ''
       }
     }
   },
   methods: {
-    addPoject () {
+    addPojectClick () {
       this.dialogVisible = true
+    },
+    /**
+     * @name: addPojectAction
+     * @description: 新增项目
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    addPojectAction () {
+      addProject(this.form).then((res) => {
+        this.$message({
+          message: '恭喜你,新增成功',
+          type: 'success'
+        })
+        this.dialogVisible = false
+        this.$router.push({
+          name: 'apiList'
+        })
+      })
+    },
+    queryProjectList () {
+      var self = this
+      getProjectList().then((res) => {
+        res.unshift({
+          isAdd: true
+        })
+        self.projectList = res
+      })
     }
+  },
+  created () {
+    this.queryProjectList()
   }
 }
 </script>
@@ -112,7 +148,7 @@ export default {
       width: calc(25% - 20px);
       // width: 25px;
       height: 200px;
-      background: green;
+      // background: green;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
