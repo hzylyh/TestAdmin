@@ -28,5 +28,6 @@ require (
 	golang.org/x/crypto v0.0.0-20191029031824-8986dd9e96cf // indirect
 	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
 	golang.org/x/tools v0.0.0-20190606050223-4d9ae51c2468 // indirect
+	google.golang.org/appengine v1.4.0
 	gopkg.in/yaml.v2 v2.2.5 // indirect
 )

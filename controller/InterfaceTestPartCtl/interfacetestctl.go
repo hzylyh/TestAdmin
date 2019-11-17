@@ -1,7 +1,6 @@
 package InterfaceTestPartCtl
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service/InterfaceTestPartSrv"
@@ -20,8 +19,15 @@ func GetInterfaceList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),
 	}
-	fmt.Println(reqInfo)
 	res := InterfaceTestPartSrv.ItfTestSrv.GetInterfaceList(&reqInfo)
 	utils.ResponseOk(c, res)
 	//utils.ResponseOk(c, )
+}
+
+func ImportSwagger(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	InterfaceTestPartSrv.ItfTestSrv.ImportSwagger(&reqInfo)
+	utils.ResponseOkWithMsg(c, "导入成功", nil)
 }
