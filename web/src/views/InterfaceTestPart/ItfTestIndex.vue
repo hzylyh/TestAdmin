@@ -11,9 +11,9 @@
         <el-menu default-active="2"
                  router
                  class="sl-itf-nav-menu"
-                 background-color="#545c64"
-                 text-color="#fff"
-                 active-text-color="#ffd04b"
+                 background-color="#1C2B36"
+                 text-color="white"
+                 active-text-color="#1b867b"
                  style="height: 100%;">
           <el-menu-item index="1"
                         :route="{ name: 'ItfDashboard' }">
@@ -60,7 +60,7 @@ export default {
   height: 100%;
   .sl-itf-nav {
     height: 100%;
-    background-color: rgb(84, 92, 100);
+    background-color: #1c2b36;
     .sl-itf-nav-menu {
       height: 100%;
       border-right: none;

@@ -150,6 +150,9 @@ export default {
       height: 200px;
       // background: green;
       border-radius: 10px;
+      border: 1px solid #666;
+      box-sizing: border-box;
+      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.25);
       cursor: pointer;
       display: flex;
       justify-content: center;
