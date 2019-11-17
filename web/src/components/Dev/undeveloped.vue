@@ -4,12 +4,13 @@
  * @Github: https://github.com/fodelf
  * @Date: 2019-06-06 18:05:02
  * @LastEditors: 吴文周
- * @LastEditTime: 2019-10-11 11:51:42
+ * @LastEditTime: 2019-11-17 13:52:16
  -->
 <template>
   <div class="content">
     <div class="mainContent">
-      <img src="../../assets/img/undeveloped.png" />
+      <img src="../../assets/img/undeveloped.png"
+           style="height:140px;width:129px" />
       <span class="undev_word">建设中，敬请期待！</span>
     </div>
   </div>
