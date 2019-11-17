@@ -1,7 +1,9 @@
 package model
 
+import "salotto/conf"
+
 type ProjectInfo struct {
-	Model
+	conf.Model
 	ProjectName string `json:"projectName"`
 	ProjectDesc string `json:"projectDesc"`
 	Creator     string `json:"creator"`

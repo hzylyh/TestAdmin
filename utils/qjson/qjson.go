@@ -10,3 +10,10 @@ func (qj *QJson) GetString(key string) string {
 	}
 	return ""
 }
+
+func (qj *QJson) GetInt(key string) float64 {
+	if res, ok := qj.ReqInfo[key].(float64); ok {
+		return res
+	}
+	return 0
+}

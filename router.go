@@ -18,8 +18,9 @@ func MapRoutes() *gin.Engine {
 		authApi          *gin.RouterGroup
 		scheduleApi      *gin.RouterGroup
 		interfaceTestApi *gin.RouterGroup
-		itfTestCaseApi   *gin.RouterGroup
-		overviewApi      *gin.RouterGroup
+		//itfTestCaseApi   *gin.RouterGroup
+		overviewApi  *gin.RouterGroup
+		itfManageApi *gin.RouterGroup
 	)
 	router = gin.New()
 	//router.Use(middleware.LoggerToFile())
@@ -53,10 +54,15 @@ func MapRoutes() *gin.Engine {
 
 	// 接口测试部分
 	interfaceTestApi = apiRoot.Group("/itfPart")
-	interfaceTestApi.POST("/test", InterfaceTestPartCtl.Test)
+
 	// 用例部分
-	itfTestCaseApi = interfaceTestApi.Group("/case")
-	itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
+	//itfTestCaseApi = interfaceTestApi.Group("/case")
+	//itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
+
+	// 接口管理部分
+	itfManageApi = interfaceTestApi.Group("/interface")
+	itfManageApi.POST("/add", InterfaceTestPartCtl.AddInterface)
+	itfManageApi.POST("/getList", InterfaceTestPartCtl.GetInterfaceList)
 
 	return router
 }
