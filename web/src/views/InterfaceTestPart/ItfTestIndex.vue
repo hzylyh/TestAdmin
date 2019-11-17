@@ -4,9 +4,9 @@
  * @Github: https://github.com/hzylyh
  -->
 <template>
-  <el-row class="sl-itf-main">
-    <el-col :span="4"
-            class="sl-itf-nav">
+  <el-container class="sl-itf-main">
+    <el-aside width="200px"
+              class="sl-itf-nav">
       <el-scrollbar style="height: 100%">
         <el-menu default-active="2"
                  router
@@ -18,28 +18,35 @@
           <el-menu-item index="1"
                         :route="{ name: 'ItfDashboard' }">
             <i class="el-icon-odometer"></i>
-            <span slot="title">仪表盘</span>
+            <span slot="title"
+                  class="title">仪表盘</span>
           </el-menu-item>
           <el-menu-item index="2"
+                        :route="{ name: 'apiList' }">
+            <i class="el-icon-document"></i>
+            <span slot="title"
+                  class="title">接口管理</span>
+          </el-menu-item>
+          <el-menu-item index="3"
                         :route="{ name: 'ItfCaseManage' }">
             <i class="el-icon-menu"></i>
-            <span slot="title">用例管理</span>
+            <span slot="title"
+                  class="title">用例管理</span>
           </el-menu-item>
-          <el-menu-item index="3">
-            <i class="el-icon-document"></i>
-            <span slot="title">接口管理</span>
-          </el-menu-item>
-          <el-menu-item index="4">
+
+          <!-- <el-menu-item index="4">
             <i class="el-icon-setting"></i>
-            <span slot="title">变量管理</span>
-          </el-menu-item>
+            <span slot="title"
+                  class="title">变量管理</span>
+          </el-menu-item> -->
         </el-menu>
       </el-scrollbar>
-    </el-col>
-    <el-col :span="20" style="height: 100%">
-      <router-view/>
-    </el-col>
-  </el-row>
+    </el-aside>
+    <el-main :span="20"
+             style="height: 100%;padding:20px;background:white">
+      <router-view />
+    </el-main>
+  </el-container>
 </template>
 
 <script>
@@ -49,20 +56,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .sl-itf-main {
+.sl-itf-main {
+  height: 100%;
+  .sl-itf-nav {
     height: 100%;
-    .sl-itf-nav {
+    background-color: rgb(84, 92, 100);
+    .sl-itf-nav-menu {
       height: 100%;
-      background-color: rgb(84, 92, 100);
-      .sl-itf-nav-menu {
-        height: 100%;
-        border-right: none;
-      }
-      /deep/ .el-scrollbar__wrap {
-        height: 100% !important;
-        overflow-x: auto !important;
-      }
+      border-right: none;
+    }
+    /deep/ .el-scrollbar__wrap {
+      height: 100% !important;
+      overflow-x: auto !important;
     }
   }
-
+}
+.title {
+  width: 56px;
+  text-align: left;
+}
 </style>

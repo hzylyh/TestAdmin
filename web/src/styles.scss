@@ -1,7 +1,101 @@
 /* theme color */
-//$--color-primary: teal;
+$--color-primary: #409eff;
 
 /* icon font path, required */
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
-@import "~element-ui/packages/theme-chalk/src/index";
+@import '~element-ui/packages/theme-chalk/src/index';
+
+div,
+form,
+img,
+ul,
+ol,
+li,
+dl,
+dt,
+dd,
+p,
+span {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+ul,
+dl,
+ol,
+li {
+  list-style-type: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+img,
+span,
+p,
+li {
+  vertical-align: top;
+}
+img {
+  width: 100%;
+}
+-img {
+  vertical-align: middle;
+}
+a:link {
+  color: #333;
+  text-decoration: none;
+}
+a:visited {
+  text-decoration: none;
+}
+a:hover {
+  color: #f00;
+  text-decoration: none;
+}
+a:active {
+  color: #0093dd;
+  text-decoration: none;
+}
+a,
+b,
+em,
+i,
+label,
+mark,
+small,
+span,
+strong {
+  display: inline-block;
+}
+em,
+i {
+  font-style: normal;
+}
+.clear {
+  clear: both;
+}
+.fl {
+  float: left;
+}
+.fr {
+  float: right;
+}
+.clear-fix {
+  clear: both;
+}
+.clear-fix:after {
+  clear: both;
+  display: block;
+  visibility: hidden;
+  height: 0;
+  line-height: 0;
+  content: '';
+}

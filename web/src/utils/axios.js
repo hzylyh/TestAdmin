@@ -1,96 +1,141 @@
-"use strict";
+/*
+ * @Description:
+ * @Author: 吴文周
+ * @Github: https://github.com/fodelf
+ * @Date: 2019-08-14 19:09:48
+ * @LastEditors: 吴文周
+ * @LastEditTime: 2019-11-17 13:56:58
+ */
+import axios from 'axios'
+import { Message } from 'element-ui'
+// import { MessageBox, Message } from 'element-ui'
+// import store from '@/pages/store/index.js'
+import { getToken } from './auth'
 
-// import Vue from 'vue';
-import axios from "axios";
-import router from '../router'
-import store from '@/store'
-import { getToken } from '@/utils/auth'
-import { Message, MessageBox } from 'element-ui'
+// create an axios instance
+axios.create({
+  baseURL: '', // url = base url + request url
+  withCredentials: true, // send cookies when cross-domain requests
+  timeout: 5000 // request timeout
+})
 
-// Full config:  https://github.com/axios/axios#request-config
-// axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
-// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+// request interceptor
+axios.interceptors.request.use(
+  config => {
+    // do something before request is sent
 
-let config = {
-  // baseURL: process.env.baseURL || process.env.apiUrl || ""
-  // timeout: 60 * 1000, // Timeout
-  // withCredentials: true, // Check cross-site Access-Control
-  // baseURL: "localhost:36001",
-  baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 60 * 1000,
-};
-
-const _axios = axios.create(config);
-// console.log(process.env.VUE_APP_SECRET)
-// console.log(process.env.VUE_APP_BASE_API)
-_axios.interceptors.request.use(
-  function (config) {
-    // Do something before request is sent
-    // if (config.method === 'post') {
-    //   const formData = new FormData();
-    //   Object.keys(config.data).forEach(key => formData.append(key, config.data[key]));
-    //   config.data = formData;
+    // if (store.getters.token) {
+    // let each request carry token
+    // ['X-Token'] is a custom headers key
+    // please modify it according to the actual situation
+    config.headers['Authorization'] = getToken()
     // }
-
-    // if (config.url !== "/v4/user/login" && getToken() !== undefined ){
-    //   config.headers.Authorization = getToken();
-    // }
-    if (localStorage.getItem('Authorization')) {
-      console.log(getToken())
-      config.headers.Authorization = localStorage.getItem('Authorization');
-    }
-    return config;
+    config.headers['Content-Type'] = 'application/json'
+    return config
   },
-  function (error) {
-    // Do something with request error
-    return Promise.reject(error);
+  error => {
+    // do something with request error
+    // console.log(error) // for debug
+    return Promise.reject(error)
   }
-);
+)
 
-// Add a response interceptor
-_axios.interceptors.response.use(
-  function (response) {
-    // Do something with response data
-    // return response;
+// response interceptor
+axios.interceptors.response.use(
+  /**
+   * If you want to get http information such as headers or status
+   * Please return  response => response
+   */
+
+  /**
+   * Determine the request status by custom code
+   * Here is just an example
+   * You can also judge the status by HTTP Status Code
+   */
+  response => {
     const res = response.data
-    if (res.code == "21001") {
-      router.replace({ name: "user" })
-      return response
-    } else if (res.code == "20000") {
-      return response
-    } else {
+    // console.log('data')
+    // console.log(res)
+    // if the custom code is not 000000, it is judged as an error.
+    if (res.code !== '000000') {
       Message({
-        message: res.msg,
+        message: res.msg || '出错啦！',
         type: 'error',
-        duration: 5 * 1000
+        duration: 5 * 1000,
+        showClose: true
       })
-      return Promise.reject('error')
+      // window.location.href = '/'
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      //   // to re-login
+      //   MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+      //     confirmButtonText: 'Re-Login',
+      //     cancelButtonText: 'Cancel',
+      //     type: 'warning'
+      //   }).then(() => {
+      //     // store.dispatch('user/resetToken').then(() => {
+      //     //   location.reload()
+      //     // })
+      //   })
+      // }
+      return Promise.reject(res.msg || 'error')
+    } else {
+      return res
     }
   },
-  function (error) {
-    // Do something with response error
-    return Promise.reject(error);
+  error => {
+    // console.log('err' + error) // for debug
+    Message({
+      message: '没事，只是服务器出错啦！',
+      type: 'error',
+      duration: 5 * 1000,
+      showClose: true
+    })
+    return Promise.reject(error)
   }
-);
+)
 
-// Plugin.install = function(Vue, options) {
-//   Vue.axios = _axios;
-//   window.axios = _axios;
-//   Object.defineProperties(Vue.prototype, {
-//     axios: {
-//       get() {
-//         return _axios;
-//       }
-//     },
-//     $axios: {
-//       get() {
-//         return _axios;
-//       }
-//     },
-//   });
-// };
-//
-// Vue.use(Plugin)
+/**
+ * 封装请求方法
+ * @param url
+ * @param data
+ * @returns {Promise}
+ */
 
-export default _axios;
+export default function request (args) {
+  let method = args.method ? args.method : 'POST'
+  let params = args.params ? args.params : { msg: '' }
+  let url = args.url ? args.url : ''
+  // let resParams = {
+  //   'msg': JSON.stringify(params.msg)
+  // }
+  let resParams = params
+  switch (method) {
+    case 'POST':
+      return new Promise((resolve, reject) => {
+        axios.post(url, resParams).then(
+          res => {
+            let data = res.data ? res.data : {}
+            resolve(data)
+          },
+          err => {
+            reject(err)
+          }
+        )
+      })
+    default:
+      return new Promise((resolve, reject) => {
+        axios
+          .get(url, {
+            params: resParams
+          })
+          .then(res => {
+            let data = res.data ? res.data : {}
+            resolve(data)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
+  }
+}
