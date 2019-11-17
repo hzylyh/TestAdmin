@@ -12,6 +12,11 @@ export default new Router({
     //     component: () => import('@/views/404.vue')
     // },
     {
+      path: '/',
+      name: 'Login',
+      redirect: '/login'
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('@/views/Login')
@@ -45,13 +50,15 @@ export default new Router({
               // 接口部分仪表盘
               path: 'dashboard',
               name: 'ItfDashboard',
-              component: () => import('@/views/InterfaceTestPart/ItfDashboard.vue')
+              component: () =>
+                import('@/views/InterfaceTestPart/ItfDashboard.vue')
             },
             {
               // 接口部分用例管理
               path: 'caseManage',
               name: 'ItfCaseManage',
-              component: () => import('@/views/InterfaceTestPart/ItfCaseManage.vue')
+              component: () =>
+                import('@/views/InterfaceTestPart/ItfCaseManage.vue')
             }
           ]
         }
