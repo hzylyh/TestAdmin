@@ -5,7 +5,7 @@
       一个轻量级的企业测试平台
     </div>
     <el-tabs type="border-card"
-             class="full">
+             class="tabcontent">
       <el-tab-pane class="full">
         <span slot="label"><i class="el-icon-folder-opened"></i>我的项目</span>
         <!-- 项目内容列表 -->
@@ -148,6 +148,10 @@ export default {
     background: url("../../assets/img/overViewHeadBg.jpg") no-repeat;
     background-size: cover;
   }
+  .tabcontent {
+    height: calc(100% - 200px);
+    box-sizing: border-box;
+  }
   .full {
     height: 100%;
     box-sizing: border-box;
@@ -156,12 +160,13 @@ export default {
     height: calc(100% - 39px);
     box-sizing: border-box;
     padding: 0px;
+    overflow-y: auto;
   }
   /deep/.content {
     background-color: white;
   }
   .project-list {
-    height: 100%;
+    // height: 100%;
     // background: red;
     padding: 40px;
     box-sizing: border-box;
