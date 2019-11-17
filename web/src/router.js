@@ -59,6 +59,13 @@ export default new Router({
               name: 'ItfCaseManage',
               component: () =>
                 import('@/views/InterfaceTestPart/ItfCaseManage.vue')
+            },
+            {
+              // 接口管理
+              path: 'apiList',
+              name: 'apiList',
+              component: () =>
+                import('@/views/InterfaceTestPart/apiList/ApiList.vue')
             }
           ]
         }
