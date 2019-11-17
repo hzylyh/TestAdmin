@@ -20,7 +20,7 @@ func (ps *projectService) AddProject(projectInfo *model.ProjectInfo) {
 
 func (ps *projectService) GetProjectList(qj *qjson.QJson) []*model.ProjectInfo {
 	var ret []*model.ProjectInfo
-	if err := DB.Find(&ret); err != nil {
+	if err := DB.Order("created_at desc").Find(&ret); err != nil {
 		fmt.Println(err)
 	}
 	return ret
