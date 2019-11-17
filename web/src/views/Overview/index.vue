@@ -1,21 +1,26 @@
 <template>
   <div class="overView">
+    <!-- 头部说明部分 -->
+    <div class="overViewHead">
+      一个轻量级的企业测试平台
+    </div>
     <el-tabs type="border-card"
              class="full">
       <el-tab-pane class="full">
-        <span slot="label"><i class="el-icon-folder-opened"></i>项目</span>
+        <span slot="label"><i class="el-icon-folder-opened"></i>我的项目</span>
         <!-- 项目内容列表 -->
         <ul class="project-list">
           <li v-for="(item,index) in projectList"
               :key="index"
-              class="child-item">
+              class="child-item"
+              @click="goToProject(item)">
             <div v-if="!item.isAdd">
               <div>{{item.projectName}}</div>
               <div>{{item.projetcDesc}}</div>
             </div>
             <i v-else
                class="el-icon-plus addicon"
-               @click="addPojectClick"></i>
+               @click.stop="addPojectClick"></i>
           </li>
         </ul>
       </el-tab-pane>
@@ -109,6 +114,17 @@ export default {
         })
         self.projectList = res
       })
+    },
+    /**
+     * @name: goToProject
+     * @description: 去往项目明显
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    goToProject () {
+      this.$router.push({
+        name: 'apiList'
+      })
     }
   },
   created () {
@@ -120,9 +136,18 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .overView {
   height: 100%;
-  padding-top: 40px;
+  // padding-top: 40px;
   box-sizing: border-box;
-  background: white;
+  // background: white;
+  .overViewHead {
+    height: 200px;
+    font-size: 34px;
+    font-weight: 200;
+    line-height: 200px;
+    color: white;
+    background: url("../../assets/img/overViewHeadBg.jpg") no-repeat;
+    background-size: cover;
+  }
   .full {
     height: 100%;
     box-sizing: border-box;
@@ -150,13 +175,19 @@ export default {
       height: 200px;
       // background: green;
       border-radius: 10px;
-      border: 1px solid #666;
+      border: 1px solid #dcdfe6;
       box-sizing: border-box;
       box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.25);
       cursor: pointer;
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+    .child-item:hover {
+      border: 1px solid #409eff;
+    }
+    .child-item:nth-child(4n) {
+      // margin-right: 0px;
     }
   }
   // .avatar-uploader .el-upload {

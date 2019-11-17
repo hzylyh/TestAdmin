@@ -66,6 +66,8 @@ export default {
   .sl-each-part {
     padding: 0px;
     height: calc(100% - 60px);
+    overflow-y: auto;
+    background: rgb(240, 243, 244);
   }
   .header {
     display: flex;
