@@ -19,6 +19,7 @@ func MapRoutes() *gin.Engine {
 		scheduleApi      *gin.RouterGroup
 		interfaceTestApi *gin.RouterGroup
 		itfTestCaseApi   *gin.RouterGroup
+		overviewApi      *gin.RouterGroup
 	)
 	router = gin.New()
 
@@ -33,10 +34,15 @@ func MapRoutes() *gin.Engine {
 	router.StaticFile("/", "./web/dist/index.html") //前端接口
 
 	// 创建根路由
-	apiRoot = router.Group("/salotto")
+	apiRoot = router.Group("/api")
 
 	authApi = apiRoot.Group("/user")
 	authApi.POST("/login", controller.Login)
+
+	// 总览部分
+	overviewApi = apiRoot.Group("/overview")
+	overviewApi.POST("/getProjectList", controller.GetProjectList)
+	overviewApi.POST("/addProject", controller.AddProject)
 
 	// 定时任务部分
 	scheduleApi = apiRoot.Group("/schedule")

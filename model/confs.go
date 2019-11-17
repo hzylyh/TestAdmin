@@ -1,5 +1,5 @@
 package model
 
 var Models = []interface{}{
-	&Schedule{}, &ScheduleJob{},
+	&Schedule{}, &ScheduleJob{}, &ProjectInfo{},
 }
