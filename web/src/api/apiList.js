@@ -4,7 +4,7 @@
  * @Github: https://github.com/fodelf
  * @Date: 2019-06-05 18:57:53
  * @LastEditors: 吴文周
- * @LastEditTime: 2019-11-17 17:47:47
+ * @LastEditTime: 2019-11-17 20:04:47
  */
 import request from '../utils/request'
 
@@ -19,6 +19,13 @@ export function addApi (params) {
 export function getList (params) {
   return request({
     url: '/api/itfPart/interface/getList',
+    method: 'POST',
+    params: params
+  })
+}
+export function importSwagger (params) {
+  return request({
+    url: '/api/itfPart/interface/importSwagger',
     method: 'POST',
     params: params
   })

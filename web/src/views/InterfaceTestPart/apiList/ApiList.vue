@@ -19,6 +19,9 @@
             <el-button type="primary"
                        icon="el-icon-plus"
                        @click="addApi">新增接口</el-button>
+            <el-button type="primary"
+                       icon="el-icon-plus"
+                       @click="addSwagger">同步swagger</el-button>
           </div>
 
         </el-row>
@@ -31,7 +34,7 @@
     <div class="panle list">
       <el-table :data="tableData"
                 border
-                style="width: 100%">
+                style="width: 100%；heigh:575px">
         <el-table-column prop="name"
                          label="接口名称"
                          width="100">
@@ -93,18 +96,6 @@
           <el-input v-model="form.desc"
                     type="textarea"></el-input>
         </el-form-item>
-        <!-- <el-form-item label="图片">
-          <el-upload action="https://jsonplaceholder.typicode.com/posts/"
-                     :show-file-list="false"
-                     :on-success="handleAvatarSuccess"
-                     :before-upload="beforeAvatarUpload">
-            <img v-if="imageUrl"
-                 :src="imageUrl"
-                 class="avatar">
-            <i v-else
-               class="el-icon-plus avatar-uploader-icon"></i>
-          </el-upload>
-        </el-form-item> -->
       </el-form>
       <span slot="footer"
             class="dialog-footer">
@@ -113,13 +104,32 @@
                    @click="addPojectAction">确 定</el-button>
       </span>
     </el-dialog>
+    <el-dialog title="同步swagger"
+               :visible.sync="
+               dialogVisibles"
+               width="60%">
+      <el-form ref="form"
+               :model="form"
+               label-width="150px">
+        <el-form-item label="swagger接口地址">
+          <el-input v-model="swaggerform.swaggerUrl"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer"
+            class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button @click="dialogVisible = false">批量同步</el-button>
+        <el-button type="primary"
+                   @click="addSwaggerAction">全量同步</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》';
-import { addApi, getList } from '@/api/apiList.js'
+import { addApi, getList, importSwagger } from '@/api/apiList.js'
 export default {
   // import引入的组件需要注入到对象中才能使用
   components: {},
@@ -127,6 +137,7 @@ export default {
     // 这里存放数据
     return {
       dialogVisible: false,
+      dialogVisibles: false,
       options: [{
         value: 'GET',
         label: 'GET'
@@ -145,6 +156,9 @@ export default {
       queryForm: {
         pageNmber: 1,
         pageSize: 10
+      },
+      swaggerform: {
+        swaggerUrl: ''
       }
     }
   },
@@ -175,6 +189,30 @@ export default {
     queryApiList () {
       getList(this.queryForm).then((res) => {
         this.tableData = res.list
+      })
+    },
+    /**
+     * @name: addSwagger
+     * @description: 同步swagger
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    addSwagger () {
+      this.dialogVisibles = true
+    },
+    /**
+     * @name: addSwaggerAction
+     * @description: 同步swagger接口
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    addSwaggerAction () {
+      importSwagger(this.swaggerform).then((res) => {
+        this.$message({
+          message: '恭喜你,同步成功',
+          type: 'success'
+        })
+        this.dialogVisible = false
       })
     }
   },
