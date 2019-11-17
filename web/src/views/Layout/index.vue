@@ -6,7 +6,7 @@
         <span class="first">Test</span>
         Admin
       </div>
-      <div :span="20">
+      <div>
         <el-menu :default-active="activeIndex2"
                  mode="horizontal"
                  @select="handleSelect"
@@ -17,8 +17,10 @@
           <el-menu-item index="1"
                         :route="{name: 'OverviewIndex'}">总览</el-menu-item>
           <!-- <el-menu-item index="2" :route="{name: 'ItfDashboard'}">接口自动化</el-menu-item> -->
-          <el-menu-item index="3">性能测试</el-menu-item>
-          <el-menu-item index="4">云真机</el-menu-item>
+          <el-menu-item index="2"
+                        :route="{name: 'performanceTestingIndex'}">性能测试</el-menu-item>
+          <el-menu-item index="4"
+                        :route="{name: 'realMachineIndex'}">云真机</el-menu-item>
         </el-menu>
       </div>
     </div>
@@ -54,7 +56,7 @@ export default {
     .sl-logo {
       float: left;
       height: 61px;
-      line-height: 61px;
+      line-height: 60px;
       color: white;
       margin: 0;
       // background-color: #1c2b36;
@@ -63,11 +65,12 @@ export default {
   }
   .sl-each-part {
     padding: 0px;
-    height: calc(100% - 61px);
+    height: calc(100% - 60px);
   }
   .header {
     display: flex;
     background: #1c2b36;
+    height: 60px;
     .sl-logo {
       color: #fff;
       display: block;
