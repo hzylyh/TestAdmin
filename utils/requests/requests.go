@@ -1,4 +1,4 @@
-package main
+package requests
 
 import (
 	"bytes"
@@ -24,7 +24,7 @@ func main() {
 	utils.MulAssert(exp, act, verifyCol)
 }
 
-func Post(url, reqJson string) {
+func Post(url, reqJson string) []byte {
 	//url = "http://www.baidu.com"
 
 	//json序列化
@@ -44,8 +44,9 @@ func Post(url, reqJson string) {
 	}
 	defer resp.Body.Close()
 
-	fmt.Println("status", resp.Status)
-	fmt.Println("response:", resp.Header)
+	//fmt.Println("status", resp.Status)
+	//fmt.Println("response:", resp.Header)
 	body, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println("response Body:", string(body))
+	//fmt.Println("response Body:", string(body))
+	return body
 }

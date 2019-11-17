@@ -63,6 +63,7 @@ func MapRoutes() *gin.Engine {
 	itfManageApi = interfaceTestApi.Group("/interface")
 	itfManageApi.POST("/add", InterfaceTestPartCtl.AddInterface)
 	itfManageApi.POST("/getList", InterfaceTestPartCtl.GetInterfaceList)
+	itfManageApi.POST("/importSwagger", InterfaceTestPartCtl.ImportSwagger)
 
 	return router
 }
