@@ -40,7 +40,7 @@ test automation
 
 1. 前端：[Vue.js]
 2. 后端：[go]
-3. 数据库：[Mysql]
+3. 数据库：[sqlite]
 
 ## web Project setup
 
