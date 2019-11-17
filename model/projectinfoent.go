@@ -2,8 +2,8 @@ package model
 
 type ProjectInfo struct {
 	Model
-	ProjectName string `json:"project_name"`
-	ProjectDesc string `json:"project_desc"`
+	ProjectName string `json:"projectName"`
+	ProjectDesc string `json:"projectDesc"`
 	Creator     string `json:"creator"`
 	Modifier    string `json:"modifier"`
 }

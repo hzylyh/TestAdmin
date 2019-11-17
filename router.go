@@ -22,6 +22,7 @@ func MapRoutes() *gin.Engine {
 		overviewApi      *gin.RouterGroup
 	)
 	router = gin.New()
+	//router.Use(middleware.LoggerToFile())
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},

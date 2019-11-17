@@ -12,7 +12,7 @@ func AddProject(c *gin.Context) {
 	var projectInfo model.ProjectInfo
 	c.ShouldBind(&projectInfo)
 	service.ProjectSrv.AddProject(&projectInfo)
-	utils.ResponseOk(c, "新增成功")
+	utils.ResponseOkWithMsg(c, "新增成功", nil)
 }
 
 func GetProjectList(c *gin.Context) {
