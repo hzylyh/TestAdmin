@@ -18,6 +18,7 @@ type itfTestService struct {
 func (its *itfTestService) AddInterface(interfaceInfo *InterfaceTestPartEntity.InterfaceInfo) {
 	if err := service.DB.Create(interfaceInfo).Error; err != nil {
 		fmt.Println(err)
+		return
 	}
 }
 
@@ -48,6 +49,7 @@ func (its *itfTestService) ImportSwagger(qj *qjson.QJson) {
 					}
 					if err := service.DB.Create(interfaceInfo).Error; err != nil {
 						fmt.Println(err)
+						return
 					}
 				}
 			}

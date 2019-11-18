@@ -17,6 +17,7 @@ type testCaseService struct {
 func (tcs testCaseService) AddCase(itfCaseInfo *InterfaceTestPartEntity.ItfCaseInfo) {
 	if err := service.DB.Create(itfCaseInfo).Error; err != nil {
 		fmt.Println(err)
+		return
 	}
 }
 
