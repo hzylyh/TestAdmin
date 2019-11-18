@@ -6,6 +6,7 @@ import (
 	"salotto/controller"
 	"salotto/controller/InterfaceTestPartCtl"
 	"salotto/controller/SchedulePartCtl"
+	"salotto/middleware"
 )
 
 /**
@@ -23,7 +24,11 @@ func MapRoutes() *gin.Engine {
 		itfManageApi     *gin.RouterGroup
 	)
 	router = gin.New()
-	//router.Use(middleware.LoggerToFile())
+
+	// 日志中间件
+	router.Use(middleware.LoggerToFile())
+
+	router.Use(gin.Recovery())
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
