@@ -9,7 +9,7 @@ import (
 )
 
 func RunCase(c *gin.Context) {
-	//InterfaceTestPartSrv.TestCaseSrv.RunCase()
+	InterfaceTestPartSrv.TestCaseSrv.RunCase()
 }
 
 func AddCase(c *gin.Context) {

@@ -30,3 +30,11 @@ func (tcs testCaseService) GetCaseList(qj *qjson.QJson) interface{} {
 	pageInfo = utils.Pagination(&ret, qj)
 	return pageInfo
 }
+
+func (tcs testCaseService) RunCase() error {
+	exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
+	act := `{"name": "houzheyu", "age": 33}`
+	verify := []string{"name", "age", "list"}
+	utils.MulAssert(exp, act, verify)
+	return nil
+}
