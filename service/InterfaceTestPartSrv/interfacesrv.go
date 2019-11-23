@@ -22,14 +22,16 @@ func (its *itfTestService) AddInterface(interfaceInfo *InterfaceTestPartEntity.I
 	}
 }
 
-func (its *itfTestService) GetInterfaceList(qj *qjson.QJson) *model.PageInfo {
+func (its *itfTestService) GetInterfaceList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
-		ret      []*InterfaceTestPartEntity.InterfaceInfo
-		pageInfo *model.PageInfo
+		ret []*InterfaceTestPartEntity.InterfaceInfo
 	)
 
-	pageInfo = utils.Pagination(&ret, qj)
-	return pageInfo
+	if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+		return nil, err
+	} else {
+		return pageInfo, nil
+	}
 }
 
 func (its *itfTestService) ImportSwagger(qj *qjson.QJson) {

@@ -23,6 +23,7 @@ func MapRoutes() *gin.Engine {
 		overviewApi      *gin.RouterGroup
 		itfManageApi     *gin.RouterGroup
 		projectModuleApi *gin.RouterGroup
+		itfCaseStepApi   *gin.RouterGroup
 	)
 	router = gin.New()
 
@@ -66,6 +67,11 @@ func MapRoutes() *gin.Engine {
 	itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
 	itfTestCaseApi.POST("/add", InterfaceTestPartCtl.AddCase)
 	itfTestCaseApi.POST("/getList", InterfaceTestPartCtl.GetCaseList)
+
+	// 用例步骤
+	itfCaseStepApi = itfTestCaseApi.Group("/step")
+	itfCaseStepApi.POST("/add", InterfaceTestPartCtl.AddCaseStep)
+	itfCaseStepApi.POST("/getList", InterfaceTestPartCtl.GetStepList)
 
 	// 模块管理部分
 	projectModuleApi = interfaceTestApi.Group("/module")

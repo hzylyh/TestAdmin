@@ -19,9 +19,11 @@ func GetInterfaceList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),
 	}
-	res := InterfaceTestPartSrv.ItfTestSrv.GetInterfaceList(&reqInfo)
-	utils.ResponseOk(c, res)
-	//utils.ResponseOk(c, )
+	if res, err := InterfaceTestPartSrv.ItfTestSrv.GetInterfaceList(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOk(c, res)
+	}
 }
 
 func ImportSwagger(c *gin.Context) {

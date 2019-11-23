@@ -23,6 +23,9 @@ func GetCaseList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),
 	}
-	res := InterfaceTestPartSrv.TestCaseSrv.GetCaseList(&reqInfo)
-	utils.ResponseOk(c, res)
+	if res, err := InterfaceTestPartSrv.TestCaseSrv.GetCaseList(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOk(c, res)
+	}
 }

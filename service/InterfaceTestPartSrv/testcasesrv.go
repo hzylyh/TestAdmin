@@ -21,14 +21,16 @@ func (tcs testCaseService) AddCase(itfCaseInfo *InterfaceTestPartEntity.ItfCaseI
 	}
 }
 
-func (tcs testCaseService) GetCaseList(qj *qjson.QJson) interface{} {
+func (tcs testCaseService) GetCaseList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
-		ret      []*InterfaceTestPartEntity.ItfCaseInfo
-		pageInfo *model.PageInfo
+		ret []*InterfaceTestPartEntity.ItfCaseInfo
 	)
 
-	pageInfo = utils.Pagination(&ret, qj)
-	return pageInfo
+	if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+		return nil, err
+	} else {
+		return pageInfo, nil
+	}
 }
 
 func (tcs testCaseService) RunCase() error {
