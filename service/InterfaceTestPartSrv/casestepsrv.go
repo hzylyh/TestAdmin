@@ -24,10 +24,10 @@ func (css *caseStepService) AddCaseStep(caseStepInfo *InterfaceTestPartEntity.It
 
 func (css *caseStepService) GetStepList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
-		ret []*InterfaceTestPartEntity.InterfaceInfo
+		ret []*InterfaceTestPartEntity.ItfCaseStepInfo
 	)
 
-	if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+	if pageInfo, err = utils.PaginationWithDB(service.DB.Where("step_num = ?", 2), &ret, qj); err != nil {
 		return nil, err
 	} else {
 		return pageInfo, nil
