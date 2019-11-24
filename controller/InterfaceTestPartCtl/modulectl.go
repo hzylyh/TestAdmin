@@ -5,6 +5,7 @@ import (
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service/InterfaceTestPartSrv"
 	"salotto/utils"
+	"salotto/utils/qjson"
 )
 
 func AddProjectModule(c *gin.Context) {
@@ -14,5 +15,16 @@ func AddProjectModule(c *gin.Context) {
 		utils.ResponseOkWithMsg(c, "新增失败", err.Error())
 	} else {
 		utils.ResponseOkWithMsg(c, "新增成功", nil)
+	}
+}
+
+func GetProjectModuleList(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.ModuleSrv.GetModuleList(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", err.Error())
+	} else {
+		utils.ResponseOkWithMsg(c, "查询成功", res)
 	}
 }

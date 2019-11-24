@@ -14,11 +14,12 @@ var TestCaseSrv = &testCaseService{}
 type testCaseService struct {
 }
 
-func (tcs testCaseService) AddCase(itfCaseInfo *InterfaceTestPartEntity.ItfCaseInfo) {
+func (tcs testCaseService) AddCase(itfCaseInfo *InterfaceTestPartEntity.ItfCaseInfo) error {
 	if err := service.DB.Create(itfCaseInfo).Error; err != nil {
 		fmt.Println(err)
-		return
+		return err
 	}
+	return nil
 }
 
 func (tcs testCaseService) GetCaseList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {

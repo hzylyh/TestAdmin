@@ -15,8 +15,12 @@ func RunCase(c *gin.Context) {
 func AddCase(c *gin.Context) {
 	var itfTestCaseInfo InterfaceTestPartEntity.ItfCaseInfo
 	c.ShouldBind(&itfTestCaseInfo)
-	InterfaceTestPartSrv.TestCaseSrv.AddCase(&itfTestCaseInfo)
-	utils.ResponseOkWithMsg(c, "新增成功", nil)
+	if err := InterfaceTestPartSrv.TestCaseSrv.AddCase(&itfTestCaseInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "新增失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "新增成功", nil)
+	}
+
 }
 
 func GetCaseList(c *gin.Context) {
@@ -26,6 +30,6 @@ func GetCaseList(c *gin.Context) {
 	if res, err := InterfaceTestPartSrv.TestCaseSrv.GetCaseList(&reqInfo); err != nil {
 		utils.ResponseOkWithMsg(c, "查询失败", nil)
 	} else {
-		utils.ResponseOk(c, res)
+		utils.ResponseOkWithMsg(c, "查询成功", res)
 	}
 }
