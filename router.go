@@ -44,6 +44,7 @@ func MapRoutes() *gin.Engine {
 
 	// 创建根路由
 	apiRoot = router.Group("/api")
+	apiRoot.Use()
 
 	authApi = apiRoot.Group("/user")
 	authApi.POST("/login", controller.Login)
