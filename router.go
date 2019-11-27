@@ -6,6 +6,7 @@ import (
 	"salotto/controller"
 	"salotto/controller/InterfaceTestPartCtl"
 	"salotto/controller/SchedulePartCtl"
+	"salotto/middleware"
 )
 
 /**
@@ -18,12 +19,18 @@ func MapRoutes() *gin.Engine {
 		authApi          *gin.RouterGroup
 		scheduleApi      *gin.RouterGroup
 		interfaceTestApi *gin.RouterGroup
-		//itfTestCaseApi   *gin.RouterGroup
-		overviewApi  *gin.RouterGroup
-		itfManageApi *gin.RouterGroup
+		itfTestCaseApi   *gin.RouterGroup
+		overviewApi      *gin.RouterGroup
+		itfManageApi     *gin.RouterGroup
+		projectModuleApi *gin.RouterGroup
+		itfCaseStepApi   *gin.RouterGroup
 	)
 	router = gin.New()
-	//router.Use(middleware.LoggerToFile())
+
+	// 日志中间件
+	router.Use(middleware.LoggerToFile())
+
+	router.Use(gin.Recovery())
 
 	router.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
@@ -37,6 +44,7 @@ func MapRoutes() *gin.Engine {
 
 	// 创建根路由
 	apiRoot = router.Group("/api")
+	apiRoot.Use()
 
 	authApi = apiRoot.Group("/user")
 	authApi.POST("/login", controller.Login)
@@ -56,8 +64,20 @@ func MapRoutes() *gin.Engine {
 	interfaceTestApi = apiRoot.Group("/itfPart")
 
 	// 用例部分
-	//itfTestCaseApi = interfaceTestApi.Group("/case")
-	//itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
+	itfTestCaseApi = interfaceTestApi.Group("/case")
+	itfTestCaseApi.POST("/run", InterfaceTestPartCtl.RunCase)
+	itfTestCaseApi.POST("/add", InterfaceTestPartCtl.AddCase)
+	itfTestCaseApi.POST("/getList", InterfaceTestPartCtl.GetCaseList)
+
+	// 用例步骤
+	itfCaseStepApi = itfTestCaseApi.Group("/step")
+	itfCaseStepApi.POST("/add", InterfaceTestPartCtl.AddCaseStep)
+	itfCaseStepApi.POST("/getList", InterfaceTestPartCtl.GetStepList)
+
+	// 模块管理部分
+	projectModuleApi = interfaceTestApi.Group("/module")
+	projectModuleApi.POST("/add", InterfaceTestPartCtl.AddProjectModule)
+	projectModuleApi.POST("/getList", InterfaceTestPartCtl.GetProjectModuleList)
 
 	// 接口管理部分
 	itfManageApi = interfaceTestApi.Group("/interface")

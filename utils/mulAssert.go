@@ -24,25 +24,33 @@ func assertCore(exp, act interface{}) {
 	//fmt.Println(expIn.Name(), expIn.Kind())
 
 	if expIn.Kind() == reflect.Slice {
-		expList := exp.([]interface{})
-		actList := act.([]interface{})
-		//fmt.Println("transformList", expList)
-		//fmt.Println("transformList", actList)
-		for i := 0; i < len(expList); i++ {
-			assertCore(expList[i], actList[i])
+		expList, ok1 := exp.([]interface{})
+		actList, ok2 := act.([]interface{})
+		if ok1 && ok2 {
+			for i := 0; i < len(expList); i++ {
+				assertCore(expList[i], actList[i])
+			}
+		} else {
+			fmt.Println("slice类型转换异常")
 		}
 	} else if expIn.Kind() == reflect.Map {
-		expMap := exp.(map[string]interface{})
-		actMap := act.(map[string]interface{})
-		//fmt.Println("transformMap", expMap)
-		for k := range expMap {
-			assertCore(expMap[k], actMap[k])
+		expMap, expOk := exp.(map[string]interface{})
+		actMap, actOk := act.(map[string]interface{})
+		if expOk && actOk {
+			for k := range expMap {
+				assertCore(expMap[k], actMap[k])
+			}
+		} else {
+			fmt.Println("map类型转换异常")
 		}
+
 	} else if expIn.Kind() == reflect.String {
 		//fmt.Println("String")
-		expString := exp.(string)
-		actString := act.(string)
-		assertEqual(expString, actString)
+		expString, expOk := exp.(string)
+		actString, actOk := act.(string)
+		if expOk && actOk {
+			assertEqual(expString, actString)
+		}
 	} else {
 		assertEqual(exp, act)
 	}

@@ -6,9 +6,10 @@ import (
 
 type InterfaceInfo struct {
 	conf.Model
-	ProjectId int    `json:"projectId"`
-	Name      string `json:"name"`
-	Url       string `json:"url"`
-	Type      string `json:"type"`
-	Desc      string `json:"desc"`
+	ProjectId   int    `json:"projectId"`
+	InterfaceId string `json:"interfaceId"`
+	Name        string `json:"name"`
+	Url         string `json:"url"`
+	Type        string `json:"type"`
+	Desc        string `json:"desc"`
 }

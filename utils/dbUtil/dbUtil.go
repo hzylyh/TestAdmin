@@ -1,24 +1,17 @@
-package utils
+package dbUtil
 
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"salotto/model"
-	"salotto/service"
 	"salotto/utils/qjson"
 )
 
-func Pagination(ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
-	pageInfo, err = pagination(service.DB, ent, qj)
-	return pageInfo, err
+type SelfDB struct {
+	*gorm.DB
 }
 
-func PaginationWithDB(db *gorm.DB, ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
-	pageInfo, err = pagination(db, ent, qj)
-	return pageInfo, err
-}
-
-func pagination(db *gorm.DB, ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
+func (db *SelfDB) Paginate(ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
 		//ret      []*InterfaceTestPartEntity.InterfaceInfo
 		pageNum  = qj.GetInt("pageNum")

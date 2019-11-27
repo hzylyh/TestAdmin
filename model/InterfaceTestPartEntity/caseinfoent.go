@@ -2,10 +2,10 @@ package InterfaceTestPartEntity
 
 import "github.com/jinzhu/gorm"
 
-type CaseInfoEntity struct {
+type ItfCaseInfo struct {
 	gorm.Model
-	SuitId   int    `json:"suit_id"`
-	CaseName string `json:"case_name"`
-	ReqData  string `json:"req_data"`
-	ItfId    int    `json:"interface_id"`
+	CaseId   string `json:"caseId"`
+	ModuleId int    `json:"moduleId"`
+	CaseName string `json:"caseName"`
+	CaseDesc string `json:"caseDesc"`
 }
