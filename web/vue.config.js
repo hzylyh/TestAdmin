@@ -1,4 +1,8 @@
 // vue.config.js
+const path = require('path')
+function resolve (dir) {
+  return path.join(__dirname, dir)
+}
 module.exports = {
   lintOnSave: false,
   publicPath: './', // vueConf.baseUrl, // 根域上下文目录
@@ -16,5 +20,12 @@ module.exports = {
         ws: false
       }
     }
+  },
+  chainWebpack (config) {
+    // 添加别名
+    config.resolve.alias
+      .set('assets', resolve('src/assets'))
+      .set('components', resolve('src/components'))
+      .set('api', resolve('src/api'))
   }
 }

@@ -25,7 +25,7 @@
       </div>
     </div>
     <el-row class="sl-each-part">
-      <router-view />
+      <router-view  style="height:100%"/>
     </el-row>
   </el-row>
 </template>
