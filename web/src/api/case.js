@@ -8,9 +8,25 @@
  */
 import request from '../utils/request'
 
-export function add (params) {
+export function addModule (params) {
   return request({
-    url: '/api/itfPart/case/add',
+    url: '/api/itfPart/module/add',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function getCaseList (params) {
+  return request({
+    url: '/api/itfPart/case/getList',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function getCaseTree (params) {
+  return request({
+    url: '/api/itfPart/case/getTree',
     method: 'POST',
     params: params
   })
@@ -23,7 +39,7 @@ export function getList (params) {
     params: params
   })
 }
-export function addModule (params) {
+export function addCase (params) {
   return request({
     url: '/api/itfPart/case/add',
     method: 'POST',

@@ -36,6 +36,26 @@ func (tcs testCaseService) GetCaseList(qj *qjson.QJson) (pageInfo *model.PageInf
 	}
 }
 
+func (tcs testCaseService) GetCaseTree(qj *qjson.QJson) (caseInfos []map[string]interface{}, err error) {
+	var (
+		ret []*InterfaceTestPartEntity.ItfCaseInfo
+	)
+
+	//if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+	if err = service.DB.Where(map[string]interface{}{"module_id": qj.GetString("moduleId")}).Find(&ret).Error; err != nil {
+		return nil, err
+	}
+	for _, eachRes := range ret {
+		eachMap := map[string]interface{}{
+			"id":    eachRes.CaseId,
+			"value": eachRes.CaseId,
+			"label": eachRes.CaseName,
+		}
+		caseInfos = append(caseInfos, eachMap)
+	}
+	return caseInfos, nil
+}
+
 func (tcs testCaseService) RunCase() error {
 	exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	act := `{"name": "houzheyu", "age": 33}`

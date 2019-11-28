@@ -33,3 +33,14 @@ func GetCaseList(c *gin.Context) {
 		utils.ResponseOkWithMsg(c, "查询成功", res)
 	}
 }
+
+func GetCaseTree(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.TestCaseSrv.GetCaseTree(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "查询成功", res)
+	}
+}

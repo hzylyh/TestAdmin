@@ -10,22 +10,25 @@
             class="sl-suit-tree white-back">
       <el-scrollbar>
         <el-input></el-input>
-        <el-button @click="addMoudel">新增</el-button>
-        <el-tree
-                :props="props"
-                :load="loadNode"
-                :data ='dataList'
-                show-checkbox
-                @check-change="handleCheckChange">
-<span class="custom-tree-node"
-              slot-scope="{ data}">
-{{ data.moduleName }} <el-button type="primary"
-                     size="mini" @click="addChidlDialogVisible(data)">新增</el-button></span>
+        <el-button @click="addModule">新增</el-button>
+        <el-tree :props="props"
+                 :load="loadNode"
+                 :data ='dataList'
+                 lazy
+                 show-checkbox
+                 @node-click="handleNodeClick"
+                 @check-change="handleCheckChange">
+            <span class="custom-tree-node"
+                  slot-scope="{ node, data}">
+                {{ data.label }}
+                <el-button type="text"
+                           v-if="node.level === 1"
+                           size="mini"
+                           @click="addChildDialogVisible(data)">新增</el-button></span>
         </el-tree>
       </el-scrollbar>
     </el-aside>
-    <el-main
-            class="sl-case-list">
+    <el-main class="sl-case-list">
       <el-row class="sl-case-handle">
         <div class="sl-handle-in white-back">
           <el-button type="primary"
@@ -35,88 +38,90 @@
       <el-table :data="tableData"
                 stripe
                 class="sl-case-table white-back">
-        <el-table-column
-                prop="date"
-                label="日期"
-                width="180">
+        <el-table-column prop="caseName"
+                         label="用例名称"
+                         width="180">
         </el-table-column>
-        <el-table-column
-                prop="name"
-                label="姓名"
-                width="180">
+        <el-table-column prop="caseDesc"
+                         label="用例描述">
         </el-table-column>
-        <el-table-column
-                prop="address"
-                label="地址">
+        <el-table-column label="操作"
+                         min-width="120">
+          <template slot-scope="scope">
+            <div style="float:left">
+              <el-button type="primary"
+                         @click.stop="handleChange(scope.row)"
+                         size="mini">修改</el-button>
+              <el-button type="danger"
+                         @click.stop="handleDelete(scope.$index,scope.row)"
+                         size="mini">删除</el-button>
+            </div>
+          </template>
         </el-table-column>
       </el-table>
     </el-main>
   </el-container>
   <!-- 弹出框 -->
-  <el-dialog
-      title="新增模块"
-      :visible.sync="dialogVisible"
-      width="30%"
-      >
+  <el-dialog title="新增模块"
+             :visible.sync="dialogVisible"
+             width="30%">
       <el-form ref="form"
-               :model="caseForm"
+               :model="addModuleForm"
                label-width="80px">
         <el-form-item label="模块名称">
-          <el-input v-model="caseForm.caseName"></el-input>
+          <el-input v-model="addModuleForm.moduleName"></el-input>
         </el-form-item>
          <el-form-item label="模块描述">
-          <el-input v-model="caseForm.caseDesc"></el-input>
+          <el-input v-model="addModuleForm.moduleDesc"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addChildModule">确 定</el-button>
+        <el-button type="primary" @click="addModuleAction">确 定</el-button>
       </span>
     </el-dialog>
-    <!-- 子模块新增 -->
-    <el-dialog
-      title="新增模块"
-      :visible.sync="chidlDialogVisible"
-      width="30%"
-      >
-      <el-form ref="form"
-               :model="addModuleform"
-               label-width="80px">
-        <el-form-item label="模块名称">
-          <el-input v-model="addModuleform.moduleName"></el-input>
-        </el-form-item>
-         <el-form-item label="模块描述">
-          <el-input v-model="addModuleform.moduleDesc"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addChildModule">确 定</el-button>
+  <!-- 用例新增 -->
+  <el-dialog title="用例模块"
+             :visible.sync="childDialogVisible"
+             width="30%">
+    <el-form ref="form"
+             :model="caseForm"
+             label-width="80px">
+      <el-form-item label="用例名称">
+        <el-input v-model="caseForm.caseName"></el-input>
+      </el-form-item>
+      <el-form-item label="用例描述">
+        <el-input v-model="caseForm.caseDesc"></el-input>
+      </el-form-item>
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="childDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCase">确 定</el-button>
       </span>
-    </el-dialog>
+  </el-dialog>
 </div>
 
 </template>
 
 <script>
-import { add, getList, addModule } from 'api/case.js'
+import { addModule, getList, addCase, getCaseList, getCaseTree } from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
     return {
       dialogVisible: false,
-      chidlDialogVisible: false,
+      childDialogVisible: false,
       tableData: [],
       dataList: [],
-      addModuleform: {
+      addModuleForm: {
         moduleName: '',
         moduleDesc: '',
-        projectId: 1
+        projectId: 'd244862701204b0e8467ec5f5a666b32'
       },
       caseForm: {
         'moduleId': '',
-        'caseName': 'test',
-        'caseDesc': 'test'
+        'caseName': '',
+        'caseDesc': ''
       },
       props: {
         label: 'name',
@@ -127,22 +132,22 @@ export default {
   },
   methods: {
     /**
-     * @name: addMoudel
+     * @name: addModule
      * @description: 新增接口模块
      * @param {type}: 默认参数
      * @return {type}: 默认类型
      */
-    addMoudel () {
+    addModule () {
       this.dialogVisible = true
     },
     /**
-     * @name: addModuleAction
+     * @name: addModule
      * @description: 新增模块接口调用
      * @param {type}: 默认参数
      * @return {type}: 默认类型
      */
     addModuleAction () {
-      add(this.addModuleform).then((res) => {
+      addModule(this.addModuleForm).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
           type: 'success'
@@ -150,43 +155,67 @@ export default {
         this.dialogVisible = false
       })
     },
-    addChidlDialogVisible (data) {
-      this.chidlDialogVisible = true
+    addChildDialogVisible (data) {
+      this.childDialogVisible = true
       this.cashData = data
     },
     /**
-     * @name: addChildModule
-     * @description: 添加子模块
+     * @name: addCase
+     * @description: 添加用例
      * @param {type}: 默认参数
      * @return {type}: 默认类型
      */
-    addChildModule (data) {
-      this.caseForm.moduleId = this.cashData.id
-      addModule(this.caseForm).then((res) => {
+    addCase (data) {
+      this.caseForm.moduleId = this.cashData.value
+      addCase(this.caseForm).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
           type: 'success'
         })
-        this.chidlDialogVisible = false
+        this.childDialogVisible = false
       })
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
     },
-    handleNodeClick (data) {
-      console.log(data)
+    handleNodeClick (data, node, last) {
+      console.log('node', node)
+      console.log('last', last)
+      if (node.level === 1) { // 是一级节点，获取用例列表
+        let reqInfo = {
+          moduleId: data.value,
+          pageNum: 1,
+          pageSize: 10
+        }
+        getCaseList(reqInfo).then((res) => {
+          this.tableData = res.list
+        })
+      } else if (node.level === 1) { // 是二级节点，获取用例步骤列表
+        console.log('是二级节点，获取用例步骤列表')
+      }
     },
     loadNode (node, resolve) {
       if (node.level === 0) {
         getList({ projectId: 1 }).then((res) => {
           return resolve(res)
         })
+      } else if (node.level === 1) {
+        let reqInfo = {
+          moduleId: node.data.value,
+          pageNum: 1,
+          pageSize: 10
+        }
+        getCaseTree(reqInfo).then((res) => {
+          return resolve(res)
+        })
+      } else {
+        return resolve([])
       }
-      if (node.level > 3) return resolve([])
+      // if (node.level > 3) return resolve([])
     },
     getModuleList () {
       // this.$router.projectId
-      getList({ projectId: "d244862701204b0e8467ec5f5a666b32" }).then((res) => {
+      getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
         console.log(res)
         this.dataList = res
       })

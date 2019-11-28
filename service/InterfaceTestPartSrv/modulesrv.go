@@ -22,10 +22,20 @@ func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.Projec
 	return nil
 }
 
-func (ms *moduleService) GetModuleList(qj *qjson.QJson) (ret []*InterfaceTestPartEntity.ProjectModule, err error) {
-	if err := service.DB.Where(map[string]interface{}{"project_id": qj.GetString("projectId"), "p_module_id": qj.GetString("pModuleId")}).Order("created_at desc").Find(&ret).Error; err != nil {
+func (ms *moduleService) GetModuleList(qj *qjson.QJson) (res []map[string]interface{}, err error) {
+	var ret []*InterfaceTestPartEntity.ProjectModule
+	if err := service.DB.Where(map[string]interface{}{"project_id": qj.GetString("projectId"), "p_module_id": qj.GetString("pModuleId")}).Find(&ret).Error; err != nil {
 		fmt.Println(err)
 		return nil, err
 	}
-	return ret, nil
+	var treeData []map[string]interface{}
+	for _, eachRes := range ret {
+		eachMap := map[string]interface{}{
+			"id":    eachRes.ModuleId,
+			"value": eachRes.ModuleId,
+			"label": eachRes.ModuleName,
+		}
+		treeData = append(treeData, eachMap)
+	}
+	return treeData, nil
 }
