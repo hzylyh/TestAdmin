@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service"
+	"salotto/utils"
 	"salotto/utils/qjson"
 )
 
@@ -13,6 +14,7 @@ type moduleService struct {
 }
 
 func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.ProjectModule) error {
+	module.ModuleId = utils.GenerateUUID()
 	if err := service.DB.Create(module).Error; err != nil {
 		fmt.Println(err)
 		return err
