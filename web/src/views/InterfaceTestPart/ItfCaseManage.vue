@@ -186,7 +186,7 @@ export default {
     },
     getModuleList () {
       // this.$router.projectId
-      getList({ projectId: 1 }).then((res) => {
+      getList({ projectId: "d244862701204b0e8467ec5f5a666b32" }).then((res) => {
         console.log(res)
         this.dataList = res
       })

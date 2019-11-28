@@ -4,9 +4,9 @@ import "salotto/conf"
 
 type ProjectModule struct {
 	conf.Model
-	ProjectId  int    `json:"projectId"`
+	ProjectId  string `json:"projectId"`
 	ModuleId   string `json:"moduleId"`
-	PModuleId  int    `json:"pModuleId"`
+	PModuleId  string `json:"pModuleId"`
 	ModuleNum  string `json:"moduleNum"`
 	ModuleName string `json:"moduleName"`
 	ModuleDesc string `json:"moduleDesc"`

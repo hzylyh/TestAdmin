@@ -4,14 +4,13 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	"salotto/model"
-	"salotto/service"
 	"salotto/utils/qjson"
 )
 
-func Pagination(ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
-	pageInfo, err = pagination(service.DB, ent, qj)
-	return pageInfo, err
-}
+//func Pagination(ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
+//	pageInfo, err = pagination(service.DB, ent, qj)
+//	return pageInfo, err
+//}
 
 func PaginationWithDB(db *gorm.DB, ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	pageInfo, err = pagination(db, ent, qj)

@@ -16,6 +16,7 @@ type itfTestService struct {
 }
 
 func (its *itfTestService) AddInterface(interfaceInfo *InterfaceTestPartEntity.InterfaceInfo) {
+	interfaceInfo.InterfaceId = utils.GenerateUUID()
 	if err := service.DB.Create(interfaceInfo).Error; err != nil {
 		fmt.Println(err)
 		return
@@ -27,7 +28,7 @@ func (its *itfTestService) GetInterfaceList(qj *qjson.QJson) (pageInfo *model.Pa
 		ret []*InterfaceTestPartEntity.InterfaceInfo
 	)
 
-	if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+	if pageInfo, err = utils.PaginationWithDB(service.DB, &ret, qj); err != nil {
 		return nil, err
 	} else {
 		return pageInfo, nil

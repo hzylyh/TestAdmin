@@ -28,7 +28,8 @@ func (tcs testCaseService) GetCaseList(qj *qjson.QJson) (pageInfo *model.PageInf
 		ret []*InterfaceTestPartEntity.ItfCaseInfo
 	)
 
-	if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+	//if pageInfo, err = utils.Pagination(&ret, qj); err != nil {
+	if pageInfo, err = utils.PaginationWithDB(service.DB.Where(map[string]interface{}{"module_id": qj.GetString("moduleId")}), &ret, qj); err != nil {
 		return nil, err
 	} else {
 		return pageInfo, nil

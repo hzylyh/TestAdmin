@@ -21,7 +21,7 @@ func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.Projec
 }
 
 func (ms *moduleService) GetModuleList(qj *qjson.QJson) (ret []*InterfaceTestPartEntity.ProjectModule, err error) {
-	if err := service.DB.Where(map[string]interface{}{"project_id": qj.GetInt("projectId"), "p_module_id": qj.GetInt("pModuleId")}).Order("created_at desc").Find(&ret).Error; err != nil {
+	if err := service.DB.Where(map[string]interface{}{"project_id": qj.GetString("projectId"), "p_module_id": qj.GetString("pModuleId")}).Order("created_at desc").Find(&ret).Error; err != nil {
 		fmt.Println(err)
 		return nil, err
 	}

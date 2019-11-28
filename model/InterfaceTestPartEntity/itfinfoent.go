@@ -6,7 +6,7 @@ import (
 
 type InterfaceInfo struct {
 	conf.Model
-	ProjectId   int    `json:"projectId"`
+	ProjectId   string `json:"projectId"`
 	InterfaceId string `json:"interfaceId"`
 	Name        string `json:"name"`
 	Url         string `json:"url"`

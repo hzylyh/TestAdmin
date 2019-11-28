@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"salotto/model"
+	"salotto/utils"
 	"salotto/utils/qjson"
 )
 
@@ -12,6 +13,7 @@ type projectService struct {
 }
 
 func (ps *projectService) AddProject(projectInfo *model.ProjectInfo) {
+	projectInfo.ProjectId = utils.GenerateUUID()
 	if err := DB.Create(projectInfo); err != nil {
 		fmt.Println(err)
 		return

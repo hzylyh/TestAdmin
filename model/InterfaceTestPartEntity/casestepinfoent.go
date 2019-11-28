@@ -8,6 +8,6 @@ type ItfCaseStepInfo struct {
 	StepName string `json:"stepName"`
 	ReqData  string `json:"reqData" gorm:"type:text"`
 	ExpRes   string `json:"expRes"  gorm:"type:text"`
-	CaseId   int    `json:"caseId"`
-	ItfId    int    `json:"interfaceId"`
+	CaseId   string `json:"caseId"`
+	ItfId    string `json:"interfaceId"`
 }
