@@ -38,12 +38,12 @@
       <el-table :data="tableData"
                 stripe
                 class="sl-case-table white-back">
-        <el-table-column prop="caseName"
-                         label="用例名称"
+        <el-table-column prop="stepName"
+                         label="步骤名称"
                          width="180">
         </el-table-column>
-        <el-table-column prop="caseDesc"
-                         label="用例描述">
+        <el-table-column prop="reqData"
+                         label="请求数据">
         </el-table-column>
         <el-table-column label="操作"
                          min-width="120">
@@ -104,7 +104,7 @@
 </template>
 
 <script>
-import { addModule, getList, addCase, getCaseList, getCaseTree } from 'api/case.js'
+import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList } from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
@@ -182,15 +182,24 @@ export default {
       console.log('node', node)
       console.log('last', last)
       if (node.level === 1) { // 是一级节点，获取用例列表
+        // let reqInfo = {
+        //   moduleId: data.value,
+        //   pageNum: 1,
+        //   pageSize: 10
+        // }
+        // getCaseList(reqInfo).then((res) => {
+        //   this.tableData = res.list
+        // })
+        console.log('是一级节点，获取用例列表')
+      } else if (node.level === 2) { // 是二级节点，获取用例步骤列表
         let reqInfo = {
-          moduleId: data.value,
+          caseId: data.value,
           pageNum: 1,
           pageSize: 10
         }
-        getCaseList(reqInfo).then((res) => {
+        getCaseStepList(reqInfo).then((res) => {
           this.tableData = res.list
         })
-      } else if (node.level === 1) { // 是二级节点，获取用例步骤列表
         console.log('是二级节点，获取用例步骤列表')
       }
     },

@@ -27,7 +27,7 @@ func (css *caseStepService) GetStepList(qj *qjson.QJson) (pageInfo *model.PageIn
 		ret []*InterfaceTestPartEntity.ItfCaseStepInfo
 	)
 
-	if pageInfo, err = utils.PaginationWithDB(service.DB.Where("step_num = ?", 2), &ret, qj); err != nil {
+	if pageInfo, err = utils.PaginationWithDB(service.DB.Where("case_id = ?", qj.GetString("caseId")), &ret, qj); err != nil {
 		return nil, err
 	} else {
 		return pageInfo, nil
