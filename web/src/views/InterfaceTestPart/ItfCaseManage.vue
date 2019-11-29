@@ -32,7 +32,8 @@
       <el-row class="sl-case-handle">
         <div class="sl-handle-in white-back">
           <el-button type="primary"
-                     size="mini">新增</el-button>
+                     size="mini"
+                     @click="caseStepDialogVisible = true">新增</el-button>
         </div>
       </el-row>
       <el-table :data="tableData"
@@ -99,18 +100,66 @@
         <el-button type="primary" @click="addCase">确 定</el-button>
       </span>
   </el-dialog>
+  <!-- 步骤新增 -->
+  <el-dialog title="用例步骤"
+             :visible.sync="caseStepDialogVisible"
+             width="30%">
+    <el-form ref="form"
+             :model="caseStepForm"
+             label-width="80px">
+      <el-form-item label="步骤名称">
+        <el-input v-model="caseStepForm.stepName"></el-input>
+      </el-form-item>
+      <el-form-item label="接口ID">
+        <el-input v-model="caseStepForm.interfaceId"></el-input>
+      </el-form-item>
+      <el-form-item label="请求体">
+        <el-input v-model="caseStepForm.reqData"></el-input>
+      </el-form-item>
+      <el-form-item label="预期结果">
+        <el-input v-model="caseStepForm.expRes"></el-input>
+      </el-form-item>
+      <el-form-item label="提取变量">
+        <el-switch v-model="caseStepForm.isCollectVar"></el-switch>
+      </el-form-item>
+      <el-row v-if="caseStepForm.isCollectVar">
+        <el-row v-for="(item, index) in caseStepForm.variables"
+                :key="index">
+          <el-col :span="12">
+            <el-form-item label="提取字段">
+              <el-input v-model="item.collectCol"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="字段别名">
+              <el-input v-model="item.collectColAlias"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-row>
+<!--      <el-form-item label="用例描述">-->
+<!--        <el-input v-model="caseStepForm.caseDesc"></el-input>-->
+<!--      </el-form-item>-->
+
+    </el-form>
+    <span slot="footer" class="dialog-footer">
+        <el-button @click="childDialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addCaseStepAction">确 定</el-button>
+      </span>
+  </el-dialog>
 </div>
 
 </template>
 
 <script>
-import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList } from 'api/case.js'
+import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep } from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
     return {
       dialogVisible: false,
       childDialogVisible: false,
+      caseStepDialogVisible: false,
       tableData: [],
       dataList: [],
       addModuleForm: {
@@ -122,6 +171,20 @@ export default {
         'moduleId': '',
         'caseName': '',
         'caseDesc': ''
+      },
+      caseStepForm: {
+        caseId: '3b1adbe45b5842468cea1eb9d8766743',
+        stepName: '', // 步骤名称
+        interfaceId: '', // 接口ID
+        reqData: '', // 请求体
+        expRes: '', // 预期响应
+        isCollectVar: false, // 是否提取变量
+        variables: [
+          {
+            collectCol: '', // 需要提取的字段，jsonpath提取
+            collectColAlias: '' // 提取字段别名
+          }
+        ]
       },
       props: {
         label: 'name',
@@ -227,6 +290,15 @@ export default {
       getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
         console.log(res)
         this.dataList = res
+      })
+    },
+    addCaseStepAction () {
+      addCaseStep(this.caseStepForm).then((res) => {
+        this.$message({
+          message: '恭喜你,新增成功',
+          type: 'success'
+        })
+        this.caseStepDialogVisible = false
       })
     }
   },

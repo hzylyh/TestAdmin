@@ -1,38 +1,44 @@
 package dbUtil
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 	"salotto/model"
 	"salotto/utils/qjson"
 )
 
-type SelfDB struct {
-	*gorm.DB
+type HDB struct {
+	DB       *gorm.DB
+	Ent      interface{}
+	pageNum  float64
+	pageSize float64
+	total    float64
 }
 
-func (db *SelfDB) Paginate(ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
+func NewHDB(db *gorm.DB, ent interface{}) *HDB {
+	return &HDB{
+		DB:  db,
+		Ent: ent,
+	}
+}
+
+func (hdb *HDB) Paginate(qj *qjson.QJson) *gorm.DB {
 	var (
-		//ret      []*InterfaceTestPartEntity.InterfaceInfo
-		pageNum  = qj.GetInt("pageNum")
-		pageSize = qj.GetInt("pageSize")
-		total    float64
+		total float64
 	)
 
-	if err = db.Limit(pageSize).Offset((pageNum - 1) * pageSize).Order("created_at desc").Find(ent).Error; err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
+	hdb.pageNum = qj.GetInt("pageNum")
+	hdb.pageSize = qj.GetInt("pageSize")
+	hdb.DB.Model(hdb.Ent).Count(&total)
 
-	// 获取总条数
-	db.Model(ent).Count(&total)
+	return hdb.DB.Limit(hdb.pageSize).Offset((hdb.pageNum - 1) * hdb.pageSize)
+}
 
+func (hdb *HDB) Pack() (pageInfo *model.PageInfo, err error) {
 	pageInfo = &model.PageInfo{
-		PageNum:  pageNum,
-		PageSize: pageSize,
-		Total:    total,
-		List:     ent,
+		PageNum:  hdb.pageNum,
+		PageSize: hdb.pageSize,
+		Total:    hdb.total,
+		List:     hdb.Ent,
 	}
-
-	return pageInfo, err
+	return pageInfo, nil
 }

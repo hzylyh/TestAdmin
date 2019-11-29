@@ -54,3 +54,11 @@ export function getCaseStepList (params) {
     params: params
   })
 }
+
+export function addCaseStep (params) {
+  return request({
+    url: '/api/itfPart/case/step/add',
+    method: 'POST',
+    params: params
+  })
+}
