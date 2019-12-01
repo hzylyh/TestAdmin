@@ -2,11 +2,14 @@ package InterfaceTestPartSrv
 
 import (
 	"fmt"
+	"github.com/tidwall/gjson"
 	"salotto/model"
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service"
 	"salotto/utils"
+	"salotto/utils/parse"
 	"salotto/utils/qjson"
+	"salotto/utils/requests"
 )
 
 var TestCaseSrv = &testCaseService{}
@@ -56,10 +59,43 @@ func (tcs testCaseService) GetCaseTree(qj *qjson.QJson) (caseInfos []map[string]
 	return caseInfos, nil
 }
 
-func (tcs testCaseService) RunCase() error {
-	exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
-	act := `{"name": "houzheyu", "age": 33}`
-	verify := []string{"name", "age", "list"}
-	utils.MulAssert(exp, act, verify)
+func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
+	var (
+		stepInfos  []InterfaceTestPartEntity.ItfCaseStepInfo
+		properties = make(map[string]string)
+		Ihandler   parse.TokenHandler
+	)
+
+	//var properties = map[string]string{"name": "houzheyu", "age": "2222"}
+	Ihandler = &parse.VariableTokenHandler{
+		Variables: properties,
+	}
+	parser := parse.GenericTokenParser{
+		OpenToken:  "${",
+		CloseToken: "}",
+		Handler:    Ihandler,
+	}
+
+	// 查询对应用例步骤
+	service.DB.Where(map[string]interface{}{"case_id": qj.GetString("caseId")}).Preload("Variables").Find(&stepInfos)
+
+	// 挨个步骤请求
+	for _, stepInfo := range stepInfos {
+		replaceReqData := parser.Parse(stepInfo.ReqData) // 变量替换，将请求种的${xxx}替换
+		fmt.Println(replaceReqData)
+		act := string(requests.Post("http://localhost:8089/api/itfPart/case/test", ""))
+		for _, eachStepVar := range stepInfo.Variables {
+			collectCol := eachStepVar.CollectCol
+			properties[collectCol] = gjson.Get(act, collectCol).String() // 将变量字段作key，存入map
+			properties[collectCol] = gjson.Get(act, collectCol).String() // 将变量别名作key，存入map，后续考虑分两个map
+			fmt.Println(properties)
+		}
+		//verify := []string{"name", "age", "list"}
+		//utils.MulAssert(stepInfo.ExpRes, act, verify)
+	}
+	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
+	//act := `{"name": "houzheyu", "age": 33}`
+	//verify := []string{"name", "age", "list"}
+
 	return nil
 }

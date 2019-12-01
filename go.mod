@@ -3,6 +3,7 @@ module salotto
 go 1.12
 
 require (
+	cloud.google.com/go v0.37.4
 	github.com/cosiner/argv v0.0.1 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/garyburd/redigo v1.6.0

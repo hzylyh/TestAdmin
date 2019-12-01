@@ -1,6 +1,7 @@
 package InterfaceTestPartCtl
 
 import (
+	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service/InterfaceTestPartSrv"
@@ -9,7 +10,11 @@ import (
 )
 
 func RunCase(c *gin.Context) {
-	InterfaceTestPartSrv.TestCaseSrv.RunCase()
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	InterfaceTestPartSrv.TestCaseSrv.RunCase(&reqInfo)
+	utils.ResponseOkWithMsg(c, "执行成功", nil)
 }
 
 func AddCase(c *gin.Context) {
@@ -43,4 +48,10 @@ func GetCaseTree(c *gin.Context) {
 	} else {
 		utils.ResponseOkWithMsg(c, "查询成功", res)
 	}
+}
+
+func TestSth(c *gin.Context) {
+	var resMap map[string]interface{}
+	json.Unmarshal([]byte(`{"name": "houzheyu", "age": 33}`), &resMap)
+	c.JSON(200, resMap)
 }

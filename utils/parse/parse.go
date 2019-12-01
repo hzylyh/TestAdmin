@@ -26,9 +26,9 @@ import (
 //}
 
 type GenericTokenParser struct {
-	openToken  string
-	closeToken string
-	handler    TokenHandler
+	OpenToken  string
+	CloseToken string
+	Handler    TokenHandler
 }
 
 func (gtp *GenericTokenParser) Parse(text string) string {
@@ -47,7 +47,7 @@ func (gtp *GenericTokenParser) Parse(text string) string {
 	}
 
 	// 查找有没有openToken，如果没有，直接返回
-	start = strings.Index(text, gtp.openToken)
+	start = strings.Index(text, gtp.OpenToken)
 	if start == -1 {
 		return text
 	}
@@ -66,15 +66,15 @@ func (gtp *GenericTokenParser) Parse(text string) string {
 			fmt.Printf("准备舍弃")
 		} else {
 			builder.append(src, offset, start-offset) //
-			offset = start + len(gtp.openToken)
-			end = indexOf(text, gtp.closeToken, offset)
+			offset = start + len(gtp.OpenToken)
+			end = indexOf(text, gtp.CloseToken, offset)
 			for end > -1 {
 				if end > offset && src[end-1] == "\\" {
 					fmt.Printf("准备舍弃")
 				} else {
 					//expression.append(src, offset, end - offset)
 					expression = strings.Join(src[offset:offset+(end-offset)], "")
-					offset = end + len(gtp.closeToken)
+					offset = end + len(gtp.CloseToken)
 					break
 				}
 			}
@@ -84,11 +84,15 @@ func (gtp *GenericTokenParser) Parse(text string) string {
 				offset = len(src)
 			} else {
 				//builder.appendString(gtp.handler.handleToken(expression.toString()))
-				builder.appendString(gtp.handler.handleToken(expression))
-				offset = end + len(gtp.closeToken)
+				builder.appendString(gtp.Handler.handleToken(expression))
+				offset = end + len(gtp.CloseToken)
 			}
 		}
-		start = indexOf(text, gtp.openToken, offset)
+		start = indexOf(text, gtp.OpenToken, offset)
+	}
+
+	if offset < len(src) {
+		builder.append(src, offset, len(src)-offset)
 	}
 
 	return builder.toString()
@@ -99,12 +103,12 @@ type TokenHandler interface {
 }
 
 type VariableTokenHandler struct {
-	variables map[string]string
+	Variables map[string]string
 }
 
 func (vth *VariableTokenHandler) handleToken(content string) string {
 	//fmt.Println("拼接后的字符串", content)
-	return vth.variables[content]
+	return vth.Variables[content]
 }
 
 type StringBuilder struct {
