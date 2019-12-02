@@ -66,7 +66,6 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 		Ihandler   parse.TokenHandler
 	)
 
-	//var properties = map[string]string{"name": "houzheyu", "age": "2222"}
 	Ihandler = &parse.VariableTokenHandler{
 		Variables: properties,
 	}
@@ -77,18 +76,21 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	}
 
 	// 查询对应用例步骤
-	service.DB.Where(map[string]interface{}{"case_id": qj.GetString("caseId")}).Preload("Variables").Find(&stepInfos)
-
+	service.DB.Where(map[string]interface{}{"case_id": qj.GetString("caseId")}).Order("step_num").Preload("Variables").Find(&stepInfos)
+	myRequests := requests.NewRequests()
 	// 挨个步骤请求
 	for _, stepInfo := range stepInfos {
+		var (
+			itfInfo InterfaceTestPartEntity.InterfaceInfo
+		)
 		replaceReqData := parser.Parse(stepInfo.ReqData) // 变量替换，将请求种的${xxx}替换
-		fmt.Println(replaceReqData)
-		act := string(requests.Post("http://localhost:8089/api/itfPart/case/test", ""))
+		service.DB.Where("interface_id = ?", stepInfo.ItfId).First(&itfInfo)
+		act := string(myRequests.Post(itfInfo.Url, replaceReqData))
 		for _, eachStepVar := range stepInfo.Variables {
 			collectCol := eachStepVar.CollectCol
-			properties[collectCol] = gjson.Get(act, collectCol).String() // 将变量字段作key，存入map
-			properties[collectCol] = gjson.Get(act, collectCol).String() // 将变量别名作key，存入map，后续考虑分两个map
-			fmt.Println(properties)
+			collectColAlias := eachStepVar.CollectColAlias
+			properties[collectCol] = gjson.Get(act, collectCol).String()      // 将变量字段作key，存入map
+			properties[collectColAlias] = gjson.Get(act, collectCol).String() // 将变量别名作key，存入map，后续考虑分两个map
 		}
 		//verify := []string{"name", "age", "list"}
 		//utils.MulAssert(stepInfo.ExpRes, act, verify)
