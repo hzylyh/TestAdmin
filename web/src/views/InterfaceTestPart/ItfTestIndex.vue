@@ -43,7 +43,7 @@
       </el-scrollbar>
     </el-aside>
     <el-main :span="20"
-             style="height: 100%;padding:20px">
+             style="height: 100%;padding:15px">
       <router-view />
     </el-main>
   </el-container>

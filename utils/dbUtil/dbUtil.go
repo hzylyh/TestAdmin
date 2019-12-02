@@ -22,13 +22,9 @@ func NewHDB(db *gorm.DB, ent interface{}) *HDB {
 }
 
 func (hdb *HDB) Paginate(qj *qjson.QJson) *gorm.DB {
-	var (
-		total float64
-	)
-
 	hdb.pageNum = qj.GetInt("pageNum")
 	hdb.pageSize = qj.GetInt("pageSize")
-	hdb.DB.Model(hdb.Ent).Count(&total)
+	hdb.DB.Model(hdb.Ent).Count(&hdb.total)
 
 	return hdb.DB.Limit(hdb.pageSize).Offset((hdb.pageNum - 1) * hdb.pageSize)
 }

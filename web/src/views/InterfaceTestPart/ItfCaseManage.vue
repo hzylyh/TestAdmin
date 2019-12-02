@@ -5,11 +5,11 @@
  -->
 <template>
 <div class="sl-case-main">
- <el-container >
+ <el-container style="height: 100%">
     <el-aside
             class="sl-suit-tree white-back">
-      <el-scrollbar>
-        <el-input></el-input>
+      <el-scrollbar style="height: 100%">
+<!--        <el-input></el-input>-->
         <el-button @click="addModule"
                    size="mini">新增</el-button>
         <el-button @click="runCase"
@@ -39,30 +39,45 @@
                      @click="caseStepDialogVisible = true">新增</el-button>
         </div>
       </el-row>
-      <el-table :data="tableData"
-                stripe
-                class="sl-case-table white-back">
-        <el-table-column prop="stepName"
-                         label="步骤名称"
-                         width="180">
-        </el-table-column>
-        <el-table-column prop="reqData"
-                         label="请求数据">
-        </el-table-column>
-        <el-table-column label="操作"
-                         min-width="120">
-          <template slot-scope="scope">
-            <div style="float:left">
-              <el-button type="primary"
-                         @click.stop="handleChange(scope.row)"
-                         size="mini">修改</el-button>
-              <el-button type="danger"
-                         @click.stop="handleDelete(scope.$index,scope.row)"
-                         size="mini">删除</el-button>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-row class="sl-case-table white-back">
+        <el-table :data="tableData"
+                  stripe
+                  class="white-back">
+          <el-table-column prop="stepName"
+                           label="步骤名称"
+                           width="180">
+          </el-table-column>
+          <el-table-column prop="reqData"
+                           show-overflow-tooltip
+                           label="请求数据">
+          </el-table-column>
+          <el-table-column label="操作"
+                           min-width="120">
+            <template slot-scope="scope">
+              <div style="float:left">
+                <el-button type="primary"
+                           @click.stop="handleChange(scope.row)"
+                           size="mini">修改</el-button>
+                <el-button type="danger"
+                           @click.stop="handleDelete(scope.$index,scope.row)"
+                           size="mini">删除</el-button>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div style="position: absolute; bottom: 5px; right: 5px">
+          <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="currentPage4"
+                  background
+                  :page-size="pageSize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="total">
+          </el-pagination>
+        </div>
+      </el-row>
+
     </el-main>
   </el-container>
   <!-- 弹出框 -->
@@ -165,6 +180,9 @@ export default {
       caseStepDialogVisible: false,
       tableData: [],
       dataList: [],
+      pageNum: 1,
+      pageSize: 10,
+      total: 0,
       addModuleForm: {
         moduleName: '',
         moduleDesc: '',
@@ -276,6 +294,9 @@ export default {
         }
         getCaseStepList(reqInfo).then((res) => {
           this.tableData = res.list
+          this.pageNum = res.pageNum
+          this.pageSize = res.pageSize
+          this.total = res.total
         })
         console.log('是二级节点，获取用例步骤列表')
       }
@@ -325,14 +346,14 @@ export default {
 <style lang="scss" scoped>
 .sl-case-main {
   height: 100%;
-  padding: 5px;
+  /*padding: 5px;*/
   /*background: rgb(240, 242, 245);*/
   .sl-suit-tree {
     height: 100%;
   }
   .sl-case-list {
     height: 100%;
-    padding-left: 5px;
+    padding: 0px 5px 0px 5px;
     .sl-case-handle {
       text-align: right;
       padding-bottom: 8px;
