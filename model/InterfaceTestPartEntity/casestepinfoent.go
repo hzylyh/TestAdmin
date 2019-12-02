@@ -9,6 +9,7 @@ type ItfCaseStepInfo struct {
 	StepId   string `json:"stepId"`
 	StepNum  int    `json:"stepNum"`
 	StepName string `json:"stepName"`
+	StepDesc string `json:"stepDesc"`
 	ReqData  string `json:"reqData" gorm:"type:text"`
 	ExpRes   string `json:"expRes"  gorm:"type:text"`
 	//Variables string `json:"variables" gorm:"type:text"`

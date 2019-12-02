@@ -43,18 +43,26 @@
         <el-table :data="tableData"
                   stripe
                   class="white-back">
+          <el-table-column type="index"
+                           align="center"
+                           label="序号">
+          </el-table-column>
           <el-table-column prop="stepName"
-                           label="步骤名称"
-                           width="180">
+                           label="步骤名称">
           </el-table-column>
-          <el-table-column prop="reqData"
+          <el-table-column prop="stepDesc"
                            show-overflow-tooltip
-                           label="请求数据">
+                           label="步骤描述">
           </el-table-column>
-          <el-table-column label="操作"
-                           min-width="120">
+          <el-table-column label="操作">
             <template slot-scope="scope">
               <div style="float:left">
+                <el-button type="primary"
+                           @click.stop="handleChange(scope.row)"
+                           size="mini">运行</el-button>
+                <el-button type="primary"
+                           @click.stop="handleChange(scope.row)"
+                           size="mini">复制</el-button>
                 <el-button type="primary"
                            @click.stop="handleChange(scope.row)"
                            size="mini">修改</el-button>
