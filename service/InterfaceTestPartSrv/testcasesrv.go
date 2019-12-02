@@ -7,6 +7,7 @@ import (
 	"salotto/model/InterfaceTestPartEntity"
 	"salotto/service"
 	"salotto/utils"
+	"salotto/utils/hassert"
 	"salotto/utils/parse"
 	"salotto/utils/qjson"
 	"salotto/utils/requests"
@@ -92,8 +93,8 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 			properties[collectCol] = gjson.Get(act, collectCol).String()      // 将变量字段作key，存入map
 			properties[collectColAlias] = gjson.Get(act, collectCol).String() // 将变量别名作key，存入map，后续考虑分两个map
 		}
-		//verify := []string{"name", "age", "list"}
-		//utils.MulAssert(stepInfo.ExpRes, act, verify)
+		verify := []string{"resultEntity.textToSpeechContent", "resultEntity.timeoutInstructionList"}
+		hassert.MulAssert(stepInfo.ExpRes, act, verify)
 	}
 	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	//act := `{"name": "houzheyu", "age": 33}`

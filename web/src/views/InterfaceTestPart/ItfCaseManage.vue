@@ -10,7 +10,10 @@
             class="sl-suit-tree white-back">
       <el-scrollbar>
         <el-input></el-input>
-        <el-button @click="addModule">新增</el-button>
+        <el-button @click="addModule"
+                   size="mini">新增</el-button>
+        <el-button @click="runCase"
+                   size="mini">运行</el-button>
         <el-tree :props="props"
                  :load="loadNode"
                  :data ='dataList'
@@ -152,7 +155,7 @@
 </template>
 
 <script>
-import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep } from 'api/case.js'
+import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep, runCase } from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
@@ -236,6 +239,17 @@ export default {
           type: 'success'
         })
         this.childDialogVisible = false
+      })
+    },
+    runCase () {
+      let reqInfo = {
+        'caseId': '3b1adbe45b5842468cea1eb9d8766743'
+      }
+      runCase(reqInfo).then(res => {
+        this.$message({
+          message: '运行成功',
+          type: 'success'
+        })
       })
     },
     handleCheckChange (data, checked, indeterminate) {

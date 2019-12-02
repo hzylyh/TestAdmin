@@ -62,3 +62,11 @@ export function addCaseStep (params) {
     params: params
   })
 }
+
+export function runCase (params) {
+  return request({
+    url: '/api/itfPart/case/run',
+    method: 'POST',
+    params: params
+  })
+}
