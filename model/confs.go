@@ -9,4 +9,5 @@ var Models = []interface{}{
 	&InterfaceTestPartEntity.ItfCaseStepInfo{},
 	&InterfaceTestPartEntity.ProjectModule{},
 	&InterfaceTestPartEntity.CaseStepVarInfo{},
+	&InterfaceTestPartEntity.AssertInfo{},
 }

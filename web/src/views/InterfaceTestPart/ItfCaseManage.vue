@@ -184,11 +184,28 @@
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="接口断言">
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="断言">
-                  <el-input v-model="caseStepForm.expRes"></el-input>
-                </el-form-item>
+            <el-row :gutter="10">
+              <el-col :span="10">
+                比对字段
+              </el-col>
+              <el-col :span="4">
+                关系
+              </el-col>
+              <el-col :span="10">
+                期望
+              </el-col>
+            </el-row>
+            <el-row v-for="(item, index) in caseStepForm.assertInfos"
+                    :gutter="10"
+                    :key="index">
+              <el-col :span="10">
+                <el-input v-model="item.assertCol"></el-input>
+              </el-col>
+              <el-col :span="4">
+                <el-input v-model="item.method"></el-input>
+              </el-col>
+              <el-col :span="10">
+                <el-input v-model="item.expValue"></el-input>
               </el-col>
             </el-row>
           </el-tab-pane>
@@ -266,6 +283,13 @@ export default {
         interfaceId: '', // 接口ID
         reqData: '', // 请求体
         expRes: '', // 预期响应
+        assertInfos: [
+          {
+            assertCol: '',
+            method: '',
+            expValue: ''
+          }
+        ], // 断言
         isCollectVar: false, // 是否提取变量
         variables: [
           {
