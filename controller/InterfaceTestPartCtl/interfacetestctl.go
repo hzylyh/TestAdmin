@@ -33,3 +33,14 @@ func ImportSwagger(c *gin.Context) {
 	InterfaceTestPartSrv.ItfTestSrv.ImportSwagger(&reqInfo)
 	utils.ResponseOkWithMsg(c, "导入成功", nil)
 }
+
+func GetInterfaceSelectOptions(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.ItfTestSrv.GetInterfaceSelectOptions(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOk(c, res)
+	}
+}

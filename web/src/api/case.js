@@ -70,3 +70,11 @@ export function runCase (params) {
     params: params
   })
 }
+
+export function getItfSelectOptions (params) {
+  return request({
+    url: '/api/itfPart/interface/getSelectOptions',
+    method: 'POST',
+    params: params
+  })
+}

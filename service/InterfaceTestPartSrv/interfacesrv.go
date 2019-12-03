@@ -59,3 +59,12 @@ func (its *itfTestService) ImportSwagger(qj *qjson.QJson) {
 		}
 	}
 }
+
+func (its *itfTestService) GetInterfaceSelectOptions(json *qjson.QJson) (ret []*InterfaceTestPartEntity.InterfaceInfo, err error) {
+	json.GetString("projectId")
+	if service.DB.Find(&ret); err != nil {
+		return nil, err
+	} else {
+		return ret, nil
+	}
+}

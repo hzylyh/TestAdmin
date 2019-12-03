@@ -54,20 +54,25 @@
                            show-overflow-tooltip
                            label="步骤描述">
           </el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作"
+                           width="350px">
             <template slot-scope="scope">
               <div style="float:left">
                 <el-button type="primary"
                            @click.stop="handleChange(scope.row)"
+                           icon="el-icon-s-promotion"
                            size="mini">运行</el-button>
                 <el-button type="primary"
                            @click.stop="handleChange(scope.row)"
+                           icon="el-icon-document-copy"
                            size="mini">复制</el-button>
                 <el-button type="primary"
                            @click.stop="handleChange(scope.row)"
+                           icon="el-icon-edit"
                            size="mini">修改</el-button>
                 <el-button type="danger"
                            @click.stop="handleDelete(scope.$index,scope.row)"
+                           icon="el-icon-delete"
                            size="mini">删除</el-button>
               </div>
             </template>
@@ -129,39 +134,89 @@
   <!-- 步骤新增 -->
   <el-dialog title="用例步骤"
              :visible.sync="caseStepDialogVisible"
-             width="30%">
+             width="40%">
     <el-form ref="form"
              :model="caseStepForm"
              label-width="80px">
-      <el-form-item label="步骤名称">
-        <el-input v-model="caseStepForm.stepName"></el-input>
-      </el-form-item>
-      <el-form-item label="接口ID">
-        <el-input v-model="caseStepForm.interfaceId"></el-input>
-      </el-form-item>
-      <el-form-item label="请求体">
-        <el-input v-model="caseStepForm.reqData"></el-input>
-      </el-form-item>
-      <el-form-item label="预期结果">
-        <el-input v-model="caseStepForm.expRes"></el-input>
-      </el-form-item>
-      <el-form-item label="提取变量">
-        <el-switch v-model="caseStepForm.isCollectVar"></el-switch>
-      </el-form-item>
-      <el-row v-if="caseStepForm.isCollectVar">
-        <el-row v-for="(item, index) in caseStepForm.variables"
-                :key="index">
-          <el-col :span="12">
-            <el-form-item label="提取字段">
-              <el-input v-model="item.collectCol"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="字段别名">
-              <el-input v-model="item.collectColAlias"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      <el-row>
+        <el-tabs tab-position="top" style="height: 100%;">
+          <el-tab-pane label="基本信息">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="步骤名称">
+                  <el-input v-model="caseStepForm.stepName"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="18">
+                <el-form-item label="步骤描述">
+                  <el-input v-model="caseStepForm.stepName"
+                            type="textarea"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="请求信息">
+            <el-row>
+
+              <el-col :span="12">
+                <el-form-item label="接口">
+                  <el-select v-model="caseStepForm.interfaceId"
+                             @change="changeInterface"
+                             placeholder="请选择">
+                    <el-option
+                            v-for="item in interfaceOptions"
+                            :key="item.value"
+                            :label="item.name"
+                            :value="item.interfaceId">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="请求体">
+                  <el-input v-model="caseStepForm.reqData"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="接口断言">
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="断言">
+                  <el-input v-model="caseStepForm.expRes"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-tab-pane>
+          <el-tab-pane label="变量提取">
+            <el-row>
+              <el-col :span="6">
+                <el-form-item label="提取变量">
+                  <el-switch v-model="caseStepForm.isCollectVar"></el-switch>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row v-if="caseStepForm.isCollectVar">
+              <el-row v-for="(item, index) in caseStepForm.variables"
+                      :key="index">
+                <el-col :span="12">
+                  <el-form-item label="提取字段">
+                    <el-input v-model="item.collectCol"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="字段别名">
+                    <el-input v-model="item.collectColAlias"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-row>
+          </el-tab-pane>
+        </el-tabs>
       </el-row>
 <!--      <el-form-item label="用例描述">-->
 <!--        <el-input v-model="caseStepForm.caseDesc"></el-input>-->
@@ -178,7 +233,7 @@
 </template>
 
 <script>
-import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep, runCase } from 'api/case.js'
+import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep, runCase, getItfSelectOptions } from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
@@ -191,6 +246,9 @@ export default {
       pageNum: 1,
       pageSize: 10,
       total: 0,
+      interfaceOptions: [],
+      // interfaceUrl: '',
+      // interfaceType: '',
       addModuleForm: {
         moduleName: '',
         moduleDesc: '',
@@ -204,6 +262,7 @@ export default {
       caseStepForm: {
         caseId: '3b1adbe45b5842468cea1eb9d8766743',
         stepName: '', // 步骤名称
+        stepDesc: '', // 步骤描述
         interfaceId: '', // 接口ID
         reqData: '', // 请求体
         expRes: '', // 预期响应
@@ -221,6 +280,12 @@ export default {
       },
       count: 1
     }
+  },
+  created () {
+    this.getModuleList()
+  },
+  mounted () {
+    this.getItfSelectOptions()
   },
   methods: {
     /**
@@ -343,10 +408,12 @@ export default {
         })
         this.caseStepDialogVisible = false
       })
+    },
+    getItfSelectOptions () {
+      getItfSelectOptions().then(res => {
+        this.interfaceOptions = res
+      })
     }
-  },
-  created () {
-    this.getModuleList()
   }
 }
 </script>
