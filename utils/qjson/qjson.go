@@ -11,7 +11,7 @@ func (qj *QJson) GetString(key string) string {
 	return ""
 }
 
-func (qj *QJson) GetInt(key string) float64 {
+func (qj *QJson) GetNum(key string) float64 {
 	if res, ok := qj.ReqInfo[key].(float64); ok {
 		return res
 	}

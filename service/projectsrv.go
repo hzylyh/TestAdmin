@@ -12,7 +12,7 @@ var ProjectSrv = &projectService{}
 type projectService struct {
 }
 
-func (ps *projectService) AddProject(projectInfo *model.ProjectInfo) {
+func (ps *projectService) AddProject(projectInfo *model.TProjectInfo) {
 	projectInfo.ProjectId = utils.GenerateUUID()
 	if err := DB.Create(projectInfo); err != nil {
 		fmt.Println(err)
@@ -21,8 +21,8 @@ func (ps *projectService) AddProject(projectInfo *model.ProjectInfo) {
 
 }
 
-func (ps *projectService) GetProjectList(qj *qjson.QJson) []*model.ProjectInfo {
-	var ret []*model.ProjectInfo
+func (ps *projectService) GetProjectList(qj *qjson.QJson) []*model.TProjectInfo {
+	var ret []*model.TProjectInfo
 	if err := DB.Order("created_at desc").Find(&ret).Error; err != nil {
 		fmt.Println(err)
 		return nil

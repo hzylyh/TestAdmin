@@ -6,6 +6,17 @@ import (
 	"reflect"
 )
 
+type HAssert struct {
+}
+
+func (ha *HAssert) AssertEqual(exp, act string) {
+
+}
+
+//func (ha *HAssert)  {
+//
+//}
+
 func MulAssert(exp, act string, verifyCols []string) {
 	defer recoverAssert()
 	for _, verifyCol := range verifyCols {

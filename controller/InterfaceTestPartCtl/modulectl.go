@@ -9,7 +9,7 @@ import (
 )
 
 func AddProjectModule(c *gin.Context) {
-	var projectModuleInfo InterfaceTestPartEntity.ProjectModule
+	var projectModuleInfo InterfaceTestPartEntity.TProjectModule
 	c.ShouldBind(&projectModuleInfo)
 	if err := InterfaceTestPartSrv.ModuleSrv.AddProjectModule(&projectModuleInfo); err != nil {
 		utils.ResponseOkWithMsg(c, "新增失败", err.Error())

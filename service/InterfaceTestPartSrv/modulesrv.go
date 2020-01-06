@@ -13,7 +13,7 @@ var ModuleSrv = &moduleService{}
 type moduleService struct {
 }
 
-func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.ProjectModule) error {
+func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.TProjectModule) error {
 	module.ModuleId = utils.GenerateUUID()
 	if err := service.DB.Create(module).Error; err != nil {
 		fmt.Println(err)
@@ -23,7 +23,7 @@ func (ms *moduleService) AddProjectModule(module *InterfaceTestPartEntity.Projec
 }
 
 func (ms *moduleService) GetModuleList(qj *qjson.QJson) (res []map[string]interface{}, err error) {
-	var ret []*InterfaceTestPartEntity.ProjectModule
+	var ret []*InterfaceTestPartEntity.TProjectModule
 	if err := service.DB.Where(map[string]interface{}{"project_id": qj.GetString("projectId"), "p_module_id": qj.GetString("pModuleId")}).Find(&ret).Error; err != nil {
 		fmt.Println(err)
 		return nil, err

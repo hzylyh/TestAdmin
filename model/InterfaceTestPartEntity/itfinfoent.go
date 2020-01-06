@@ -4,7 +4,7 @@ import (
 	"salotto/conf"
 )
 
-type InterfaceInfo struct {
+type TInterfaceInfo struct {
 	conf.Model
 	ProjectId   string `json:"projectId"`
 	InterfaceId string `json:"interfaceId"`

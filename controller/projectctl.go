@@ -9,7 +9,7 @@ import (
 )
 
 func AddProject(c *gin.Context) {
-	var projectInfo model.ProjectInfo
+	var projectInfo model.TProjectInfo
 	c.ShouldBind(&projectInfo)
 	service.ProjectSrv.AddProject(&projectInfo)
 	utils.ResponseOkWithMsg(c, "新增成功", nil)

@@ -9,7 +9,7 @@ import (
 )
 
 func AddInterface(c *gin.Context) {
-	var interfaceInfo InterfaceTestPartEntity.InterfaceInfo
+	var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
 	c.ShouldBind(&interfaceInfo)
 	InterfaceTestPartSrv.ItfTestSrv.AddInterface(&interfaceInfo)
 	utils.ResponseOkWithMsg(c, "新增成功", nil)

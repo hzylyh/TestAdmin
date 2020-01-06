@@ -63,6 +63,30 @@ export function addCaseStep (params) {
   })
 }
 
+export function getCaseStepDetail (params) {
+  return request({
+    url: '/api/itfPart/case/step/get',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function editCaseStep (params) {
+  return request({
+    url: '/api/itfPart/case/step/edit',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function delCaseStep (params) {
+  return request({
+    url: '/api/itfPart/case/step/delete',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function runCase (params) {
   return request({
     url: '/api/itfPart/case/run',

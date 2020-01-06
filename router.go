@@ -74,6 +74,9 @@ func MapRoutes() *gin.Engine {
 	// 用例步骤
 	itfCaseStepApi = itfTestCaseApi.Group("/step")
 	itfCaseStepApi.POST("/add", InterfaceTestPartCtl.AddCaseStep)
+	itfCaseStepApi.POST("/get", InterfaceTestPartCtl.GetCaseStepDetail)
+	itfCaseStepApi.POST("/edit", InterfaceTestPartCtl.EditCaseStep)
+	itfCaseStepApi.POST("/delete", InterfaceTestPartCtl.DelCaseStep)
 	itfCaseStepApi.POST("/getList", InterfaceTestPartCtl.GetStepList)
 
 	// 模块管理部分

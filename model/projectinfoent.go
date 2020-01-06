@@ -2,7 +2,7 @@ package model
 
 import "salotto/conf"
 
-type ProjectInfo struct {
+type TProjectInfo struct {
 	conf.Model
 	ProjectId   string `json:"projectId"`
 	ProjectName string `json:"projectName"`

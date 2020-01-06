@@ -2,7 +2,7 @@ package InterfaceTestPartEntity
 
 import "salotto/conf"
 
-type ProjectModule struct {
+type TProjectModule struct {
 	conf.Model
 	ProjectId  string `json:"projectId"`
 	ModuleId   string `json:"moduleId"`

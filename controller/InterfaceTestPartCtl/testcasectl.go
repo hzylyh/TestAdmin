@@ -18,7 +18,7 @@ func RunCase(c *gin.Context) {
 }
 
 func AddCase(c *gin.Context) {
-	var itfTestCaseInfo InterfaceTestPartEntity.ItfCaseInfo
+	var itfTestCaseInfo InterfaceTestPartEntity.TItfCaseInfo
 	c.ShouldBind(&itfTestCaseInfo)
 	if err := InterfaceTestPartSrv.TestCaseSrv.AddCase(&itfTestCaseInfo); err != nil {
 		utils.ResponseOkWithMsg(c, "新增失败", nil)

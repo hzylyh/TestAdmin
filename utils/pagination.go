@@ -20,8 +20,8 @@ func PaginationWithDB(db *gorm.DB, ent interface{}, qj *qjson.QJson) (pageInfo *
 func pagination(db *gorm.DB, ent interface{}, qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
 		//ret      []*InterfaceTestPartEntity.InterfaceInfo
-		pageNum  = qj.GetInt("pageNum")
-		pageSize = qj.GetInt("pageSize")
+		pageNum  = qj.GetNum("pageNum")
+		pageSize = qj.GetNum("pageSize")
 		total    float64
 	)
 

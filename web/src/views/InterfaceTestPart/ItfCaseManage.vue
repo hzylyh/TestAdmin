@@ -36,7 +36,7 @@
         <div class="sl-handle-in white-back">
           <el-button type="primary"
                      size="mini"
-                     @click="caseStepDialogVisible = true">新增</el-button>
+                     @click="addCaseStep">新增</el-button>
         </div>
       </el-row>
       <el-row class="sl-case-table white-back">
@@ -59,19 +59,19 @@
             <template slot-scope="scope">
               <div style="float:left">
                 <el-button type="primary"
-                           @click.stop="handleChange(scope.row)"
+                           @click.stop="handleChange(scope.row.caseId)"
                            icon="el-icon-s-promotion"
                            size="mini">运行</el-button>
                 <el-button type="primary"
-                           @click.stop="handleChange(scope.row)"
+                           @click.stop="handleChange(scope.row.caseId)"
                            icon="el-icon-document-copy"
                            size="mini">复制</el-button>
                 <el-button type="primary"
-                           @click.stop="handleChange(scope.row)"
+                           @click.stop="editCaseStep(scope.row)"
                            icon="el-icon-edit"
                            size="mini">修改</el-button>
                 <el-button type="danger"
-                           @click.stop="handleDelete(scope.$index,scope.row)"
+                           @click.stop="handleCaseStepDel(scope.row)"
                            icon="el-icon-delete"
                            size="mini">删除</el-button>
               </div>
@@ -242,7 +242,8 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
         <el-button @click="childDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addCaseStepAction">确 定</el-button>
+        <el-button v-if="actionFlag === 'add'" type="primary" @click="addCaseStepAction">确 定</el-button>
+        <el-button v-if="actionFlag === 'edit'" type="primary" @click="editCaseStepAction">确 定</el-button>
       </span>
   </el-dialog>
 </div>
@@ -250,11 +251,26 @@
 </template>
 
 <script>
-import { addModule, getList, addCase, getCaseList, getCaseTree, getCaseStepList, addCaseStep, runCase, getItfSelectOptions } from 'api/case.js'
+import {
+  addModule,
+  getList,
+  addCase,
+  getCaseList,
+  getCaseTree,
+  getCaseStepList,
+  addCaseStep,
+  runCase,
+  getItfSelectOptions,
+  editCaseStep,
+  delCaseStep,
+  getCaseStepDetail
+} from 'api/case.js'
 export default {
   name: 'ItfCaseManage',
   data () {
     return {
+      caseId: '',
+      actionFlag: '',
       dialogVisible: false,
       childDialogVisible: false,
       caseStepDialogVisible: false,
@@ -277,7 +293,8 @@ export default {
         'caseDesc': ''
       },
       caseStepForm: {
-        caseId: '3b1adbe45b5842468cea1eb9d8766743',
+        caseId: '',
+        stepId: '',
         stepName: '', // 步骤名称
         stepDesc: '', // 步骤描述
         interfaceId: '', // 接口ID
@@ -312,6 +329,35 @@ export default {
     this.getItfSelectOptions()
   },
   methods: {
+    editCaseStep (row) {
+      let reqInfo = {
+        stepId: row.stepId
+      }
+      getCaseStepDetail(reqInfo).then(response => {
+        this.actionFlag = 'edit'
+        this.caseStepDialogVisible = true
+        this.caseStepForm = response
+      })
+    },
+    editCaseStepAction () {
+      editCaseStep(this.caseStepForm).then(response => {
+        this.caseStepDialogVisible = false
+        this.getCaseStepList(this.caseId)
+      })
+    },
+    getCaseStepList (caseId) {
+      let reqInfo = {
+        caseId: caseId,
+        pageNum: 1,
+        pageSize: 10
+      }
+      getCaseStepList(reqInfo).then((res) => {
+        this.tableData = res.list
+        this.pageNum = res.pageNum
+        this.pageSize = res.pageSize
+        this.total = res.total
+      })
+    },
     /**
      * @name: addModule
      * @description: 新增接口模块
@@ -371,8 +417,7 @@ export default {
       console.log(data, checked, indeterminate)
     },
     handleNodeClick (data, node, last) {
-      console.log('node', node)
-      console.log('last', last)
+      console.log(data.value)
       if (node.level === 1) { // 是一级节点，获取用例列表
         // let reqInfo = {
         //   moduleId: data.value,
@@ -384,17 +429,8 @@ export default {
         // })
         console.log('是一级节点，获取用例列表')
       } else if (node.level === 2) { // 是二级节点，获取用例步骤列表
-        let reqInfo = {
-          caseId: data.value,
-          pageNum: 1,
-          pageSize: 10
-        }
-        getCaseStepList(reqInfo).then((res) => {
-          this.tableData = res.list
-          this.pageNum = res.pageNum
-          this.pageSize = res.pageSize
-          this.total = res.total
-        })
+        this.caseId = data.value
+        this.getCaseStepList(data.value)
         console.log('是二级节点，获取用例步骤列表')
       }
     },
@@ -424,18 +460,52 @@ export default {
         this.dataList = res
       })
     },
+    addCaseStep () {
+      this.caseStepDialogVisible = true
+      this.actionFlag = 'add'
+    },
     addCaseStepAction () {
+      this.caseStepForm.caseId = this.caseId
       addCaseStep(this.caseStepForm).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
           type: 'success'
         })
         this.caseStepDialogVisible = false
+        this.getCaseStepList(this.caseId)
       })
     },
     getItfSelectOptions () {
       getItfSelectOptions().then(res => {
         this.interfaceOptions = res
+      })
+    },
+    /**
+     * @name: handleStepChange
+     * @description: 修改用例步骤
+     * @param {type}: 用例步骤ID
+     * @return {type}: 默认类型
+     */
+    handleCaseStepChange (caseStepInfo) {
+      let reqInfo = {
+        'caseStepId': caseStepInfo.stepId
+      }
+      editCaseStep(reqInfo).then(response => {
+        this.getCaseStepList(caseStepInfo.caseId)
+      })
+    },
+    /**
+     * @name: handleStepChange
+     * @description: 删除用例步骤
+     * @param {type}: 用例步骤ID
+     * @return {type}: 默认类型
+     */
+    handleCaseStepDel (caseStepInfo) {
+      let reqInfo = {
+        'caseStepId': caseStepInfo.stepId
+      }
+      delCaseStep(reqInfo).then(response => {
+        this.getCaseStepList(caseStepInfo.caseId)
       })
     }
   }

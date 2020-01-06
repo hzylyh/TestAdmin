@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"salotto/model"
 	"salotto/model/InterfaceTestPartEntity"
+	"salotto/model/vo"
 	"salotto/service"
 	"salotto/utils"
 	"salotto/utils/dbUtil"
@@ -15,10 +16,132 @@ var CaseStepSrv = &caseStepService{}
 type caseStepService struct {
 }
 
-func (css *caseStepService) AddCaseStep(caseStepInfo *InterfaceTestPartEntity.ItfCaseStepInfo) error {
-	caseStepInfo.StepId = utils.GenerateUUID()
-	if err := service.DB.Create(caseStepInfo).Error; err != nil {
+func (css *caseStepService) AddCaseStep(caseStepInfo *vo.CaseStepInfoVO) error {
+	stepId := utils.GenerateUUID()
+	tx := service.DB.Begin()
+	newStepInfo := &InterfaceTestPartEntity.TItfCaseStepInfo{
+		CaseId:   caseStepInfo.CaseId,
+		ItfId:    caseStepInfo.ItfId,
+		StepId:   stepId,
+		StepNum:  caseStepInfo.StepNum,
+		StepName: caseStepInfo.StepName,
+		StepDesc: caseStepInfo.StepDesc,
+		ReqData:  caseStepInfo.ReqData,
+		ExpRes:   caseStepInfo.ExpRes,
+	}
+	//newAssertInfo := &InterfaceTestPartEntity.TAssertInfo{
+	//	StepId:    stepId,
+	//	AssertCol: caseStepInfo.AssertCol,
+	//	Method:    caseStepInfo.Method,
+	//	ExpValue:  caseStepInfo.ExpValue,
+	//}
+	newAssertInfos := caseStepInfo.AssertInfos
+	newVarInfos := caseStepInfo.Variables
+	//newVarInfo := &InterfaceTestPartEntity.TCaseStepVarInfo{
+	//	StepId:          stepId,
+	//	CollectCol:      caseStepInfo.CollectCol,
+	//	CollectColAlias: caseStepInfo.CollectColAlias,
+	//}
+	if err := tx.Create(newStepInfo).Error; err != nil {
 		fmt.Println(err)
+		tx.Rollback()
+		return err
+	}
+
+	for _, assertInfo := range newAssertInfos {
+		newAssertInfo := &InterfaceTestPartEntity.TAssertInfo{
+			StepId:    stepId,
+			AssertCol: assertInfo.AssertCol,
+			Method:    assertInfo.Method,
+			ExpValue:  assertInfo.ExpValue,
+		}
+		if err := tx.Create(newAssertInfo).Error; err != nil {
+			fmt.Println(err)
+			tx.Rollback()
+			return err
+		}
+	}
+
+	for _, varInfo := range newVarInfos {
+		newVarInfo := &InterfaceTestPartEntity.TCaseStepVarInfo{
+			StepId:          stepId,
+			CollectCol:      varInfo.CollectCol,
+			CollectColAlias: varInfo.CollectColAlias,
+		}
+		if err := tx.Create(newVarInfo).Error; err != nil {
+			fmt.Println(err)
+			tx.Rollback()
+			return err
+		}
+	}
+
+	tx.Commit()
+	return nil
+}
+
+func (css *caseStepService) EditCaseStep(caseStepInfo *vo.CaseStepInfoVO) interface{} {
+	caseStepId := caseStepInfo.StepId
+	newCaseStepInfo := &InterfaceTestPartEntity.TItfCaseStepInfo{
+		ItfId:    caseStepInfo.ItfId,
+		ReqData:  caseStepInfo.ReqData,
+		StepName: caseStepInfo.StepName,
+		StepDesc: caseStepInfo.StepDesc,
+	}
+	newAssertInfos := caseStepInfo.AssertInfos
+	newVarInfos := caseStepInfo.Variables
+
+	tx := service.DB.Begin()
+	// 修改用例步骤信息表
+	if err := tx.Model(&InterfaceTestPartEntity.TItfCaseStepInfo{}).Where("step_id = ?", caseStepId).Update(newCaseStepInfo).Error; err != nil {
+		tx.Rollback()
+		fmt.Println(err)
+		return err
+	}
+
+	for _, assertInfo := range newAssertInfos {
+		newAssertInfo := &InterfaceTestPartEntity.TAssertInfo{
+			AssertCol: assertInfo.AssertCol,
+			Method:    assertInfo.Method,
+			ExpValue:  assertInfo.ExpValue,
+		}
+		if err := tx.Model(&InterfaceTestPartEntity.TAssertInfo{}).Where("id = ?", assertInfo.ID).Update(newAssertInfo).Error; err != nil {
+			tx.Rollback()
+			fmt.Println(err)
+			return err
+		}
+	}
+
+	for _, varInfo := range newVarInfos {
+		newVarInfo := &InterfaceTestPartEntity.TCaseStepVarInfo{
+			CollectCol:      varInfo.CollectCol,
+			CollectColAlias: varInfo.CollectColAlias,
+		}
+		if err := tx.Model(&InterfaceTestPartEntity.TCaseStepVarInfo{}).Where("id = ?", varInfo.ID).Update(newVarInfo).Error; err != nil {
+			tx.Rollback()
+			fmt.Println(err)
+			return err
+		}
+	}
+
+	//// 修改变量表
+	//if err := tx.Where("step_id = ?", caseStepId).Update(newVarInfo).Error; err != nil {
+	//	tx.Rollback()
+	//	return err
+	//}
+	//
+	//// 修改断言表
+	//if err := tx.Where("step_id = ?", caseStepId).Update(newAssertInfo).Error; err != nil {
+	//	tx.Rollback()
+	//	return err
+	//}
+	tx.Commit()
+	return nil
+}
+
+func (css *caseStepService) DelCase(json *qjson.QJson) error {
+	caseStepId := json.GetString("caseStepId")
+	// 目前为物理删除，且只删除了用例步骤表
+	if err := service.DB.Where("step_id = ?", caseStepId).Delete(&InterfaceTestPartEntity.TItfCaseStepInfo{}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -26,9 +149,10 @@ func (css *caseStepService) AddCaseStep(caseStepInfo *InterfaceTestPartEntity.It
 
 func (css *caseStepService) GetStepList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
 	var (
-		ret []*InterfaceTestPartEntity.ItfCaseStepInfo
-		//pageNum = 1.00
-		//pageSize = 10.00
+		ret      []*InterfaceTestPartEntity.TItfCaseStepInfo
+		pageNum  = qj.GetNum("pageNum")
+		pageSize = qj.GetNum("pageSize")
+		caseId   = qj.GetString("caseId")
 	)
 
 	//if pageInfo, err = utils.PaginationWithDB(service.DB.Where("case_id = ?", qj.GetString("caseId")), &ret, qj); err != nil {
@@ -49,8 +173,40 @@ func (css *caseStepService) GetStepList(qj *qjson.QJson) (pageInfo *model.PageIn
 	//	List:     &ret,
 	//}
 
-	hdb := dbUtil.NewHDB(service.DB, &ret)
-	hdb.Paginate(qj).Preload("Variables").Find(&ret)
-	pageInfo, err = hdb.Pack()
+	//hdb := dbUtil.NewHDB(service.DB, &ret)
+	//hdb.Paginate(qj).Find(&ret)
+	//pageInfo, err = hdb.Pack()
+	midDB := service.DB.Model(&InterfaceTestPartEntity.TItfCaseStepInfo{}).Where("case_id = ?", caseId)
+	pageInfo, err = dbUtil.Paginate(midDB, pageNum, pageSize, &ret)
 	return pageInfo, nil
+}
+
+func (css *caseStepService) GetCaseStepDetail(json *qjson.QJson) (*vo.CaseStepInfoVO, error) {
+	var (
+		stepId      = json.GetString("stepId")
+		stepInfo    = InterfaceTestPartEntity.TItfCaseStepInfo{}
+		varInfos    = []InterfaceTestPartEntity.TCaseStepVarInfo{}
+		assertInfos = []InterfaceTestPartEntity.TAssertInfo{}
+	)
+	if err := service.DB.Where("step_id = ?", stepId).Find(&stepInfo).Error; err != nil {
+		return nil, err
+	}
+	if err := service.DB.Where("step_id = ?", stepId).Find(&varInfos).Error; err != nil {
+		return nil, err
+	}
+	if err := service.DB.Where("step_id = ?", stepId).Find(&assertInfos).Error; err != nil {
+		return nil, err
+	}
+	return &vo.CaseStepInfoVO{
+		CaseId:      stepInfo.CaseId,
+		ItfId:       stepInfo.ItfId,
+		StepId:      stepInfo.StepId,
+		StepNum:     stepInfo.StepNum,
+		StepName:    stepInfo.StepName,
+		StepDesc:    stepInfo.StepDesc,
+		ReqData:     stepInfo.ReqData,
+		ExpRes:      stepInfo.ExpRes,
+		Variables:   varInfos,
+		AssertInfos: assertInfos,
+	}, nil
 }
