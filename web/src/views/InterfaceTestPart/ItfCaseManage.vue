@@ -19,6 +19,7 @@
         </el-button-group>
 
         <el-tree :props="props"
+                 ref="caseTree"
                  :load="loadNode"
                  :data ='dataList'
                  lazy
@@ -332,7 +333,8 @@ export default {
       },
       props: {
         label: 'name',
-        children: 'zones'
+        children: 'zones',
+        isLeaf: 'leaf'
       },
       count: 1
     }
@@ -418,8 +420,23 @@ export default {
       })
     },
     runCase () {
+      // 目前逻辑有点问题，模块用例运行顺序可能存在问题
+      let caseMap = {}
+      let currNode = null
+      let regionList = this.$refs.caseTree.getCheckedNodes(false, true)
+      for (let item of regionList) {
+        currNode = this.$refs.caseTree.getNode(item)
+        if (currNode.level !== 1 && currNode.isLeaf === false) {
+          caseMap[currNode.data.value] = []
+        } else if (currNode.isLeaf === true) {
+          caseMap[currNode.parent.data.value].push(currNode.data.value)
+        }
+      }
+      // console.log(caseMap)
+      // console.log(currNode)
+      // console.log(this.caseList)
       let reqInfo = {
-        'caseId': '3b1adbe45b5842468cea1eb9d8766743'
+        'cases': caseMap
       }
       runCase(reqInfo).then(res => {
         this.$message({
@@ -430,6 +447,7 @@ export default {
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
+
     },
     handleNodeClick (data, node, last) {
       console.log(data.value)
@@ -442,11 +460,9 @@ export default {
         // getCaseList(reqInfo).then((res) => {
         //   this.tableData = res.list
         // })
-        console.log('是一级节点，获取用例列表')
       } else if (node.level === 3) { // 是二级节点，获取用例步骤列表
         this.caseId = data.value
         this.getCaseStepList(data.value)
-        console.log('是二级节点，获取用例步骤列表')
       }
     },
     loadNode (node, resolve) {
@@ -461,7 +477,15 @@ export default {
           pageSize: 10
         }
         getCaseTree(reqInfo).then((res) => {
-          return resolve(res)
+          console.log(res.length)
+          if (res !== null && res.length !== undefined) {
+            for (let index in res) {
+              res[index].leaf = true
+            }
+            return resolve(res)
+          } else {
+            return resolve([])
+          }
         })
       } else {
         return resolve([])

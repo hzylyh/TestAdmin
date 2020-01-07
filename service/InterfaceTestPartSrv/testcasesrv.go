@@ -1,6 +1,8 @@
 package InterfaceTestPartSrv
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"github.com/tidwall/gjson"
 	"salotto/model"
@@ -62,6 +64,42 @@ func (tcs testCaseService) GetCaseTree(qj *qjson.QJson) (caseInfos []map[string]
 
 func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	var (
+		rows *sql.Rows
+		err  error
+	)
+	moduleMap := qj.GetMap("cases")
+	// 暂时不对module进行排序
+	for k, v := range moduleMap {
+		fmt.Println(k)
+		caseIdList, ok := v.([]interface{})
+		if !ok {
+			return errors.New("转化错误")
+		}
+
+		// 如果前台传过来的module对应的caseList为空，则根据moduleId查询case，全部执行
+		if len(caseIdList) == 0 {
+			if rows, err = service.DB.Model(&InterfaceTestPartEntity.TItfCaseInfo{}).Select("case_id").Where("module_id = ?", k).Rows(); err != nil {
+				fmt.Println(err)
+				return err
+			}
+			defer rows.Close()
+			for rows.Next() {
+				var caseId string
+				rows.Scan(&caseId)
+				caseIdList = append(caseIdList, caseId)
+			}
+		}
+
+		for _, caseId := range caseIdList {
+			runCase(caseId.(string))
+		}
+	}
+
+	return nil
+}
+
+func runCase(caseId string) {
+	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo
 		properties = make(map[string]string)
 		Ihandler   parse.TokenHandler
@@ -77,7 +115,7 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	}
 
 	// 查询对应用例步骤
-	service.DB.Where(map[string]interface{}{"case_id": qj.GetString("caseId")}).Order("step_num").Find(&stepInfos)
+	service.DB.Where(map[string]interface{}{"case_id": caseId}).Order("step_num").Find(&stepInfos)
 	myRequests := requests.NewRequests()
 	// 挨个步骤请求
 	for _, stepInfo := range stepInfos {
@@ -102,6 +140,4 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	//act := `{"name": "houzheyu", "age": 33}`
 	//verify := []string{"name", "age", "list"}
-
-	return nil
 }

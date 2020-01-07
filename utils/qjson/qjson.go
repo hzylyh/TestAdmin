@@ -17,3 +17,27 @@ func (qj *QJson) GetNum(key string) float64 {
 	}
 	return 0
 }
+
+func (qj *QJson) GetJson(key string) *QJson {
+	//var (
+	//	reqInfo map[string]interface{}
+	//	err     error
+	//)
+	if res, ok := qj.ReqInfo[key].(map[string]interface{}); ok {
+		//if err = json.Unmarshal([]byte(res), &reqInfo); err != nil {
+		//	return nil
+		//}
+		return &QJson{ReqInfo: res}
+	}
+	return nil
+}
+
+func (qj *QJson) GetMap(key string) map[string]interface{} {
+	if res, ok := qj.ReqInfo[key].(map[string]interface{}); ok {
+		//if err = json.Unmarshal([]byte(res), &reqInfo); err != nil {
+		//	return nil
+		//}
+		return res
+	}
+	return nil
+}
