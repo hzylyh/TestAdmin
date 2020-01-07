@@ -6,28 +6,43 @@
 <template>
 <div class="sl-case-main">
  <el-container style="height: 100%">
-    <el-aside
-            class="sl-suit-tree white-back">
+    <el-aside class="sl-suit-tree white-back">
       <el-scrollbar style="height: 100%">
 <!--        <el-input></el-input>-->
-        <el-button @click="addModule"
-                   size="mini">新增</el-button>
-        <el-button @click="runCase"
-                   size="mini">运行</el-button>
+        <el-button-group class="sl-btn-group">
+          <el-button @click="addModule"
+                     type="primary"
+                     size="mini">新增</el-button>
+          <el-button @click="runCase"
+                     type="primary"
+                     size="mini">运行</el-button>
+        </el-button-group>
+
         <el-tree :props="props"
                  :load="loadNode"
                  :data ='dataList'
                  lazy
                  show-checkbox
+                 node-key="id"
+                 :default-expanded-keys="[1]"
                  @node-click="handleNodeClick"
                  @check-change="handleCheckChange">
-            <span class="custom-tree-node"
+            <span class="tree-line"
                   slot-scope="{ node, data}">
                 {{ data.label }}
+              <el-button-group>
                 <el-button type="text"
-                           v-if="node.level === 1"
+                           class="add-btn"
+                           v-if="node.level === 2"
                            size="mini"
-                           @click="addChildDialogVisible(data)">新增</el-button></span>
+                           @click.stop="addChildDialogVisible(data)">新增</el-button>
+              <el-button type="text"
+                         class="add-btn"
+                         v-if="node.level === 2"
+                         size="mini"
+                         @click.stop="addChildDialogVisible(data)">删除</el-button>
+              </el-button-group>
+            </span>
         </el-tree>
       </el-scrollbar>
     </el-aside>
@@ -428,18 +443,18 @@ export default {
         //   this.tableData = res.list
         // })
         console.log('是一级节点，获取用例列表')
-      } else if (node.level === 2) { // 是二级节点，获取用例步骤列表
+      } else if (node.level === 3) { // 是二级节点，获取用例步骤列表
         this.caseId = data.value
         this.getCaseStepList(data.value)
         console.log('是二级节点，获取用例步骤列表')
       }
     },
     loadNode (node, resolve) {
-      if (node.level === 0) {
-        getList({ projectId: 1 }).then((res) => {
+      if (node.level === 1) {
+        getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
           return resolve(res)
         })
-      } else if (node.level === 1) {
+      } else if (node.level === 2) {
         let reqInfo = {
           moduleId: node.data.value,
           pageNum: 1,
@@ -457,7 +472,12 @@ export default {
       // this.$router.projectId
       getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
         console.log(res)
-        this.dataList = res
+        // this.dataList = res
+        this.dataList = [{
+          id: 1,
+          label: '项目名',
+          children: res
+        }]
       })
     },
     addCaseStep () {
@@ -519,6 +539,28 @@ export default {
   /*background: rgb(240, 242, 245);*/
   .sl-suit-tree {
     height: 100%;
+    .sl-btn-group {
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+    .tree-line {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      /*justify-content: space-around;*/
+      font-size: 14px;
+      padding-right: 18px;
+      .add-btn {
+        /*display: none;*/
+        padding-right: 10px;
+      }
+    }
+    .tree-line:hover {
+      .add-btn {
+        display: inline;
+      }
+    }
   }
   .sl-case-list {
     height: 100%;
