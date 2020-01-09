@@ -76,7 +76,9 @@
                            label="执行结果">
             <template slot-scope="scope">
               <el-tag :type="scope.row.stepStatus | statusFilter"
+                      style="cursor: pointer"
                       effect="plain"
+                      @click="showStepResDialog"
                       disable-transitions>{{ scope.row.stepStatus }}</el-tag>
             </template>
           </el-table-column>
@@ -270,7 +272,14 @@
         <el-button @click="childDialogVisible = false">取 消</el-button>
         <el-button v-if="actionFlag === 'add'" type="primary" @click="addCaseStepAction">确 定</el-button>
         <el-button v-if="actionFlag === 'edit'" type="primary" @click="editCaseStepAction">确 定</el-button>
-      </span>
+    </span>
+  </el-dialog>
+
+  <el-dialog :visible="stepResDialogVisible">
+    <json-format v-if="stepResDialogVisible" :json-cont="testObj" :col="testCol"></json-format>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="stepResDialogVisible = false">取 消</el-button>
+    </span>
   </el-dialog>
 </div>
 
@@ -291,8 +300,10 @@ import {
   delCaseStep,
   getCaseStepDetail
 } from 'api/case.js'
+import JsonFormat from '@/components/JsonFormat'
 export default {
   name: 'ItfCaseManage',
+  components: { JsonFormat },
   data () {
     return {
       caseId: '',
@@ -300,14 +311,20 @@ export default {
       dialogVisible: false,
       childDialogVisible: false,
       caseStepDialogVisible: false,
+      stepResDialogVisible: false,
       tableData: [],
       dataList: [],
       pageNum: 1,
       pageSize: 10,
       total: 0,
       interfaceOptions: [],
-      // interfaceUrl: '',
-      // interfaceType: '',
+      testCol: 'b.d',
+      testObj: {
+        a: 'd',
+        b: {
+          d: 'd'
+        }
+      },
       addModuleForm: {
         moduleName: '',
         moduleDesc: '',
@@ -583,6 +600,9 @@ export default {
       delCaseStep(reqInfo).then(response => {
         this.getCaseStepList(caseStepInfo.caseId)
       })
+    },
+    showStepResDialog () {
+      this.stepResDialogVisible = true
     }
   }
 }
