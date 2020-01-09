@@ -10,4 +10,5 @@ var Models = []interface{}{
 	&InterfaceTestPartEntity.TProjectModule{},
 	&InterfaceTestPartEntity.TCaseStepVarInfo{},
 	&InterfaceTestPartEntity.TAssertInfo{},
+	&InterfaceTestPartEntity.TItfCaseStepRunHis{},
 }

@@ -120,8 +120,9 @@ func runCase(caseId string) {
 	// 挨个步骤请求
 	for _, stepInfo := range stepInfos {
 		var (
-			itfInfo   InterfaceTestPartEntity.TInterfaceInfo
-			variables []InterfaceTestPartEntity.TCaseStepVarInfo
+			itfInfo     InterfaceTestPartEntity.TInterfaceInfo
+			variables   []InterfaceTestPartEntity.TCaseStepVarInfo
+			assertInfos []InterfaceTestPartEntity.TAssertInfo
 		)
 		replaceReqData := parser.Parse(stepInfo.ReqData) // 变量替换，将请求种的${xxx}替换
 		service.DB.Where("interface_id = ?", stepInfo.ItfId).First(&itfInfo)
@@ -134,8 +135,10 @@ func runCase(caseId string) {
 			properties[collectCol] = gjson.Get(act, collectCol).String()      // 将变量字段作key，存入map
 			properties[collectColAlias] = gjson.Get(act, collectCol).String() // 将变量别名作key，存入map，后续考虑分两个map
 		}
-		verify := []string{"resultEntity.textToSpeechContent", "resultEntity.timeoutInstructionList"}
-		hassert.MulAssert(stepInfo.ExpRes, act, verify)
+		//verify := []string{"resultEntity.textToSpeechContent", "resultMessage", "resultEntity.timeoutInstructionList"}
+		//hassert.MulAssert(stepInfo.ExpRes, act, verify)
+		service.DB.Where("step_id = ?", stepInfo.StepId).Find(&assertInfos)
+		hassert.MulAssertNew(act, assertInfos, stepInfo)
 	}
 	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	//act := `{"name": "houzheyu", "age": 33}`

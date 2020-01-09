@@ -30,7 +30,9 @@
                  @check-change="handleCheckChange">
             <span class="tree-line"
                   slot-scope="{ node, data}">
+              <el-badge is-dot class="item">
                 {{ data.label }}
+              </el-badge>
               <el-button-group>
                 <el-button type="text"
                            class="add-btn"
@@ -69,6 +71,14 @@
           <el-table-column prop="stepDesc"
                            show-overflow-tooltip
                            label="步骤描述">
+          </el-table-column>
+          <el-table-column show-overflow-tooltip
+                           label="执行结果">
+            <template slot-scope="scope">
+              <el-tag :type="scope.row.stepStatus | statusFilter"
+                      effect="plain"
+                      disable-transitions>{{ scope.row.stepStatus }}</el-tag>
+            </template>
           </el-table-column>
           <el-table-column label="操作"
                            width="350px">
@@ -339,6 +349,15 @@ export default {
       count: 1
     }
   },
+  filters: {
+    statusFilter (val) {
+      let statusMap = {
+        '成功': 'success',
+        '失败': 'danger'
+      }
+      return statusMap[val]
+    }
+  },
   created () {
     this.getModuleList()
   },
@@ -351,9 +370,22 @@ export default {
         stepId: row.stepId
       }
       getCaseStepDetail(reqInfo).then(response => {
+        this.caseStepForm = response
+        if (response.assertInfos.length === 0) {
+          this.caseStepForm.assertInfos = [{
+            assertCol: '',
+            method: '',
+            expValue: ''
+          }]
+        }
+        if (response.variables.length === 0) {
+          this.caseStepForm.variables = [{
+            collectCol: '', // 需要提取的字段，jsonpath提取
+            collectColAlias: '' // 提取字段别名
+          }]
+        }
         this.actionFlag = 'edit'
         this.caseStepDialogVisible = true
-        this.caseStepForm = response
       })
     },
     editCaseStepAction () {

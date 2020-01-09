@@ -1,9 +1,11 @@
 package InterfaceTestPartEntity
 
-import "github.com/jinzhu/gorm"
+import (
+	"salotto/conf"
+)
 
 type TItfCaseInfo struct {
-	gorm.Model
+	conf.Model
 	CaseId   string `json:"caseId"`
 	ModuleId string `json:"moduleId"`
 	CaseName string `json:"caseName"`

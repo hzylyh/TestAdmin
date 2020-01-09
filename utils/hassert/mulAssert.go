@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/tidwall/gjson"
 	"reflect"
+	"salotto/model/InterfaceTestPartEntity"
+	"salotto/service"
+	"salotto/utils"
 )
 
 type HAssert struct {
@@ -17,8 +20,19 @@ func (ha *HAssert) AssertEqual(exp, act string) {
 //
 //}
 
+func MulAssertNew(act string, assertInfos []InterfaceTestPartEntity.TAssertInfo, stepInfo InterfaceTestPartEntity.TItfCaseStepInfo) {
+	defer recoverAssert(stepInfo)
+	for _, assertInfo := range assertInfos {
+		exp := assertInfo.ExpValue
+		act := gjson.Get(act, assertInfo.AssertCol)
+
+		assertCore(exp, act.Value())
+	}
+
+}
+
 func MulAssert(exp, act string, verifyCols []string) {
-	defer recoverAssert()
+	//defer recoverAssert()
 	for _, verifyCol := range verifyCols {
 		exp := gjson.Get(exp, verifyCol)
 		act := gjson.Get(act, verifyCol)
@@ -29,9 +43,21 @@ func MulAssert(exp, act string, verifyCols []string) {
 
 }
 
-func recoverAssert() {
+func recoverAssert(stepInfo InterfaceTestPartEntity.TItfCaseStepInfo) {
 	// 后续写日志表日库逻辑，可扩展成接口，对接不同记录模式
+	runLog := &InterfaceTestPartEntity.TItfCaseStepRunHis{
+		StepHisId:  utils.GenerateUUID(),
+		CaseId:     stepInfo.CaseId,
+		StepId:     stepInfo.StepId,
+		StepStatus: "",
+		StepLog:    "",
+	}
 	if r := recover(); r != nil {
+		runLog.StepStatus = "失败"
+		runLog.StepLog = r.(string)
+		if err := service.DB.Create(runLog).Error; err != nil {
+			fmt.Println(err)
+		}
 		fmt.Println("recovered from ", r)
 	} else {
 		fmt.Println("我是正常的")
