@@ -6,6 +6,8 @@ import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
 import './styles.scss'
 
+import './icons' // icon
+
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, {
