@@ -110,7 +110,7 @@
           <el-pagination
                   @size-change="handleSizeChange"
                   @current-change="handleCurrentChange"
-                  :current-page="currentPage4"
+                  :current-page="pageNum"
                   background
                   :page-size="pageSize"
                   layout="total, sizes, prev, pager, next, jumper"
@@ -187,11 +187,9 @@
           </el-tab-pane>
           <el-tab-pane label="请求信息">
             <el-row>
-
               <el-col :span="12">
                 <el-form-item label="接口">
                   <el-select v-model="caseStepForm.interfaceId"
-                             @change="changeInterface"
                              placeholder="请选择">
                     <el-option
                             v-for="item in interfaceOptions"
@@ -212,51 +210,70 @@
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="接口断言">
-            <el-row :gutter="10">
-              <el-col :span="10">
-                比对字段
-              </el-col>
-              <el-col :span="4">
-                关系
-              </el-col>
-              <el-col :span="10">
-                期望
+            <el-row>
+              <el-col :span="22">
+                <el-col :span="10">
+                  比对字段
+                </el-col>
+                <el-col :span="4">
+                  关系
+                </el-col>
+                <el-col :span="10">
+                  期望
+                </el-col>
               </el-col>
             </el-row>
             <el-row v-for="(item, index) in caseStepForm.assertInfos"
-                    :gutter="10"
+                    style="margin-bottom: 5px"
                     :key="index">
-              <el-col :span="10">
-                <el-input v-model="item.assertCol"></el-input>
+              <el-col :span="22">
+                <el-row :gutter="10">
+                  <el-col :span="10">
+                    <el-input v-model="item.assertCol"></el-input>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-input v-model="item.method"></el-input>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-input v-model="item.expValue"></el-input>
+                  </el-col>
+                </el-row>
               </el-col>
-              <el-col :span="4">
-                <el-input v-model="item.method"></el-input>
-              </el-col>
-              <el-col :span="10">
-                <el-input v-model="item.expValue"></el-input>
+              <el-col :span="1">
+                <i @click="assertAction(index,1)" v-if="index === 0" class="add" />
+                <i @click="assertAction(index,0)" v-else class="reduce" />
               </el-col>
             </el-row>
           </el-tab-pane>
           <el-tab-pane label="变量提取">
+<!--            <el-row>-->
+<!--              <el-col :span="6">-->
+<!--                <el-form-item label="提取变量">-->
+<!--                  <el-switch v-model="caseStepForm.isCollectVar"></el-switch>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
+<!--            <el-row v-if="caseStepForm.isCollectVar">-->
             <el-row>
-              <el-col :span="6">
-                <el-form-item label="提取变量">
-                  <el-switch v-model="caseStepForm.isCollectVar"></el-switch>
-                </el-form-item>
-              </el-col>
-            </el-row>
-            <el-row v-if="caseStepForm.isCollectVar">
               <el-row v-for="(item, index) in caseStepForm.variables"
                       :key="index">
-                <el-col :span="12">
-                  <el-form-item label="提取字段">
-                    <el-input v-model="item.collectCol"></el-input>
-                  </el-form-item>
+                <el-col :span="22">
+                  <el-row>
+                    <el-col :span="12">
+                      <el-form-item label="提取字段">
+                        <el-input v-model="item.collectCol"></el-input>
+                      </el-form-item>
+                    </el-col>
+                    <el-col :span="12">
+                      <el-form-item label="字段别名">
+                        <el-input v-model="item.collectColAlias"></el-input>
+                      </el-form-item>
+                    </el-col>
+                  </el-row>
                 </el-col>
-                <el-col :span="12">
-                  <el-form-item label="字段别名">
-                    <el-input v-model="item.collectColAlias"></el-input>
-                  </el-form-item>
+                <el-col :span="1">
+                  <i @click="variableAction(index,1)" v-if="index === 0" class="add" />
+                  <i @click="variableAction(index,0)" v-else class="reduce" />
                 </el-col>
               </el-row>
             </el-row>
@@ -370,7 +387,8 @@ export default {
     statusFilter (val) {
       let statusMap = {
         '成功': 'success',
-        '失败': 'danger'
+        '失败': 'danger',
+        '未运行': 'info'
       }
       return statusMap[val]
     }
@@ -496,7 +514,6 @@ export default {
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
-
     },
     handleNodeClick (data, node, last) {
       console.log(data.value)
@@ -603,6 +620,38 @@ export default {
     },
     showStepResDialog () {
       this.stepResDialogVisible = true
+    },
+    assertAction (index, type) {
+      // type: 0 减；1 加
+      if (type === 0) {
+        this.caseStepForm.assertInfos.splice(index, 1)
+      } else if (type === 1) {
+        let item = {
+          assertCol: '',
+          method: '',
+          expValue: ''
+        }
+        this.caseStepForm.assertInfos.push(item)
+      }
+    },
+    variableAction (index, type) {
+      // type: 0 减；1 加
+      if (type === 0) {
+        this.caseStepForm.variables.splice(index, 1)
+      } else if (type === 1) {
+        let item = {
+          assertCol: '',
+          method: '',
+          expValue: ''
+        }
+        this.caseStepForm.variables.push(item)
+      }
+    },
+    handleSizeChange () {
+
+    },
+    handleCurrentChange () {
+
     }
   }
 }
@@ -657,5 +706,26 @@ export default {
 }
 .white-back {
   background: #fff;
+}
+.add {
+  // display: inline-block;
+  display: block;
+  height: 28px;
+  width: 28px;
+  margin-left: 5px;
+  background: url("../../assets/img/line_add.png") center center;
+  background-size: contain;
+  float: right;
+  margin-right: -5px;
+}
+.reduce {
+  // display: inline-block;
+  display: block;
+  height: 28px;
+  width: 28px;
+  background: url("../../assets/img/line_reduce.png") center center;
+  background-size: contain;
+  float: right;
+  margin-right: -5px;
 }
 </style>

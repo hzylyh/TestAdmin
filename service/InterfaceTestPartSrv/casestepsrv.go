@@ -177,7 +177,7 @@ func (css *caseStepService) GetStepList(qj *qjson.QJson) (pageInfo *model.PageIn
 	//hdb.Paginate(qj).Find(&ret)
 	//pageInfo, err = hdb.Pack()
 	//midDB := service.DB.Model(&InterfaceTestPartEntity.TItfCaseStepInfo{}).Where("case_id = ?", caseId)
-	midDB := service.DB.Table("t_itf_case_step_infos t1").Select("t1.step_id, t1.step_name, t2.step_status, t2.step_log").Joins(fmt.Sprintf("left join (select t3.step_status, t3.step_log ,t3.step_his_id, t3.step_id, max(t3.created_at) from t_itf_case_step_run_his t3 where t3.case_id = '%s' group by t3.step_id) t2 on t1.step_id = t2.step_id", caseId)).Where("t1.case_id = ?", caseId)
+	midDB := service.DB.Table("t_itf_case_step_infos t1").Select("t1.step_id, t1.step_name, IFNULL(t2.step_status, '未运行') as step_status, t2.step_log").Joins(fmt.Sprintf("left join (select t3.step_status, t3.step_log ,t3.step_his_id, t3.step_id, max(t3.created_at) from t_itf_case_step_run_his t3 where t3.case_id = '%s' group by t3.step_id) t2 on t1.step_id = t2.step_id", caseId)).Where("t1.case_id = ?", caseId)
 	pageInfo, err = dbUtil.Paginate(midDB, pageNum, pageSize, &ret)
 	return pageInfo, nil
 }

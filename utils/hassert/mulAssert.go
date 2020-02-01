@@ -55,12 +55,14 @@ func recoverAssert(stepInfo InterfaceTestPartEntity.TItfCaseStepInfo) {
 	if r := recover(); r != nil {
 		runLog.StepStatus = "失败"
 		runLog.StepLog = r.(string)
-		if err := service.DB.Create(runLog).Error; err != nil {
-			fmt.Println(err)
-		}
 		fmt.Println("recovered from ", r)
 	} else {
+		runLog.StepStatus = "成功"
+		runLog.StepLog = ""
 		fmt.Println("我是正常的")
+	}
+	if err := service.DB.Create(runLog).Error; err != nil {
+		fmt.Println(err)
 	}
 }
 
