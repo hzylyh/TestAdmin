@@ -5,19 +5,22 @@
       <div slot="header">
         <span>欢迎登录</span>
       </div>
-      <el-form :model="loginForm"
+      <el-form ref="loginForm"
+               :model="loginForm"
                label-width="60px">
         <el-form-item label="用户名:">
-          <el-input v-model="loginForm.username"
+          <el-input ref="username"
+                    v-model="loginForm.username"
                     size="small"></el-input>
         </el-form-item>
         <el-form-item label="密码:">
-          <el-input v-model="loginForm.password"
+          <el-input ref="password"
+                    v-model="loginForm.password"
                     type="password"
                     size="small"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button @click="login(loginForm)"
+          <el-button @click="handleLogin"
                      type="primary"
                      size="small">登录</el-button>
         </el-form-item>
@@ -27,14 +30,36 @@
 </template>
 
 <script>
+// import { validUsername } from '@/utils/validate'
 export default {
   name: 'user',
   data () {
+    // const validateUsername = (rule, value, callback) => {
+    //   if (!validUsername(value)) {
+    //     callback(new Error('Please enter the correct user name'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
+    const validatePassword = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('The password can not be less than 6 digits'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
         username: '',
         password: ''
       }
+    }
+  },
+  mounted () {
+    if (this.loginForm.username === '') {
+      this.$refs.username.focus()
+    } else if (this.loginForm.password === '') {
+      this.$refs.password.focus()
     }
   },
   methods: {
@@ -46,12 +71,27 @@ export default {
 
     // 带查询参数，变成/backend/order?selected=2
     // //this.$router.push({path: '/backend/order', query: {selected: "2"}});
-    login (loginInfo) {
+    handleLogin () {
       // this.$store.dispatch('Login', loginInfo).then(() => {
       //   // this.$router.push({name: "itfDashboard"})
       //   console.log('登录成功')
       // })
-      this.$router.push({ name: 'OverviewIndex' })
+      this.$refs.loginForm.validate(valid => {
+        if (valid) {
+          // this.loading = true
+          this.$store.dispatch('user/login', this.loginForm)
+            .then(() => {
+              // this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ name: 'OverviewIndex' })
+              // this.loading = false
+            })
+            .catch(() => {
+              // this.loading = false
+            })
+        } else {
+          return false
+        }
+      })
     }
   }
 }

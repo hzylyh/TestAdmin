@@ -3,14 +3,13 @@
  * @Author: 吴文周
  * @Github: https://github.com/fodelf
  * @Date: 2019-08-14 19:09:48
- * @LastEditors: 吴文周
+ * @LastEditors: 侯哲宇
  * @LastEditTime: 2019-11-17 13:56:58
  */
 import axios from 'axios'
-import { Message } from 'element-ui'
-// import { MessageBox, Message } from 'element-ui'
-// import store from '@/pages/store/index.js'
-import { getToken } from './auth'
+import { MessageBox, Message } from 'element-ui'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
 
 // create an axios instance
 axios.create({
@@ -28,9 +27,15 @@ axios.interceptors.request.use(
     // let each request carry token
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
-    config.headers['Authorization'] = getToken()
+    // config.headers['Authorization'] = getToken()
     // }
-    config.headers['Content-Type'] = 'application/json'
+    // config.headers['Content-Type'] = 'application/json'
+    if (store.getters.token) {
+      // let each request carry token
+      // ['X-Token'] is a custom headers key
+      // please modify it according to the actual situation
+      config.headers['Authorization'] = getToken()
+    }
     return config
   },
   error => {
