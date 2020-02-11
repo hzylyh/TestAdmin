@@ -3,7 +3,6 @@ package model
 import "salotto/model/InterfaceTestPartEntity"
 
 var Models = []interface{}{
-	&Schedule{}, &ScheduleJob{}, &TProjectInfo{},
 	&InterfaceTestPartEntity.TInterfaceInfo{},
 	&InterfaceTestPartEntity.TItfCaseInfo{},
 	&InterfaceTestPartEntity.TItfCaseStepInfo{},
@@ -11,4 +10,5 @@ var Models = []interface{}{
 	&InterfaceTestPartEntity.TCaseStepVarInfo{},
 	&InterfaceTestPartEntity.TAssertInfo{},
 	&InterfaceTestPartEntity.TItfCaseStepRunHis{},
+	&TSysUser{},
 }

@@ -5,20 +5,20 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"salotto/conf"
-	"salotto/model/entity"
+	"salotto/model"
 	"salotto/utils/redisUtil"
 	"time"
 )
 
-func GenerateToken(user *entity.User) (string, error) {
+func GenerateToken(user *model.TSysUser) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
+		"username": user.UserAccount,
 		//"exp":      time.Now().Add(time.Hour * 2).Unix(),
 		"iat": time.Now(),
 	})
 
 	mytoken, err := token.SignedString([]byte("secret"))
-	redisUtil.SetKeyWithExp(user.Username, mytoken, "1200")
+	redisUtil.SetKeyWithExp(user.UserAccount, mytoken, "1200")
 	return mytoken, err
 
 }
