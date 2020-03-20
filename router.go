@@ -89,6 +89,7 @@ func MapRoutes() *gin.Engine {
 	itfManageApi.POST("/add", InterfaceTestPartCtl.AddInterface)
 	itfManageApi.POST("/edit", InterfaceTestPartCtl.EditInterface)
 	itfManageApi.POST("/get", InterfaceTestPartCtl.GetSingleInterfaceInfo)
+	itfManageApi.POST("/delete", InterfaceTestPartCtl.DelInterface)
 	itfManageApi.POST("/getList", InterfaceTestPartCtl.GetInterfaceList)
 	itfManageApi.POST("/getSelectOptions", InterfaceTestPartCtl.GetInterfaceSelectOptions)
 	itfManageApi.POST("/importSwagger", InterfaceTestPartCtl.ImportSwagger)

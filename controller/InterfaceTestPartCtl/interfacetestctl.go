@@ -25,6 +25,16 @@ func EditInterface(c *gin.Context) {
 	}
 }
 
+func DelInterface(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := InterfaceTestPartSrv.ItfTestSrv.DelInterface(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "删除失败", err)
+	}
+	utils.ResponseOkWithMsg(c, "删除成功", nil)
+}
+
 func GetInterfaceList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

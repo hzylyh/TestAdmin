@@ -24,6 +24,14 @@ export function editApi (params) {
   })
 }
 
+export function deleteApi (params) {
+  return request({
+    url: '/api/itfPart/interface/delete',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function getList (params) {
   return request({
     url: '/api/itfPart/interface/getList',

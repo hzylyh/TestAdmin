@@ -88,3 +88,11 @@ func (its *itfTestService) EditInterface(itfInfo *InterfaceTestPartEntity.TInter
 	}
 	return nil
 }
+
+func (its *itfTestService) DelInterface(q *qjson.QJson) error {
+	itfId := q.GetNum("id")
+	if err := service.DB.Model(&InterfaceTestPartEntity.TInterfaceInfo{}).Where("id = ?", itfId).Delete(&InterfaceTestPartEntity.TInterfaceInfo{}).Error; err != nil {
+		return err
+	}
+	return nil
+}

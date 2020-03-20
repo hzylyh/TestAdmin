@@ -70,7 +70,8 @@
                        size="small"
                        @click="showEditApi(scope.row)">编辑</el-button>
             <el-button type="text"
-                       size="small">删除</el-button>
+                       size="small"
+                       @click="deleteApiAction(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -198,7 +199,7 @@
 <script>
 // 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 // 例如：import 《组件名称》 from '《组件路径》';
-import { addApi, editApi, getList, getSingleApi, importSwagger } from '@/api/apiList.js'
+import { addApi, editApi, deleteApi, getList, getSingleApi, importSwagger } from '@/api/apiList.js'
 export default {
   name: 'ItfInterfaceManage',
   // import引入的组件需要注入到对象中才能使用
@@ -298,6 +299,25 @@ export default {
           type: 'success'
         })
         this.dialogVisible = false
+      })
+    },
+
+    /**
+     * @name: deleteApiAction
+     * @description: 删除接口
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    deleteApiAction (row) {
+      let reqInfo = {
+        id: row.id
+      }
+      deleteApi(reqInfo).then(response => {
+        this.$message({
+          message: '恭喜你,删除成功',
+          type: 'success'
+        })
+        this.queryApiList()
       })
     },
 
