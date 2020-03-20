@@ -126,7 +126,7 @@ func runCase(caseId string) {
 		)
 		replaceReqData := parser.Parse(stepInfo.ReqData) // 变量替换，将请求种的${xxx}替换
 		service.DB.Where("interface_id = ?", stepInfo.ItfId).First(&itfInfo)
-		act := string(myRequests.Post(itfInfo.Url, replaceReqData))
+		act := string(myRequests.Post(itfInfo.Url, replaceReqData, "application/x-www-form-urlencoded")) // 发送请求
 		// 根据用例步骤id获取步骤变量
 		service.DB.Where("step_id = ?", stepInfo.StepId).Find(&variables)
 		for _, eachStepVar := range variables {

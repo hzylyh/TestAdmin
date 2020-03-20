@@ -26,11 +26,15 @@ func NewRequests() *Requests {
 	}
 }
 
-func (rq *Requests) Post(url, reqJson string) []byte {
+func (rq *Requests) Post(url, reqJson string, mimeType string) []byte {
 	var err error
 	rq.Requests, err = http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqJson)))
 	//http.Post()
-	rq.Requests.Header.Set("Content-Type", "application/json")
+	if mimeType == "application/json" {
+		rq.Requests.Header.Set("Content-Type", "application/json")
+	} else if mimeType == "application/x-www-form-urlencoded" {
+		rq.Requests.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
 
 	resp, err := rq.Client.Do(rq.Requests)
 

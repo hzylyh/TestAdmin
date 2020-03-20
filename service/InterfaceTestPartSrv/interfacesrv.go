@@ -68,3 +68,23 @@ func (its *itfTestService) GetInterfaceSelectOptions(json *qjson.QJson) (ret []*
 		return ret, nil
 	}
 }
+
+func (its *itfTestService) GetSingleInterfaceInfo(q *qjson.QJson) (InterfaceTestPartEntity.TInterfaceInfo, error) {
+	var (
+		ret InterfaceTestPartEntity.TInterfaceInfo
+		err error
+	)
+	itfId := q.GetNum("id")
+	if err = service.DB.Where("id = ?", itfId).First(&ret).Error; err != nil {
+		fmt.Println(err)
+	}
+	return ret, err
+}
+
+func (its *itfTestService) EditInterface(itfInfo *InterfaceTestPartEntity.TInterfaceInfo) error {
+	fmt.Println(itfInfo)
+	if err := service.DB.Model(&InterfaceTestPartEntity.TInterfaceInfo{}).Where("id = ?", itfInfo.ID).Update(itfInfo).Error; err != nil {
+		return err
+	}
+	return nil
+}

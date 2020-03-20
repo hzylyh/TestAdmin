@@ -19,7 +19,7 @@
           <!-- <el-menu-item index="2" :route="{name: 'ItfDashboard'}">接口自动化</el-menu-item> -->
           <el-menu-item index="2"
                         :route="{name: 'performanceTestingIndex'}">性能测试</el-menu-item>
-          <el-menu-item index="4"
+          <el-menu-item index="3"
                         :route="{name: 'realMachineIndex'}">云真机</el-menu-item>
         </el-menu>
       </div>
@@ -35,7 +35,6 @@ export default {
   name: 'index',
   data () {
     return {
-      activeIndex: '1',
       activeIndex2: '1'
     }
   },

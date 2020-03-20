@@ -15,6 +15,16 @@ func AddInterface(c *gin.Context) {
 	utils.ResponseOkWithMsg(c, "新增成功", nil)
 }
 
+func EditInterface(c *gin.Context) {
+	var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
+	c.ShouldBind(&interfaceInfo)
+	if err := InterfaceTestPartSrv.ItfTestSrv.EditInterface(&interfaceInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "修改失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "修改成功", nil)
+	}
+}
+
 func GetInterfaceList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),
@@ -39,6 +49,17 @@ func GetInterfaceSelectOptions(c *gin.Context) {
 		ReqInfo: utils.GetJsonBody(c),
 	}
 	if res, err := InterfaceTestPartSrv.ItfTestSrv.GetInterfaceSelectOptions(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOk(c, res)
+	}
+}
+
+func GetSingleInterfaceInfo(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.ItfTestSrv.GetSingleInterfaceInfo(&reqInfo); err != nil {
 		utils.ResponseOkWithMsg(c, "查询失败", nil)
 	} else {
 		utils.ResponseOk(c, res)

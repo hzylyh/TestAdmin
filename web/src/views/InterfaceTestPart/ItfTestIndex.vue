@@ -8,7 +8,7 @@
     <el-aside width="200px"
               class="sl-itf-nav">
       <el-scrollbar style="height: 100%">
-        <el-menu default-active="2"
+        <el-menu default-active="activeIndex"
                  router
                  class="sl-itf-nav-menu"
                  background-color="#1C2B36"
@@ -51,7 +51,12 @@
 
 <script>
 export default {
-  name: 'ItfTestIndex'
+  name: 'ItfTestIndex',
+  data () {
+    return {
+      activeIndex: '1'
+    }
+  }
 }
 </script>
 

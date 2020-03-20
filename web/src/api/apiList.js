@@ -16,6 +16,14 @@ export function addApi (params) {
   })
 }
 
+export function editApi (params) {
+  return request({
+    url: '/api/itfPart/interface/edit',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function getList (params) {
   return request({
     url: '/api/itfPart/interface/getList',
@@ -26,6 +34,14 @@ export function getList (params) {
 export function importSwagger (params) {
   return request({
     url: '/api/itfPart/interface/importSwagger',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function getSingleApi (params) {
+  return request({
+    url: '/api/itfPart/interface/get',
     method: 'POST',
     params: params
   })

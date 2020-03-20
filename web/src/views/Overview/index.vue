@@ -10,17 +10,22 @@
         <span slot="label"><i class="el-icon-folder-opened"></i>我的项目</span>
         <!-- 项目内容列表 -->
         <ul class="project-list">
+          <li class="child-item"
+              @click="addPojectClick">
+            <i class="el-icon-plus addicon"></i>
+          </li>
           <li v-for="(item,index) in projectList"
               :key="index"
               class="child-item"
               @click="goToProject(item)">
-            <div v-if="!item.isAdd">
+<!--            <div v-if="!item.isAdd">-->
+            <div>
               <div>{{item.projectName}}</div>
               <div>{{item.projetcDesc}}</div>
             </div>
-            <i v-else
-               class="el-icon-plus addicon"
-               @click.stop="addPojectClick"></i>
+<!--            <i v-else-->
+<!--               class="el-icon-plus addicon"-->
+<!--               @click.stop="addPojectClick"></i>-->
           </li>
         </ul>
       </el-tab-pane>
@@ -109,9 +114,9 @@ export default {
     queryProjectList () {
       var self = this
       getProjectList().then((res) => {
-        res.unshift({
-          isAdd: true
-        })
+        // res.unshift({
+        //   isAdd: true
+        // })
         self.projectList = res
       })
     },
@@ -123,7 +128,7 @@ export default {
      */
     goToProject () {
       this.$router.push({
-        name: 'apiList'
+        name: 'ItfDashboard'
       })
     }
   },
