@@ -107,15 +107,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="MIME类型">
-          <el-select v-model="form.mimeType"
-                     placeholder="请选择">
-            <el-option v-for="item in mimeOptions"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form-item label="请求头">
+          <!--          <el-select v-model="form.mimeType"-->
+          <!--                     placeholder="请选择">-->
+          <!--            <el-option v-for="item in mimeOptions"-->
+          <!--                       :key="item.value"-->
+          <!--                       :label="item.label"-->
+          <!--                       :value="item.value">-->
+          <!--            </el-option>-->
+          <!--          </el-select>-->
+          <el-row v-for="(item, index) in form.headers"
+                  :gutter="10"
+                  :key="index">
+            <el-col :span="24">
+              <el-input v-model="item.headerName"></el-input>
+            </el-col>
+            <el-col :span="24">
+              <el-input v-model="item.headerValue"></el-input>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="接口描述">
           <el-input v-model="form.desc"
@@ -171,15 +181,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="MIME类型">
-          <el-select v-model="form.mimeType"
-                     placeholder="请选择">
-            <el-option v-for="item in mimeOptions"
-                       :key="item.value"
-                       :label="item.label"
-                       :value="item.value">
-            </el-option>
-          </el-select>
+        <el-form-item label="请求头">
+          <!--          <el-select v-model="form.mimeType"-->
+          <!--                     placeholder="请选择">-->
+          <!--            <el-option v-for="item in mimeOptions"-->
+          <!--                       :key="item.value"-->
+          <!--                       :label="item.label"-->
+          <!--                       :value="item.value">-->
+          <!--            </el-option>-->
+          <!--          </el-select>-->
+          <el-row v-for="(item, index) in form.headers"
+                  :gutter="10"
+                  :key="index">
+            <el-col :span="24">
+              <el-input v-model="item.headerName"></el-input>
+            </el-col>
+            <el-col :span="24">
+              <el-input v-model="item.headerValue"></el-input>
+            </el-col>
+          </el-row>
         </el-form-item>
         <el-form-item label="接口描述">
           <el-input v-model="form.desc"
@@ -232,9 +252,17 @@ export default {
       tableData: [],
       form: {
         name: '',
-        ulr: '',
+        url: '',
         desc: '',
-        type: 'POST'
+        type: 'POST',
+        headers: [
+          {
+            headerId: '',
+            interfaceId: '',
+            headerName: '',
+            headerValue: ''
+          }
+        ]
       },
       swaggerform: {
         swaggerUrl: ''
@@ -249,6 +277,12 @@ export default {
   methods: {
     addApi () {
       this.dialogVisible = true
+      this.form.headers = [{
+        headerId: '',
+        interfaceId: '',
+        headerName: '',
+        headerValue: ''
+      }]
     },
     /**
      * @name: showEditApi
@@ -257,13 +291,21 @@ export default {
      * @return {type}: 默认类型
      */
     showEditApi (row) {
-      console.log(row.id)
+      console.log(row.interfaceId)
       let reqInfo = {
-        id: row.id
+        interfaceId: row.interfaceId
       }
       getSingleApi(reqInfo).then(response => {
         console.log(response)
         this.form = response
+        if (this.form.headers.length === 0) {
+          this.form.headers = [{
+            headerId: '',
+            interfaceId: '',
+            headerName: '',
+            headerValue: ''
+          }]
+        }
         this.editDialogVisible = true
       })
     },

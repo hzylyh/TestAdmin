@@ -1,22 +1,27 @@
 package InterfaceTestPartCtl
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"salotto/model/InterfaceTestPartEntity"
+	"salotto/model/vo"
 	"salotto/service/InterfaceTestPartSrv"
 	"salotto/utils"
 	"salotto/utils/qjson"
 )
 
 func AddInterface(c *gin.Context) {
-	var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
+	var interfaceInfo vo.InterfaceInfoVO
+	//var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
+	//c.ShouldBind(&interfaceInfo)
+	//InterfaceTestPartSrv.ItfTestSrv.AddInterface(&interfaceInfo)
 	c.ShouldBind(&interfaceInfo)
+	fmt.Println(interfaceInfo)
 	InterfaceTestPartSrv.ItfTestSrv.AddInterface(&interfaceInfo)
 	utils.ResponseOkWithMsg(c, "新增成功", nil)
 }
 
 func EditInterface(c *gin.Context) {
-	var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
+	var interfaceInfo vo.InterfaceInfoVO
 	c.ShouldBind(&interfaceInfo)
 	if err := InterfaceTestPartSrv.ItfTestSrv.EditInterface(&interfaceInfo); err != nil {
 		utils.ResponseOkWithMsg(c, "修改失败", nil)

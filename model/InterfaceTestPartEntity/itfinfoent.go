@@ -11,6 +11,6 @@ type TInterfaceInfo struct {
 	Name        string `json:"name"`
 	Url         string `json:"url"`
 	Type        string `json:"type"`
-	MimeType    string `json:"mimeType"`
-	Desc        string `json:"desc"`
+	//MimeType    string `json:"mimeType"`
+	Desc string `json:"desc"`
 }

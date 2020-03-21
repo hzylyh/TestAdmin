@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"salotto/model"
 	"salotto/model/InterfaceTestPartEntity"
+	"salotto/model/vo"
 	"salotto/service"
 	"salotto/utils"
 	"salotto/utils/qjson"
@@ -15,12 +16,56 @@ var ItfTestSrv = &itfTestService{}
 type itfTestService struct {
 }
 
-func (its *itfTestService) AddInterface(interfaceInfo *InterfaceTestPartEntity.TInterfaceInfo) {
+//func (its *itfTestService) AddInterface(interfaceInfo *InterfaceTestPartEntity.TInterfaceInfo) {
+//	interfaceInfo.InterfaceId = utils.GenerateUUID()
+//	if err := service.DB.Create(interfaceInfo).Error; err != nil {
+//		fmt.Println(err)
+//		return
+//	}
+//}
+
+func (its *itfTestService) AddInterface(interfaceInfo *vo.InterfaceInfoVO) {
+
 	interfaceInfo.InterfaceId = utils.GenerateUUID()
-	if err := service.DB.Create(interfaceInfo).Error; err != nil {
+	newItfInfo := &InterfaceTestPartEntity.TInterfaceInfo{
+		ProjectId:   interfaceInfo.ProjectId,
+		InterfaceId: interfaceInfo.InterfaceId,
+		Name:        interfaceInfo.Name,
+		Url:         interfaceInfo.Url,
+		Type:        interfaceInfo.Type,
+		Desc:        interfaceInfo.Desc,
+	}
+
+	tx := service.DB.Begin()
+
+	if err := tx.Create(newItfInfo).Error; err != nil {
 		fmt.Println(err)
+		tx.Rollback()
 		return
 	}
+
+	for _, headerInfo := range interfaceInfo.Headers {
+		newHeaderInfo := &InterfaceTestPartEntity.TInterfaceHeadersInfo{
+			HeaderId:    utils.GenerateUUID(),
+			InterfaceId: interfaceInfo.InterfaceId,
+			HeaderName:  headerInfo.HeaderName,
+			HeaderValue: headerInfo.HeaderValue,
+		}
+		if err := tx.Create(newHeaderInfo).Error; err != nil {
+			fmt.Println(err)
+			tx.Rollback()
+			return
+		}
+
+	}
+
+	tx.Commit()
+
+	//interfaceInfo.InterfaceId = utils.GenerateUUID()
+	//if err := service.DB.Create(interfaceInfo).Error; err != nil {
+	//	fmt.Println(err)
+	//	return
+	//}
 }
 
 func (its *itfTestService) GetInterfaceList(qj *qjson.QJson) (pageInfo *model.PageInfo, err error) {
@@ -69,23 +114,66 @@ func (its *itfTestService) GetInterfaceSelectOptions(json *qjson.QJson) (ret []*
 	}
 }
 
-func (its *itfTestService) GetSingleInterfaceInfo(q *qjson.QJson) (InterfaceTestPartEntity.TInterfaceInfo, error) {
+func (its *itfTestService) GetSingleInterfaceInfo(q *qjson.QJson) (*vo.InterfaceInfoVO, error) {
 	var (
-		ret InterfaceTestPartEntity.TInterfaceInfo
-		err error
+		ret     = InterfaceTestPartEntity.TInterfaceInfo{}
+		headers = []InterfaceTestPartEntity.TInterfaceHeadersInfo{}
+		err     error
 	)
-	itfId := q.GetNum("id")
-	if err = service.DB.Where("id = ?", itfId).First(&ret).Error; err != nil {
+	itfId := q.GetString("interfaceId")
+	if err = service.DB.Where("interface_id = ?", itfId).First(&ret).Error; err != nil {
 		fmt.Println(err)
+		return nil, err
 	}
-	return ret, err
+	if err = service.DB.Where("interface_id = ?", itfId).Find(&headers).Error; err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return &vo.InterfaceInfoVO{
+		ProjectId:   ret.ProjectId,
+		InterfaceId: ret.InterfaceId,
+		Name:        ret.Name,
+		Url:         ret.Url,
+		Type:        ret.Type,
+		Headers:     headers,
+		Desc:        ret.Desc,
+	}, err
 }
 
-func (its *itfTestService) EditInterface(itfInfo *InterfaceTestPartEntity.TInterfaceInfo) error {
-	fmt.Println(itfInfo)
-	if err := service.DB.Model(&InterfaceTestPartEntity.TInterfaceInfo{}).Where("id = ?", itfInfo.ID).Update(itfInfo).Error; err != nil {
+func (its *itfTestService) EditInterface(interfaceInfo *vo.InterfaceInfoVO) error {
+
+	newItfInfo := &InterfaceTestPartEntity.TInterfaceInfo{
+		ProjectId:   interfaceInfo.ProjectId,
+		InterfaceId: interfaceInfo.InterfaceId,
+		Name:        interfaceInfo.Name,
+		Url:         interfaceInfo.Url,
+		Type:        interfaceInfo.Type,
+		Desc:        interfaceInfo.Desc,
+	}
+
+	tx := service.DB.Begin()
+
+	if err := tx.Model(&InterfaceTestPartEntity.TInterfaceInfo{}).Where("interface_id = ?", interfaceInfo.InterfaceId).Update(newItfInfo).Error; err != nil {
+		tx.Rollback()
 		return err
 	}
+
+	for _, headerInfo := range interfaceInfo.Headers {
+		newHeaderInfo := &InterfaceTestPartEntity.TInterfaceHeadersInfo{
+			HeaderId:    headerInfo.HeaderId,
+			InterfaceId: interfaceInfo.InterfaceId,
+			HeaderName:  headerInfo.HeaderName,
+			HeaderValue: headerInfo.HeaderValue,
+		}
+		if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("header_id = ?", headerInfo.HeaderId).Update(newHeaderInfo).Error; err != nil {
+			fmt.Println(err)
+			tx.Rollback()
+			return nil
+		}
+
+	}
+
+	tx.Commit()
 	return nil
 }
 
