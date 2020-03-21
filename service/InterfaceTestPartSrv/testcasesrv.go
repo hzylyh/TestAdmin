@@ -120,13 +120,24 @@ func runCase(caseId string) {
 	// 挨个步骤请求
 	for _, stepInfo := range stepInfos {
 		var (
-			itfInfo     InterfaceTestPartEntity.TInterfaceInfo
-			variables   []InterfaceTestPartEntity.TCaseStepVarInfo
-			assertInfos []InterfaceTestPartEntity.TAssertInfo
+			itfInfo        InterfaceTestPartEntity.TInterfaceInfo
+			itfHeaderInfos []*InterfaceTestPartEntity.TInterfaceHeadersInfo
+			variables      []InterfaceTestPartEntity.TCaseStepVarInfo
+			assertInfos    []InterfaceTestPartEntity.TAssertInfo
 		)
-		replaceReqData := parser.Parse(stepInfo.ReqData) // 变量替换，将请求种的${xxx}替换
+		replaceReqData := parser.Parse(stepInfo.ReqData) // 请求体变量替换，将请求种的${xxx}替换
 		service.DB.Where("interface_id = ?", stepInfo.ItfId).First(&itfInfo)
-		act := string(myRequests.Post(itfInfo.Url, replaceReqData, "application/x-www-form-urlencoded")) // 发送请求
+
+		// 查询请求头信息，进行替换
+		if err := service.DB.Where("interface_id = ?", stepInfo.ItfId).Find(&itfHeaderInfos).Error; err != nil {
+			return
+		} else {
+			for _, headerInfo := range itfHeaderInfos {
+				headerInfo.HeaderValue = parser.Parse(headerInfo.HeaderValue)
+			}
+		}
+
+		act := string(myRequests.Post(itfInfo.Url, replaceReqData, itfHeaderInfos)) // 发送请求
 		// 根据用例步骤id获取步骤变量
 		service.DB.Where("step_id = ?", stepInfo.StepId).Find(&variables)
 		for _, eachStepVar := range variables {

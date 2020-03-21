@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
+	"salotto/model/InterfaceTestPartEntity"
 )
 
 type Requests struct {
@@ -26,14 +27,14 @@ func NewRequests() *Requests {
 	}
 }
 
-func (rq *Requests) Post(url, reqJson string, mimeType string) []byte {
+func (rq *Requests) Post(url, reqJson string, headerInfos []*InterfaceTestPartEntity.TInterfaceHeadersInfo) []byte {
 	var err error
 	rq.Requests, err = http.NewRequest("POST", url, bytes.NewBuffer([]byte(reqJson)))
 	//http.Post()
-	if mimeType == "application/json" {
-		rq.Requests.Header.Set("Content-Type", "application/json")
-	} else if mimeType == "application/x-www-form-urlencoded" {
-		rq.Requests.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	for _, headerInfo := range headerInfos {
+		rq.Requests.Header.Set("content-type", "application/x-www-form-urlencoded")
+		rq.Requests.Header.Set(headerInfo.HeaderName, headerInfo.HeaderValue)
 	}
 
 	resp, err := rq.Client.Do(rq.Requests)

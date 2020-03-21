@@ -142,6 +142,10 @@ func (its *itfTestService) GetSingleInterfaceInfo(q *qjson.QJson) (*vo.Interface
 
 func (its *itfTestService) EditInterface(interfaceInfo *vo.InterfaceInfoVO) error {
 
+	var (
+		total float64
+	)
+
 	newItfInfo := &InterfaceTestPartEntity.TInterfaceInfo{
 		ProjectId:   interfaceInfo.ProjectId,
 		InterfaceId: interfaceInfo.InterfaceId,
@@ -165,10 +169,23 @@ func (its *itfTestService) EditInterface(interfaceInfo *vo.InterfaceInfoVO) erro
 			HeaderName:  headerInfo.HeaderName,
 			HeaderValue: headerInfo.HeaderValue,
 		}
-		if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("header_id = ?", headerInfo.HeaderId).Update(newHeaderInfo).Error; err != nil {
-			fmt.Println(err)
-			tx.Rollback()
+		if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("interface_id = ?", interfaceInfo.InterfaceId).Count(&total).Error; err != nil {
 			return nil
+		} else {
+			if total == 0 {
+				newHeaderInfo.HeaderId = utils.GenerateUUID()
+				if err := tx.Create(newHeaderInfo).Error; err != nil {
+					fmt.Println(err)
+					tx.Rollback()
+					return nil
+				}
+			} else {
+				if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("header_id = ?", headerInfo.HeaderId).Update(newHeaderInfo).Error; err != nil {
+					fmt.Println(err)
+					tx.Rollback()
+					return nil
+				}
+			}
 		}
 
 	}
