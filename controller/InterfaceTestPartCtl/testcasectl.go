@@ -28,6 +28,17 @@ func AddCase(c *gin.Context) {
 
 }
 
+func DelCase(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := InterfaceTestPartSrv.TestCaseSrv.DelCase(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "删除失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "删除成功", nil)
+	}
+}
+
 func GetCaseList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

@@ -1,10 +1,10 @@
 /*
  * @Description:总览页面接口
- * @Author: 吴文周
- * @Github: https://github.com/fodelf
+ * @Author: 侯哲宇
+ * @Github: https://github.com/hzylyh
  * @Date: 2019-06-05 18:57:53
- * @LastEditors: 吴文周
- * @LastEditTime: 2019-11-24 15:29:58
+ * @LastEditors: 侯哲宇
+ * @LastEditTime: 2020-03-21 13:29:58
  */
 import request from '../utils/request'
 
@@ -42,6 +42,14 @@ export function getList (params) {
 export function addCase (params) {
   return request({
     url: '/api/itfPart/case/add',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function delCase (params) {
+  return request({
+    url: '/api/itfPart/case/delete',
     method: 'POST',
     params: params
   })

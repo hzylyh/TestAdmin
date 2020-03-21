@@ -43,7 +43,12 @@
                          class="add-btn"
                          v-if="node.level === 2"
                          size="mini"
-                         @click.stop="addChildDialogVisible(data)">删除</el-button>
+                         @click.stop="delModule(data)">删除</el-button>
+                <el-button type="text"
+                           class="add-btn"
+                           v-if="node.level === 3"
+                           size="mini"
+                           @click.stop="delCase(data)">删除</el-button>
               </el-button-group>
             </span>
         </el-tree>
@@ -145,9 +150,11 @@
              :visible.sync="childDialogVisible"
              width="30%">
     <el-form ref="form"
+             :rules="caseFormRule"
              :model="caseForm"
              label-width="80px">
-      <el-form-item label="用例名称">
+      <el-form-item label="用例名称"
+                    prop="caseName">
         <el-input v-model="caseForm.caseName"></el-input>
       </el-form-item>
       <el-form-item label="用例描述">
@@ -307,6 +314,7 @@ import {
   addModule,
   getList,
   addCase,
+  delCase,
   getCaseList,
   getCaseTree,
   getCaseStepList,
@@ -380,7 +388,19 @@ export default {
         children: 'zones',
         isLeaf: 'leaf'
       },
-      count: 1
+      count: 1,
+
+      caseFormRule: {
+        caseName: [{
+          required: true,
+          message: '请输入用例名称',
+          trigger: 'change'
+        }, {
+          required: true,
+          message: '请输入用例名称',
+          trigger: 'blur'
+        }]
+      }
     }
   },
   filters: {
@@ -470,6 +490,7 @@ export default {
       this.childDialogVisible = true
       this.cashData = data
     },
+
     /**
      * @name: addCase
      * @description: 添加用例
@@ -478,12 +499,36 @@ export default {
      */
     addCase (data) {
       this.caseForm.moduleId = this.cashData.value
-      addCase(this.caseForm).then((res) => {
+      this.$refs['form'].validate(valid => {
+        if (valid) {
+          addCase(this.caseForm).then((res) => {
+            this.$message({
+              message: '恭喜你,新增成功',
+              type: 'success'
+            })
+            this.childDialogVisible = false
+          })
+        }
+      })
+    },
+
+    /**
+     * @name: delCase
+     * @description: 删除用例
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    delCase (data) {
+      console.log(data.id)
+      let reqInfo = {
+        caseId: data.id
+      }
+      delCase(reqInfo).then(response => {
+        console.log(response)
         this.$message({
-          message: '恭喜你,新增成功',
+          message: '恭喜你,删除成功',
           type: 'success'
         })
-        this.childDialogVisible = false
       })
     },
     runCase () {
