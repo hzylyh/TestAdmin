@@ -39,11 +39,26 @@
                            v-if="node.level === 2"
                            size="mini"
                            @click.stop="addChildDialogVisible(data)">新增</el-button>
-              <el-button type="text"
+                <el-button type="text"
                          class="add-btn"
                          v-if="node.level === 2"
                          size="mini"
                          @click.stop="delModule(data)">删除</el-button>
+                <el-button type="text"
+                           class="add-btn"
+                           v-if="node.level === 3"
+                           size="mini"
+                           @click.stop="showEditCase(data)">编辑</el-button>
+<!--                <el-popover-->
+<!--                        placement="top"-->
+<!--                        width="160"-->
+<!--                        v-model="visible">-->
+<!--                  <p>这是一段内容这是一段内容确定删除吗？</p>-->
+<!--                  <div style="text-align: right; margin: 0">-->
+<!--                    <el-button size="mini" type="text" @click="visible = false">取消</el-button>-->
+<!--                    <el-button type="primary" size="mini" @click="visible = false">确定</el-button>-->
+<!--                  </div>-->
+<!--                </el-popover>-->
                 <el-button type="text"
                            class="add-btn"
                            v-if="node.level === 3"
@@ -145,11 +160,11 @@
         <el-button type="primary" @click="addModuleAction">确 定</el-button>
       </span>
     </el-dialog>
-  <!-- 用例新增 -->
+  <!-- 用例新增、修改 -->
   <el-dialog title="用例模块"
              :visible.sync="childDialogVisible"
              width="30%">
-    <el-form ref="form"
+    <el-form ref="caseForm"
              :rules="caseFormRule"
              :model="caseForm"
              label-width="80px">
@@ -313,6 +328,7 @@
 import {
   addModule,
   getList,
+  getCase,
   addCase,
   delCase,
   getCaseList,
@@ -499,7 +515,44 @@ export default {
      */
     addCase (data) {
       this.caseForm.moduleId = this.cashData.value
-      this.$refs['form'].validate(valid => {
+      this.$refs['caseForm'].validate(valid => {
+        if (valid) {
+          addCase(this.caseForm).then((res) => {
+            this.$message({
+              message: '恭喜你,新增成功',
+              type: 'success'
+            })
+            this.childDialogVisible = false
+          })
+        }
+      })
+    },
+
+    /**
+     * @name: showEditCase
+     * @description: 显示编辑用例dialog
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    showEditCase (data) {
+      let reqInfo = {
+        caseId: data.id
+      }
+      getCase(reqInfo).then(response => {
+        this.caseForm = response
+        this.childDialogVisible = true
+      })
+    },
+
+    /**
+     * @name: editCaseAction
+     * @description: 添加用例
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    editCaseAction (data) {
+      // this.caseForm.moduleId = this.cashData.value
+      this.$refs['caseForm'].validate(valid => {
         if (valid) {
           addCase(this.caseForm).then((res) => {
             this.$message({

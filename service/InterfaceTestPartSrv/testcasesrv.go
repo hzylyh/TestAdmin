@@ -107,6 +107,19 @@ func (tcs testCaseService) DelCase(q *qjson.QJson) error {
 	return nil
 }
 
+func (tcs testCaseService) GetCase(q *qjson.QJson) (InterfaceTestPartEntity.TItfCaseInfo, error) {
+	var (
+		caseInfo = InterfaceTestPartEntity.TItfCaseInfo{}
+		err      error
+	)
+	caseId := q.GetString("caseId")
+	// 目前为物理删除，且只删除了用例步骤表
+	if err = service.DB.Where("case_id = ?", caseId).First(&caseInfo).Error; err != nil {
+		fmt.Println(err)
+	}
+	return caseInfo, nil
+}
+
 func runCase(caseId string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo

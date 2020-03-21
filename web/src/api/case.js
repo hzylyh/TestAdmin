@@ -47,6 +47,14 @@ export function addCase (params) {
   })
 }
 
+export function getCase (params) {
+  return request({
+    url: '/api/itfPart/case/get',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function delCase (params) {
   return request({
     url: '/api/itfPart/case/delete',
