@@ -178,7 +178,12 @@
     </el-form>
     <span slot="footer" class="dialog-footer">
         <el-button @click="childDialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addCase">确 定</el-button>
+        <el-button type="primary"
+                   v-if="caseActionFlag === 'add'"
+                   @click="addCase">确 定</el-button>
+        <el-button type="primary"
+                   v-if="caseActionFlag === 'edit'"
+                   @click="editCaseAction">确 定</el-button>
       </span>
   </el-dialog>
   <!-- 步骤新增 -->
@@ -330,6 +335,7 @@ import {
   getList,
   getCase,
   addCase,
+  editCase,
   delCase,
   getCaseList,
   getCaseTree,
@@ -349,6 +355,7 @@ export default {
     return {
       caseId: '',
       actionFlag: '',
+      caseActionFlag: '',
       dialogVisible: false,
       childDialogVisible: false,
       caseStepDialogVisible: false,
@@ -372,9 +379,10 @@ export default {
         projectId: 'd244862701204b0e8467ec5f5a666b32'
       },
       caseForm: {
-        'moduleId': '',
-        'caseName': '',
-        'caseDesc': ''
+        caseId: '',
+        moduleId: '',
+        caseName: '',
+        caseDesc: ''
       },
       caseStepForm: {
         caseId: '',
@@ -504,6 +512,7 @@ export default {
     },
     addChildDialogVisible (data) {
       this.childDialogVisible = true
+      this.caseActionFlag = 'add'
       this.cashData = data
     },
 
@@ -535,31 +544,33 @@ export default {
      * @return {type}: 默认类型
      */
     showEditCase (data) {
+      let _this = this
+      this.caseActionFlag = 'edit'
       let reqInfo = {
         caseId: data.id
       }
       getCase(reqInfo).then(response => {
-        this.caseForm = response
-        this.childDialogVisible = true
+        _this.caseForm = response
+        _this.childDialogVisible = true
       })
     },
 
     /**
      * @name: editCaseAction
-     * @description: 添加用例
+     * @description: 编辑用例
      * @param {type}: 默认参数
      * @return {type}: 默认类型
      */
-    editCaseAction (data) {
-      // this.caseForm.moduleId = this.cashData.value
+    editCaseAction () {
       this.$refs['caseForm'].validate(valid => {
         if (valid) {
-          addCase(this.caseForm).then((res) => {
+          editCase(this.caseForm).then((res) => {
             this.$message({
-              message: '恭喜你,新增成功',
+              message: '恭喜你,修改成功',
               type: 'success'
             })
             this.childDialogVisible = false
+            this.getModuleList()
           })
         }
       })

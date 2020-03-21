@@ -28,6 +28,17 @@ func AddCase(c *gin.Context) {
 
 }
 
+func EditCase(c *gin.Context) {
+	var itfTestCaseInfo InterfaceTestPartEntity.TItfCaseInfo
+	c.ShouldBind(&itfTestCaseInfo)
+	if err := InterfaceTestPartSrv.TestCaseSrv.EditCase(&itfTestCaseInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "修改失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "修改成功", nil)
+	}
+
+}
+
 func GetCase(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

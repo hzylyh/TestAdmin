@@ -120,6 +120,14 @@ func (tcs testCaseService) GetCase(q *qjson.QJson) (InterfaceTestPartEntity.TItf
 	return caseInfo, nil
 }
 
+func (tcs testCaseService) EditCase(itfCaseInfo *InterfaceTestPartEntity.TItfCaseInfo) error {
+	if err := service.DB.Model(InterfaceTestPartEntity.TItfCaseInfo{}).Where("case_id = ?", itfCaseInfo.CaseId).Update(itfCaseInfo).Error; err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
 func runCase(caseId string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo
