@@ -227,6 +227,7 @@ export default {
   data () {
     // 这里存放数据
     return {
+      projectId: localStorage.getItem('projectId'),
       dialogVisible: false,
       dialogVisibles: false,
       editDialogVisible: false,
@@ -251,6 +252,7 @@ export default {
       }],
       tableData: [],
       form: {
+        projectId: this.projectId,
         name: '',
         url: '',
         desc: '',
@@ -335,6 +337,7 @@ export default {
        * @return {type}: 默认类型
        */
     addApiAction () {
+      console.log(this.form)
       addApi(this.form).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
@@ -370,6 +373,7 @@ export default {
      */
     queryApiList () {
       let reqInfo = {
+        projectId: this.projectId,
         pageNum: this.pageNum,
         pageSize: this.pageSize
       }

@@ -122,11 +122,13 @@ export default {
     },
     /**
      * @name: goToProject
-     * @description: 去往项目明显
-     * @param {type}: 默认参数
+     * @description: 去往项目
+     * @param {type}: 项目信息
      * @return {type}: 默认类型
      */
-    goToProject () {
+    goToProject (projectItem) {
+      // 存储项目ID，方便后续请求使用
+      localStorage.setItem('projectId', projectItem.projectId)
       this.$router.push({
         name: 'ItfDashboard'
       })

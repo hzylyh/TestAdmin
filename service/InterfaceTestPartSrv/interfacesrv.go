@@ -73,7 +73,9 @@ func (its *itfTestService) GetInterfaceList(qj *qjson.QJson) (pageInfo *model.Pa
 		ret []*InterfaceTestPartEntity.TInterfaceInfo
 	)
 
-	if pageInfo, err = utils.PaginationWithDB(service.DB, &ret, qj); err != nil {
+	projectId := qj.GetString("projectId")
+
+	if pageInfo, err = utils.PaginationWithDB(service.DB.Where("project_id = ?", projectId), &ret, qj); err != nil {
 		return nil, err
 	} else {
 		return pageInfo, nil
