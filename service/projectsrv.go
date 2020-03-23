@@ -12,13 +12,13 @@ var ProjectSrv = &projectService{}
 type projectService struct {
 }
 
-func (ps *projectService) AddProject(projectInfo *model.TProjectInfo) {
+func (ps *projectService) AddProject(projectInfo *model.TProjectInfo) (string, error) {
 	projectInfo.ProjectId = utils.GenerateUUID()
-	if err := DB.Create(projectInfo); err != nil {
+	if err := DB.Create(projectInfo).Error; err != nil {
 		fmt.Println(err)
-		return
+		return "", err
 	}
-
+	return projectInfo.ProjectId, nil
 }
 
 func (ps *projectService) GetProjectList(qj *qjson.QJson) []*model.TProjectInfo {

@@ -359,6 +359,7 @@ export default {
   components: { JsonFormat },
   data () {
     return {
+      projectId: localStorage.getItem('projectId'),
       caseId: '',
       actionFlag: '',
       caseActionFlag: '',
@@ -382,7 +383,7 @@ export default {
       addModuleForm: {
         moduleName: '',
         moduleDesc: '',
-        projectId: 'd244862701204b0e8467ec5f5a666b32'
+        projectId: ''
       },
       caseForm: {
         caseId: '',
@@ -508,6 +509,8 @@ export default {
      * @return {type}: 默认类型
      */
     addModuleAction () {
+      this.addModuleForm.projectId = this.projectId
+      // console.log(this.addModuleForm)
       addModule(this.addModuleForm).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
@@ -664,10 +667,11 @@ export default {
         this.caseId = data.value
         this.getCaseStepList(data.value)
       }
+      // this.loadNode(node)
     },
     loadNode (node, resolve) {
       if (node.level === 1) {
-        getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
+        getList({ projectId: this.projectId }).then((res) => {
           return resolve(res)
         })
       } else if (node.level === 2) {
@@ -694,7 +698,7 @@ export default {
     },
     getModuleList () {
       // this.$router.projectId
-      getList({ projectId: 'd244862701204b0e8467ec5f5a666b32' }).then((res) => {
+      getList({ projectId: this.projectId }).then((res) => {
         console.log(res)
         // this.dataList = res
         this.dataList = [{

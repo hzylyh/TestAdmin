@@ -65,7 +65,7 @@
             class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary"
-                   @click="addPojectAction">确 定</el-button>
+                   @click="addProjectAction">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -84,8 +84,9 @@ export default {
       projectList: [],
       dialogVisible: false,
       form: {
+        projectId: '',
         projectName: '',
-        projetcDesc: ''
+        projectDesc: ''
       }
     }
   },
@@ -94,12 +95,12 @@ export default {
       this.dialogVisible = true
     },
     /**
-     * @name: addPojectAction
+     * @name: addProjectAction
      * @description: 新增项目
      * @param {type}: 默认参数
      * @return {type}: 默认类型
      */
-    addPojectAction () {
+    addProjectAction () {
       addProject(this.form).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
@@ -109,6 +110,8 @@ export default {
         this.$router.push({
           name: 'apiList'
         })
+        this.form.projectId = res.projectId
+        this.goToProject(this.form)
       })
     },
     queryProjectList () {
