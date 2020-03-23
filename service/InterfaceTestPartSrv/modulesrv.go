@@ -39,3 +39,11 @@ func (ms *moduleService) GetModuleList(qj *qjson.QJson) (res []map[string]interf
 	}
 	return treeData, nil
 }
+
+func (ms *moduleService) DelProjectModule(q *qjson.QJson) error {
+	moduleId := q.GetString("moduleId")
+	if err := service.DB.Where("module_id = ?", moduleId).Delete(&InterfaceTestPartEntity.TProjectModule{}).Error; err != nil {
+		return err
+	}
+	return nil
+}

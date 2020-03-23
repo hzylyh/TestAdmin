@@ -18,6 +18,17 @@ func AddProjectModule(c *gin.Context) {
 	}
 }
 
+func DelProjectModule(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := InterfaceTestPartSrv.ModuleSrv.DelProjectModule(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "删除失败", err.Error())
+	} else {
+		utils.ResponseOkWithMsg(c, "删除成功", nil)
+	}
+}
+
 func GetProjectModuleList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

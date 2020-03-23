@@ -16,6 +16,14 @@ export function addModule (params) {
   })
 }
 
+export function delModule (params) {
+  return request({
+    url: '/api/itfPart/module/delete',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function getCaseList (params) {
   return request({
     url: '/api/itfPart/case/getList',

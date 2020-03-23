@@ -10,9 +10,9 @@
       <el-scrollbar style="height: 100%">
 <!--        <el-input></el-input>-->
         <el-button-group class="sl-btn-group">
-          <el-button @click="addModule"
-                     type="primary"
-                     size="mini">新增</el-button>
+<!--          <el-button @click="addModule"-->
+<!--                     type="primary"-->
+<!--                     size="mini">新增</el-button>-->
           <el-button @click="runCase"
                      type="primary"
                      size="mini">运行</el-button>
@@ -34,6 +34,11 @@
                 {{ data.label }}
               </el-badge>
               <el-button-group>
+                <el-button type="text"
+                           class="add-btn"
+                           v-if="node.level === 1"
+                           size="mini"
+                           @click.stop="addModule">新增</el-button>
                 <el-button type="text"
                            class="add-btn"
                            v-if="node.level === 2"
@@ -332,6 +337,7 @@
 <script>
 import {
   addModule,
+  delModule,
   getList,
   getCase,
   addCase,
@@ -496,7 +502,7 @@ export default {
       this.dialogVisible = true
     },
     /**
-     * @name: addModule
+     * @name: addModuleAction
      * @description: 新增模块接口调用
      * @param {type}: 默认参数
      * @return {type}: 默认类型
@@ -510,6 +516,25 @@ export default {
         this.dialogVisible = false
       })
     },
+
+    /**
+     * @name: delModule
+     * @description: 删除模块接口调用
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    delModule (data) {
+      let reqInfo = {
+        moduleId: data.id
+      }
+      delModule(reqInfo).then(response => {
+        this.$message({
+          message: '恭喜你,删除成功',
+          type: 'success'
+        })
+      })
+    },
+
     addChildDialogVisible (data) {
       this.childDialogVisible = true
       this.caseActionFlag = 'add'

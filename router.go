@@ -85,6 +85,7 @@ func MapRoutes() *gin.Engine {
 	// 模块管理部分
 	projectModuleApi = interfaceTestApi.Group("/module")
 	projectModuleApi.POST("/add", InterfaceTestPartCtl.AddProjectModule)
+	projectModuleApi.POST("/delete", InterfaceTestPartCtl.DelProjectModule)
 	projectModuleApi.POST("/getList", InterfaceTestPartCtl.GetProjectModuleList)
 
 	// 接口管理部分
