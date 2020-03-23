@@ -107,7 +107,9 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="请求头">
+        <el-form-item :label="index === 0 ? '请求头' : ''"
+                      v-for="(item, index) in form.headers"
+                      :key="index">
           <!--          <el-select v-model="form.mimeType"-->
           <!--                     placeholder="请选择">-->
           <!--            <el-option v-for="item in mimeOptions"-->
@@ -116,14 +118,17 @@
           <!--                       :value="item.value">-->
           <!--            </el-option>-->
           <!--          </el-select>-->
-          <el-row v-for="(item, index) in form.headers"
-                  :gutter="10"
-                  :key="index">
-            <el-col :span="24">
+          <el-row :gutter="10"
+                  style="width: 100%">
+            <el-col :span="11">
               <el-input v-model="item.headerName"></el-input>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="11">
               <el-input v-model="item.headerValue"></el-input>
+            </el-col>
+            <el-col :span="2">
+              <i @click="HeaderRowAction(index,1)" v-if="index === 0" class="add" />
+              <i @click="HeaderRowAction(index,0)" v-else class="reduce" />
             </el-col>
           </el-row>
         </el-form-item>
@@ -181,7 +186,9 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="请求头">
+        <el-form-item :label="index === 0 ? '请求头' : ''"
+                      v-for="(item, index) in form.headers"
+                      :key="index">
           <!--          <el-select v-model="form.mimeType"-->
           <!--                     placeholder="请选择">-->
           <!--            <el-option v-for="item in mimeOptions"-->
@@ -190,14 +197,16 @@
           <!--                       :value="item.value">-->
           <!--            </el-option>-->
           <!--          </el-select>-->
-          <el-row v-for="(item, index) in form.headers"
-                  :gutter="10"
-                  :key="index">
-            <el-col :span="24">
+          <el-row :gutter="10">
+            <el-col :span="11">
               <el-input v-model="item.headerName"></el-input>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="11">
               <el-input v-model="item.headerValue"></el-input>
+            </el-col>
+            <el-col :span="2">
+              <i @click="HeaderRowAction(index,1)" v-if="index === 0" class="add" />
+              <i @click="HeaderRowAction(index,0)" v-else class="reduce" />
             </el-col>
           </el-row>
         </el-form-item>
@@ -252,7 +261,7 @@ export default {
       }],
       tableData: [],
       form: {
-        projectId: this.projectId,
+        projectId: '',
         name: '',
         url: '',
         desc: '',
@@ -337,7 +346,8 @@ export default {
        * @return {type}: 默认类型
        */
     addApiAction () {
-      console.log(this.form)
+      this.form.projectId = this.projectId
+      debugger
       addApi(this.form).then((res) => {
         this.$message({
           message: '恭喜你,新增成功',
@@ -345,6 +355,7 @@ export default {
         })
         this.dialogVisible = false
       })
+      this.queryApiList()
     },
 
     /**
@@ -408,6 +419,27 @@ export default {
     },
     handleCurrentChange (val) {
       this.pageNum = val
+    },
+
+    /**
+     * @name: HeaderRowAction
+     * @description: 添加请求头
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    HeaderRowAction (index, type) {
+      // type: 0 减；1 加
+      if (type === 0) {
+        this.form.headers.splice(index, 1)
+      } else if (type === 1) {
+        let item = {
+          headerId: '',
+          interfaceId: '',
+          headerName: '',
+          headerValue: ''
+        }
+        this.form.headers.push(item)
+      }
     }
   },
   // 生命周期 - 创建完成（可以访问当前this实例）
@@ -449,5 +481,26 @@ export default {
     /deep/.el-form-item__content {
       display: flex;
     }
+  }
+  .add {
+    // display: inline-block;
+    display: block;
+    height: 28px;
+    width: 28px;
+    margin-left: 5px;
+    background: url("../../assets/img/line_add.png") center center;
+    background-size: contain;
+    float: right;
+    margin-right: -5px;
+  }
+  .reduce {
+    // display: inline-block;
+    display: block;
+    height: 28px;
+    width: 28px;
+    background: url("../../assets/img/line_reduce.png") center center;
+    background-size: contain;
+    float: right;
+    margin-right: -5px;
   }
 </style>

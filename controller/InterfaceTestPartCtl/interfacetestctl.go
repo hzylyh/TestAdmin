@@ -14,6 +14,8 @@ func AddInterface(c *gin.Context) {
 	//var interfaceInfo InterfaceTestPartEntity.TInterfaceInfo
 	//c.ShouldBind(&interfaceInfo)
 	//InterfaceTestPartSrv.ItfTestSrv.AddInterface(&interfaceInfo)
+	//res, _ := ioutil.ReadAll(c.Request.Body)
+	//fmt.Println(string(res))
 	c.ShouldBind(&interfaceInfo)
 	fmt.Println(interfaceInfo)
 	InterfaceTestPartSrv.ItfTestSrv.AddInterface(&interfaceInfo)
