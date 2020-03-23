@@ -171,7 +171,7 @@ func (its *itfTestService) EditInterface(interfaceInfo *vo.InterfaceInfoVO) erro
 			HeaderName:  headerInfo.HeaderName,
 			HeaderValue: headerInfo.HeaderValue,
 		}
-		if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("interface_id = ?", interfaceInfo.InterfaceId).Count(&total).Error; err != nil {
+		if err := tx.Model(&InterfaceTestPartEntity.TInterfaceHeadersInfo{}).Where("header_id = ?", headerInfo.HeaderId).Count(&total).Error; err != nil {
 			return nil
 		} else {
 			if total == 0 {

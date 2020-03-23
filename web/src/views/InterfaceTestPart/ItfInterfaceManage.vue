@@ -354,8 +354,8 @@ export default {
           type: 'success'
         })
         this.dialogVisible = false
+        this.queryApiList()
       })
-      this.queryApiList()
     },
 
     /**
