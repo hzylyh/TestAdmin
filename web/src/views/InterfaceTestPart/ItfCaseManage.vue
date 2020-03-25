@@ -100,10 +100,15 @@
           <el-table-column show-overflow-tooltip
                            label="执行结果">
             <template slot-scope="scope">
-              <el-tag :type="scope.row.stepStatus | statusFilter"
+              <el-tag v-if="scope.row.stepStatus !== '成功'"
+                      :type="scope.row.stepStatus | statusFilter"
                       style="cursor: pointer"
                       effect="plain"
-                      @click="showStepResDialog"
+                      @click="showStepResDialog(scope.row)"
+                      disable-transitions>{{ scope.row.stepStatus }}</el-tag>
+              <el-tag v-else
+                      :type="scope.row.stepStatus | statusFilter"
+                      effect="plain"
                       disable-transitions>{{ scope.row.stepStatus }}</el-tag>
             </template>
           </el-table-column>
@@ -325,7 +330,10 @@
   </el-dialog>
 
   <el-dialog :visible="stepResDialogVisible">
-    <json-format v-if="stepResDialogVisible" :json-cont="testObj" :col="testCol"></json-format>
+<!--    <json-format v-if="stepResDialogVisible" :json-cont="testObj" :col="testCol"></json-format>-->
+    <el-row>
+      {{ stepLog }}
+    </el-row>
     <span slot="footer" class="dialog-footer">
       <el-button @click="stepResDialogVisible = false">取 消</el-button>
     </span>
@@ -360,6 +368,7 @@ export default {
   data () {
     return {
       projectId: localStorage.getItem('projectId'),
+      stepLog: '',
       caseId: '',
       actionFlag: '',
       caseActionFlag: '',
@@ -756,7 +765,9 @@ export default {
         this.getCaseStepList(caseStepInfo.caseId)
       })
     },
-    showStepResDialog () {
+    showStepResDialog (row) {
+      console.log(row.stepLog)
+      this.stepLog = row.stepLog
       this.stepResDialogVisible = true
     },
     assertAction (index, type) {

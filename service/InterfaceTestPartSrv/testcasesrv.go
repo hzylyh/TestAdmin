@@ -13,6 +13,7 @@ import (
 	"salotto/utils/parse"
 	"salotto/utils/qjson"
 	"salotto/utils/requests"
+	"salotto/utils/stime"
 )
 
 var TestCaseSrv = &testCaseService{}
@@ -64,10 +65,12 @@ func (tcs testCaseService) GetCaseTree(qj *qjson.QJson) (caseInfos []map[string]
 
 func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	var (
-		rows *sql.Rows
-		err  error
+		rows      *sql.Rows
+		err       error
+		beginTime string
 	)
 	moduleMap := qj.GetMap("cases")
+	beginTime = stime.GetCurTime()
 	// 暂时不对module进行排序
 	for k, v := range moduleMap {
 		fmt.Println(k)
@@ -91,7 +94,7 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 		}
 
 		for _, caseId := range caseIdList {
-			runCase(caseId.(string))
+			runCase(caseId.(string), beginTime)
 		}
 	}
 
@@ -128,7 +131,7 @@ func (tcs testCaseService) EditCase(itfCaseInfo *InterfaceTestPartEntity.TItfCas
 	return nil
 }
 
-func runCase(caseId string) {
+func runCase(caseId, beginTime string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo
 		properties = make(map[string]string)
@@ -179,7 +182,7 @@ func runCase(caseId string) {
 		//verify := []string{"resultEntity.textToSpeechContent", "resultMessage", "resultEntity.timeoutInstructionList"}
 		//hassert.MulAssert(stepInfo.ExpRes, act, verify)
 		service.DB.Where("step_id = ?", stepInfo.StepId).Find(&assertInfos)
-		hassert.MulAssertNew(act, assertInfos, stepInfo)
+		hassert.MulAssertNew(act, assertInfos, stepInfo, beginTime)
 	}
 	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	//act := `{"name": "houzheyu", "age": 33}`

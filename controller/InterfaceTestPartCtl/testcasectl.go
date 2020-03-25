@@ -13,7 +13,9 @@ func RunCase(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),
 	}
-	InterfaceTestPartSrv.TestCaseSrv.RunCase(&reqInfo)
+
+	// goroutine先在此控制
+	go InterfaceTestPartSrv.TestCaseSrv.RunCase(&reqInfo)
 	utils.ResponseOkWithMsg(c, "执行成功", nil)
 }
 

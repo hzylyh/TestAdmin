@@ -20,8 +20,8 @@ func (ha *HAssert) AssertEqual(exp, act string) {
 //
 //}
 
-func MulAssertNew(act string, assertInfos []InterfaceTestPartEntity.TAssertInfo, stepInfo InterfaceTestPartEntity.TItfCaseStepInfo) {
-	defer recoverAssert(stepInfo)
+func MulAssertNew(act string, assertInfos []InterfaceTestPartEntity.TAssertInfo, stepInfo InterfaceTestPartEntity.TItfCaseStepInfo, beginTime string) {
+	defer recoverAssert(stepInfo, beginTime)
 	for _, assertInfo := range assertInfos {
 		exp := assertInfo.ExpValue
 		act := gjson.Get(act, assertInfo.AssertCol)
@@ -43,10 +43,11 @@ func MulAssert(exp, act string, verifyCols []string) {
 
 }
 
-func recoverAssert(stepInfo InterfaceTestPartEntity.TItfCaseStepInfo) {
+func recoverAssert(stepInfo InterfaceTestPartEntity.TItfCaseStepInfo, beginTime string) {
 	// 后续写日志表日库逻辑，可扩展成接口，对接不同记录模式
 	runLog := &InterfaceTestPartEntity.TItfCaseStepRunHis{
 		StepHisId:  utils.GenerateUUID(),
+		BeginTime:  beginTime,
 		CaseId:     stepInfo.CaseId,
 		StepId:     stepInfo.StepId,
 		StepStatus: "",
