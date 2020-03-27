@@ -18,21 +18,15 @@
                      size="mini">运行</el-button>
         </el-button-group>
 
-        <el-tree :props="props"
-                 ref="caseTree"
-                 :load="loadNode"
+        <el-tree ref="caseTree"
                  :data ='dataList'
-                 lazy
                  show-checkbox
                  node-key="id"
-                 :default-expanded-keys="[1]"
                  @node-click="handleNodeClick"
                  @check-change="handleCheckChange">
             <span class="tree-line"
                   slot-scope="{ node, data}">
-              <el-badge is-dot class="item">
-                {{ data.label }}
-              </el-badge>
+              {{ data.nodeName }}
               <el-button-group>
                 <el-button type="text"
                            class="add-btn"
@@ -352,6 +346,7 @@ import {
   editCase,
   delCase,
   getCaseList,
+  getTree,
   getCaseTree,
   getCaseStepList,
   addCaseStep,
@@ -453,11 +448,12 @@ export default {
       return statusMap[val]
     }
   },
-  created () {
-    this.getModuleList()
-  },
+  // created () {
+  //   this.getModuleList()
+  // },
   mounted () {
     this.getItfSelectOptions()
+    this.getNodeList()
   },
   methods: {
     editCaseStep (row) {
@@ -662,7 +658,7 @@ export default {
       console.log(data, checked, indeterminate)
     },
     handleNodeClick (data, node, last) {
-      console.log(data.value)
+      console.log(data.nodeName)
       if (node.level === 1) { // 是一级节点，获取用例列表
         // let reqInfo = {
         //   moduleId: data.value,
@@ -705,16 +701,23 @@ export default {
       }
       // if (node.level > 3) return resolve([])
     },
-    getModuleList () {
+    getNodeList () {
       // this.$router.projectId
-      getList({ projectId: this.projectId }).then((res) => {
-        console.log(res)
-        // this.dataList = res
-        this.dataList = [{
-          id: 1,
-          label: '项目名',
-          children: res
-        }]
+      // getList({ projectId: this.projectId }).then((res) => {
+      //   console.log(res)
+      //   // this.dataList = res
+      //   this.dataList = [{
+      //     id: 1,
+      //     label: '项目名',
+      //     children: res
+      //   }]
+      // })
+      let reqInfo = {
+        projectId: localStorage.getItem('projectId')
+      }
+      getTree(reqInfo).then(response => {
+        console.log(response)
+        this.dataList = [response]
       })
     },
     addCaseStep () {

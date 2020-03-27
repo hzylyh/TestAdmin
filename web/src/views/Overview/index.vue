@@ -74,6 +74,7 @@
 <script>
 import undeveloped from '@/components/Dev/undeveloped.vue'
 import { addProject, getProjectList } from '@/api/overView.js'
+import { addCaseTree } from '@/api/case.js'
 export default {
   name: 'index',
   components: {
@@ -132,8 +133,14 @@ export default {
     goToProject (projectItem) {
       // 存储项目ID，方便后续请求使用
       localStorage.setItem('projectId', projectItem.projectId)
-      this.$router.push({
-        name: 'ItfDashboard'
+      let reqInfo = {
+        projectId: projectItem.projectId,
+        projectName: projectItem.projectName
+      }
+      addCaseTree(reqInfo).then(response => {
+        this.$router.push({
+          name: 'ItfDashboard'
+        })
       })
     }
   },

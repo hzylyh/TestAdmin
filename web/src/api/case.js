@@ -32,7 +32,7 @@ export function getCaseList (params) {
   })
 }
 
-export function getCaseTree (params) {
+export function getTree (params) {
   return request({
     url: '/api/itfPart/case/getTree',
     method: 'POST',
@@ -50,6 +50,14 @@ export function getList (params) {
 export function addCase (params) {
   return request({
     url: '/api/itfPart/case/add',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function addCaseTree (params) {
+  return request({
+    url: '/api/itfPart/case/tree/init',
     method: 'POST',
     params: params
   })

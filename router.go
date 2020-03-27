@@ -22,7 +22,6 @@ func MapRoutes() *gin.Engine {
 		itfTestCaseApi   *gin.RouterGroup
 		overviewApi      *gin.RouterGroup
 		itfManageApi     *gin.RouterGroup
-		projectModuleApi *gin.RouterGroup
 		itfCaseStepApi   *gin.RouterGroup
 	)
 	router = gin.New()
@@ -71,8 +70,10 @@ func MapRoutes() *gin.Engine {
 	itfTestCaseApi.POST("/edit", InterfaceTestPartCtl.EditCase)
 	itfTestCaseApi.POST("/delete", InterfaceTestPartCtl.DelCase)
 	itfTestCaseApi.POST("/getList", InterfaceTestPartCtl.GetCaseList)
-	itfTestCaseApi.POST("/getTree", InterfaceTestPartCtl.GetCaseTree)
-	itfTestCaseApi.POST("/test", InterfaceTestPartCtl.TestSth)
+	itfTestCaseApi.POST("/getTree", InterfaceTestPartCtl.GetCaseTreeNode)
+
+	caseTreePart := itfTestCaseApi.Group("/tree")
+	caseTreePart.POST("/init", InterfaceTestPartCtl.InitTree)
 
 	// 用例步骤
 	itfCaseStepApi = itfTestCaseApi.Group("/step")
@@ -83,10 +84,10 @@ func MapRoutes() *gin.Engine {
 	itfCaseStepApi.POST("/getList", InterfaceTestPartCtl.GetStepList)
 
 	// 模块管理部分
-	projectModuleApi = interfaceTestApi.Group("/module")
-	projectModuleApi.POST("/add", InterfaceTestPartCtl.AddProjectModule)
-	projectModuleApi.POST("/delete", InterfaceTestPartCtl.DelProjectModule)
-	projectModuleApi.POST("/getList", InterfaceTestPartCtl.GetProjectModuleList)
+	//projectModuleApi = interfaceTestApi.Group("/module")
+	//projectModuleApi.POST("/add", InterfaceTestPartCtl.AddProjectModule)
+	//projectModuleApi.POST("/delete", InterfaceTestPartCtl.DelProjectModule)
+	//projectModuleApi.POST("/getList", InterfaceTestPartCtl.GetCaseTreeNode)
 
 	// 接口管理部分
 	itfManageApi = interfaceTestApi.Group("/interface")

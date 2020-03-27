@@ -90,3 +90,25 @@ func TestSth(c *gin.Context) {
 	json.Unmarshal([]byte(`{"name": "houzheyu", "age": 33}`), &resMap)
 	c.JSON(200, resMap)
 }
+
+func GetCaseTreeNode(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.TestCaseSrv.GetCaseTreeNode(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "查询成功", res)
+	}
+}
+
+func InitTree(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := InterfaceTestPartSrv.TestCaseSrv.InitTree(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "成功", nil)
+	}
+}

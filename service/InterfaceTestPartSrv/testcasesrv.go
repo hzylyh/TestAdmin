@@ -7,6 +7,7 @@ import (
 	"github.com/tidwall/gjson"
 	"salotto/model"
 	"salotto/model/InterfaceTestPartEntity"
+	"salotto/model/vo"
 	"salotto/service"
 	"salotto/utils"
 	"salotto/utils/hassert"
@@ -131,6 +132,58 @@ func (tcs testCaseService) EditCase(itfCaseInfo *InterfaceTestPartEntity.TItfCas
 	return nil
 }
 
+func (tcs testCaseService) GetCaseTreeNode(q *qjson.QJson) (nodeInfo *vo.CaseTreeInfoVO, err error) {
+	projectId := q.GetString("projectId")
+	var (
+		allNodeInfo   []*InterfaceTestPartEntity.TNodeInfo
+		allNodeInfoVO []*vo.CaseTreeInfoVO
+		resNodeInfo   InterfaceTestPartEntity.TNodeInfo
+		resNodeInfoVO vo.CaseTreeInfoVO
+	)
+	if err := service.DB.Model(InterfaceTestPartEntity.TItfCaseInfo{}).Where("project_id = ?", projectId).Find(&allNodeInfo).Error; err != nil {
+		fmt.Println(err)
+		return nil, err
+	} else {
+		for _, nodeInfo := range allNodeInfo {
+			newNode := &vo.CaseTreeInfoVO{
+				ProjectId: nodeInfo.ProjectId,
+				NodeId:    nodeInfo.NodeId,
+				PNodeId:   nodeInfo.PNodeId,
+				NodeName:  nodeInfo.NodeName,
+				NodeDesc:  nodeInfo.NodeDesc,
+				Children:  nil,
+			}
+			allNodeInfoVO = append(allNodeInfoVO, newNode)
+		}
+		service.DB.Where("project_id = ? and p_node_id = ?", projectId, "-1").First(&resNodeInfo)
+		resNodeInfoVO.ProjectId = projectId
+		resNodeInfoVO.NodeId = resNodeInfo.NodeId
+		resNodeInfoVO.PNodeId = resNodeInfo.PNodeId
+		resNodeInfoVO.NodeName = resNodeInfo.NodeName
+		makeTree(allNodeInfoVO, &resNodeInfoVO)
+	}
+
+	return &resNodeInfoVO, nil
+}
+
+func (tcs testCaseService) InitTree(q *qjson.QJson) error {
+	projectId := q.GetString("projectId")
+	projectName := q.GetString("projectName")
+	projectTreeRoot := InterfaceTestPartEntity.TNodeInfo{
+		ProjectId: projectId,
+		NodeId:    "0",
+		PNodeId:   "-1",
+		NodeNum:   "",
+		NodeName:  projectName,
+		NodeType:  "fold",
+		NodeDesc:  "",
+	}
+	if err := service.DB.Create(&projectTreeRoot).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func runCase(caseId, beginTime string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo
@@ -187,4 +240,29 @@ func runCase(caseId, beginTime string) {
 	//exp := `{"name": "houzheyu", "age": 33, "list": ["a", "b"]}`
 	//act := `{"name": "houzheyu", "age": 33}`
 	//verify := []string{"name", "age", "list"}
+}
+
+func makeTree(allNodeInfo []*vo.CaseTreeInfoVO, nodeInfo *vo.CaseTreeInfoVO) {
+	var (
+		children []*vo.CaseTreeInfoVO
+	)
+	children = haveChild(allNodeInfo, nodeInfo)
+	if len(children) > 0 {
+		nodeInfo.Children = append(nodeInfo.Children, children...)
+		for _, v := range children {
+			innerChildren := haveChild(allNodeInfo, v)
+			if len(innerChildren) > 0 {
+				makeTree(allNodeInfo, v)
+			}
+		}
+	}
+}
+
+func haveChild(allNodeInfo []*vo.CaseTreeInfoVO, nodeInfo *vo.CaseTreeInfoVO) (children []*vo.CaseTreeInfoVO) {
+	for _, nodeInfoInAll := range allNodeInfo {
+		if nodeInfo.NodeId == nodeInfoInAll.PNodeId {
+			children = append(children, nodeInfoInAll)
+		}
+	}
+	return children
 }

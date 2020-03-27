@@ -10,7 +10,7 @@ module.exports = {
   assetsDir: 'static',
   // 选项...
   devServer: {
-    host: 'localhost',
+    host: '0.0.0.0',
     port: 8081,
     proxy: {
       // 配置跨域
