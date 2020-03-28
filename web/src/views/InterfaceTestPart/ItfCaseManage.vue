@@ -20,10 +20,10 @@
           </el-button-group>
         </div>
 
-
         <el-tree ref="caseTree"
                  :data ='dataList'
                  show-checkbox
+                 default-expand-all
                  node-key="id"
                  @node-click="handleNodeClick"
                  @check-change="handleCheckChange">
@@ -73,6 +73,7 @@
 <!--                           @click.stop="delCase(data)">删除</el-button>-->
                 <el-button type="text"
                            class="add-btn"
+                           v-if="data.nodeType !== '用例'"
                            size="mini"
                            @click.stop="addNode(data)">新增</el-button>
                 <el-button type="text"
@@ -644,18 +645,9 @@ export default {
     },
     handleNodeClick (data, node, last) {
       console.log(data.nodeName)
-      if (node.level === 1) { // 是一级节点，获取用例列表
-        // let reqInfo = {
-        //   moduleId: data.value,
-        //   pageNum: 1,
-        //   pageSize: 10
-        // }
-        // getCaseList(reqInfo).then((res) => {
-        //   this.tableData = res.list
-        // })
-      } else if (node.level === 3) { // 是二级节点，获取用例步骤列表
-        this.caseId = data.value
-        this.getCaseStepList(data.value)
+      if (data.nodeType === '用例') { // 是一级节点，获取用例列表
+        this.caseId = data.nodeId
+        this.getCaseStepList(data.nodeId)
       }
       // this.loadNode(node)
     },
