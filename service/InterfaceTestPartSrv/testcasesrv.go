@@ -1,9 +1,8 @@
 package InterfaceTestPartSrv
 
 import (
-	"database/sql"
-	"errors"
 	"fmt"
+	"github.com/mitchellh/mapstructure"
 	"github.com/tidwall/gjson"
 	"salotto/model"
 	"salotto/model/InterfaceTestPartEntity"
@@ -66,36 +65,17 @@ func (tcs testCaseService) GetCaseTree(qj *qjson.QJson) (caseInfos []map[string]
 
 func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	var (
-		rows      *sql.Rows
-		err       error
-		beginTime string
+		beginTime     string
+		transNodeInfo InterfaceTestPartEntity.TNodeInfo
 	)
-	moduleMap := qj.GetMap("cases")
+	nodeList := qj.GetArray("nodeList")
 	beginTime = stime.GetCurTime()
-	// 暂时不对module进行排序
-	for k, v := range moduleMap {
-		fmt.Println(k)
-		caseIdList, ok := v.([]interface{})
-		if !ok {
-			return errors.New("转化错误")
-		}
 
-		// 如果前台传过来的module对应的caseList为空，则根据moduleId查询case，全部执行
-		if len(caseIdList) == 0 {
-			if rows, err = service.DB.Model(&InterfaceTestPartEntity.TItfCaseInfo{}).Select("case_id").Where("module_id = ?", k).Rows(); err != nil {
-				fmt.Println(err)
-				return err
-			}
-			defer rows.Close()
-			for rows.Next() {
-				var caseId string
-				rows.Scan(&caseId)
-				caseIdList = append(caseIdList, caseId)
-			}
-		}
-
-		for _, caseId := range caseIdList {
-			runCase(caseId.(string), beginTime)
+	for _, nodeInfo := range nodeList {
+		mapstructure.Decode(nodeInfo, &transNodeInfo)
+		if transNodeInfo.NodeType == "用例" {
+			fmt.Println(transNodeInfo)
+			runCase(transNodeInfo.NodeId, beginTime)
 		}
 	}
 

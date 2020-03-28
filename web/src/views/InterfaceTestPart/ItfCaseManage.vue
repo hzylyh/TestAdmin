@@ -13,7 +13,7 @@
 <!--          <el-button @click="addModule"-->
 <!--                     type="primary"-->
 <!--                     size="mini">新增</el-button>-->
-          <el-button @click="runCase"
+          <el-button @click="runCaseNew"
                      type="primary"
                      size="mini">运行</el-button>
         </el-button-group>
@@ -590,6 +590,7 @@ export default {
         })
         this.nodeDialogVisible = false
       })
+      this.getNodeList()
     },
     /**
      * @name: addModule
@@ -721,6 +722,21 @@ export default {
         })
       })
     },
+
+    runCaseNew () {
+      console.log(this.dataList)
+      console.log(this.$refs.caseTree.getCheckedNodes())
+      let reqInfo = {
+        nodeList: this.$refs.caseTree.getCheckedNodes()
+      }
+      runCase(reqInfo).then(res => {
+        this.$message({
+          message: '运行成功',
+          type: 'success'
+        })
+      })
+    },
+
     runCase () {
       // 目前逻辑有点问题，模块用例运行顺序可能存在问题
       let caseMap = {}

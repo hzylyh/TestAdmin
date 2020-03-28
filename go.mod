@@ -10,12 +10,14 @@ require (
 	github.com/gin-contrib/cors v1.3.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-delve/delve v1.3.2 // indirect
+	github.com/goinggo/mapstructure v0.0.0-20140717182941-194205d9b4a9 // indirect
 	github.com/jinzhu/gorm v1.9.11
 	github.com/keegancsmith/rpc v1.1.0 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/mattn/go-colorable v0.1.4 // indirect
 	github.com/mattn/go-isatty v0.0.10 // indirect
 	github.com/mattn/go-runewidth v0.0.6 // indirect
+	github.com/mitchellh/mapstructure v1.2.2
 	github.com/peterh/liner v1.1.0 // indirect
 	github.com/robfig/cron v1.2.0
 	github.com/satori/go.uuid v1.2.0

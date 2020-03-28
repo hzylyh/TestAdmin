@@ -41,3 +41,13 @@ func (qj *QJson) GetMap(key string) map[string]interface{} {
 	}
 	return nil
 }
+
+func (qj *QJson) GetArray(key string) []interface{} {
+	if res, ok := qj.ReqInfo[key].([]interface{}); ok {
+		//if err = json.Unmarshal([]byte(res), &reqInfo); err != nil {
+		//	return nil
+		//}
+		return res
+	}
+	return nil
+}
