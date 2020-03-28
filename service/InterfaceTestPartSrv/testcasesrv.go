@@ -182,6 +182,14 @@ func (tcs testCaseService) AddNode(ct *vo.CaseTreeInfoVO) error {
 	return nil
 }
 
+func (tcs testCaseService) DelNode(q *qjson.QJson) error {
+	nodeId := q.GetString("nodeId")
+	if err := service.DB.Where("node_id = ?", nodeId).Delete(&InterfaceTestPartEntity.TNodeInfo{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 func runCase(caseId, beginTime string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo

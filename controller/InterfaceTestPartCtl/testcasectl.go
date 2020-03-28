@@ -123,3 +123,14 @@ func AddNode(c *gin.Context) {
 		utils.ResponseOkWithMsg(c, "成功", nil)
 	}
 }
+
+func DelNode(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := InterfaceTestPartSrv.TestCaseSrv.DelNode(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "删除失败", err.Error())
+	} else {
+		utils.ResponseOkWithMsg(c, "删除成功", nil)
+	}
+}

@@ -16,6 +16,14 @@ export function addNode (params) {
   })
 }
 
+export function delNode (params) {
+  return request({
+    url: '/api/itfPart/case/tree/delete',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function addModule (params) {
   return request({
     url: '/api/itfPart/module/add',

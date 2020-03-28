@@ -9,14 +9,17 @@
     <el-aside class="sl-suit-tree white-back">
       <el-scrollbar style="height: 100%">
 <!--        <el-input></el-input>-->
-        <el-button-group class="sl-btn-group">
-<!--          <el-button @click="addModule"-->
-<!--                     type="primary"-->
-<!--                     size="mini">新增</el-button>-->
-          <el-button @click="runCaseNew"
-                     type="primary"
-                     size="mini">运行</el-button>
-        </el-button-group>
+        <div style="text-align: right; margin-right: 10px">
+          <el-button-group class="sl-btn-group">
+            <!--          <el-button @click="addModule"-->
+            <!--                     type="primary"-->
+            <!--                     size="mini">新增</el-button>-->
+            <el-button @click="runCaseNew"
+                       type="primary"
+                       size="mini">运行</el-button>
+          </el-button-group>
+        </div>
+
 
         <el-tree ref="caseTree"
                  :data ='dataList'
@@ -72,6 +75,11 @@
                            class="add-btn"
                            size="mini"
                            @click.stop="addNode(data)">新增</el-button>
+                <el-button type="text"
+                           class="add-btn"
+                           v-if="node.level !== 1"
+                           size="mini"
+                           @click.stop="delNodeAction(data)">删除</el-button>
               </el-button-group>
             </span>
         </el-tree>
@@ -385,12 +393,7 @@
 <script>
 import {
   addNode,
-  addModule,
-  delModule,
-  getCase,
-  addCase,
-  editCase,
-  delCase,
+  delNode,
   getTree,
   getCaseStepList,
   addCaseStep,
@@ -575,6 +578,25 @@ export default {
     },
 
     /**
+     * @name: delNodeAction
+     * @description: 新增节点
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    delNodeAction (data) {
+      let reqInfo = {
+        nodeId: data.nodeId
+      }
+      delNode(reqInfo).then((res) => {
+        this.$message({
+          message: '恭喜你,删除成功',
+          type: 'success'
+        })
+        this.getNodeList()
+      })
+    },
+
+    /**
      * @name: addNodeAction
      * @description: 新增节点接口调用
      * @param {type}: 默认参数
@@ -606,7 +628,7 @@ export default {
         })
       })
     },
-    
+
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
     },
