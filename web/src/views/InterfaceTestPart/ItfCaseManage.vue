@@ -26,28 +26,33 @@
                  @check-change="handleCheckChange">
             <span class="tree-line"
                   slot-scope="{ node, data}">
+              <div>
+                <i v-if="data.nodeType === '模块'" class="el-icon-folder"></i>
+                <i v-if="data.nodeType === '用例'" class="el-icon-document"></i>
               {{ data.nodeName }}
+              </div>
+
               <el-button-group>
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="node.level === 1"
-                           size="mini"
-                           @click.stop="addModule">新增</el-button>
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="node.level === 2"
-                           size="mini"
-                           @click.stop="addChildDialogVisible(data)">新增</el-button>
-                <el-button type="text"
-                         class="add-btn"
-                         v-if="node.level === 2"
-                         size="mini"
-                         @click.stop="delModule(data)">删除</el-button>
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="node.level === 3"
-                           size="mini"
-                           @click.stop="showEditCase(data)">编辑</el-button>
+<!--                <el-button type="text"-->
+<!--                           class="add-btn"-->
+<!--                           v-if="node.level === 1"-->
+<!--                           size="mini"-->
+<!--                           @click.stop="addModule">新增</el-button>-->
+<!--                <el-button type="text"-->
+<!--                           class="add-btn"-->
+<!--                           v-if="node.level === 2"-->
+<!--                           size="mini"-->
+<!--                           @click.stop="addChildDialogVisible(data)">新增</el-button>-->
+<!--                <el-button type="text"-->
+<!--                         class="add-btn"-->
+<!--                         v-if="node.level === 2"-->
+<!--                         size="mini"-->
+<!--                         @click.stop="delModule(data)">删除</el-button>-->
+<!--                <el-button type="text"-->
+<!--                           class="add-btn"-->
+<!--                           v-if="node.level === 3"-->
+<!--                           size="mini"-->
+<!--                           @click.stop="showEditCase(data)">编辑</el-button>-->
 <!--                <el-popover-->
 <!--                        placement="top"-->
 <!--                        width="160"-->
@@ -58,11 +63,15 @@
 <!--                    <el-button type="primary" size="mini" @click="visible = false">确定</el-button>-->
 <!--                  </div>-->
 <!--                </el-popover>-->
+<!--                <el-button type="text"-->
+<!--                           class="add-btn"-->
+<!--                           v-if="node.level === 3"-->
+<!--                           size="mini"-->
+<!--                           @click.stop="delCase(data)">删除</el-button>-->
                 <el-button type="text"
                            class="add-btn"
-                           v-if="node.level === 3"
                            size="mini"
-                           @click.stop="delCase(data)">删除</el-button>
+                           @click.stop="addNode(data)">新增</el-button>
               </el-button-group>
             </span>
         </el-tree>
@@ -146,50 +155,87 @@
     </el-main>
   </el-container>
   <!-- 弹出框 -->
-  <el-dialog title="新增模块"
-             :visible.sync="dialogVisible"
-             width="30%">
-      <el-form ref="form"
-               :model="addModuleForm"
+<!--  <el-dialog title="新增模块"-->
+<!--             :visible.sync="dialogVisible"-->
+<!--             width="30%">-->
+<!--      <el-form ref="form"-->
+<!--               :model="addModuleForm"-->
+<!--               label-width="80px">-->
+<!--        <el-form-item label="模块名称">-->
+<!--          <el-input v-model="addModuleForm.moduleName"></el-input>-->
+<!--        </el-form-item>-->
+<!--         <el-form-item label="模块描述">-->
+<!--          <el-input v-model="addModuleForm.moduleDesc"></el-input>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary" @click="addModuleAction">确 定</el-button>-->
+<!--      </span>-->
+<!--    </el-dialog>-->
+  <!-- 用例新增、修改 -->
+<!--  <el-dialog title="用例模块"-->
+<!--             :visible.sync="childDialogVisible"-->
+<!--             width="30%">-->
+<!--    <el-form ref="caseForm"-->
+<!--             :rules="caseFormRule"-->
+<!--             :model="caseForm"-->
+<!--             label-width="80px">-->
+<!--      <el-form-item label="用例名称"-->
+<!--                    prop="caseName">-->
+<!--        <el-input v-model="caseForm.caseName"></el-input>-->
+<!--      </el-form-item>-->
+<!--      <el-form-item label="用例描述">-->
+<!--        <el-input v-model="caseForm.caseDesc"></el-input>-->
+<!--      </el-form-item>-->
+<!--    </el-form>-->
+<!--    <span slot="footer" class="dialog-footer">-->
+<!--        <el-button @click="childDialogVisible = false">取 消</el-button>-->
+<!--        <el-button type="primary"-->
+<!--                   v-if="caseActionFlag === 'add'"-->
+<!--                   @click="addCase">确 定</el-button>-->
+<!--        <el-button type="primary"-->
+<!--                   v-if="caseActionFlag === 'edit'"-->
+<!--                   @click="editCaseAction">确 定</el-button>-->
+<!--      </span>-->
+<!--  </el-dialog>-->
+
+    <el-dialog title="新增"
+               :visible.sync="nodeDialogVisible"
+               width="30%">
+      <el-form ref="caseForm"
+               :rules="nodeFormRule"
+               :model="nodeForm"
                label-width="80px">
-        <el-form-item label="模块名称">
-          <el-input v-model="addModuleForm.moduleName"></el-input>
+        <el-form-item label="类型"
+                      prop="nodeType">
+          <el-select v-model="nodeForm.nodeType" placeholder="请选择">
+            <el-option
+                    v-for="item in nodeOptions"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-         <el-form-item label="模块描述">
-          <el-input v-model="addModuleForm.moduleDesc"></el-input>
+        <el-form-item label="名称"
+                      prop="nodeName">
+          <el-input v-model="nodeForm.nodeName"></el-input>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input v-model="nodeForm.nodeDesc"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="addModuleAction">确 定</el-button>
-      </span>
+          <el-button @click="nodeDialogVisible = false">取 消</el-button>
+          <el-button type="primary"
+                     v-if="nodeActionFlag === 'add'"
+                     @click="addNodeAction">确 定</el-button>
+          <el-button type="primary"
+                     v-if="nodeActionFlag === 'edit'"
+                     @click="editNodeAction">确 定</el-button>
+        </span>
     </el-dialog>
-  <!-- 用例新增、修改 -->
-  <el-dialog title="用例模块"
-             :visible.sync="childDialogVisible"
-             width="30%">
-    <el-form ref="caseForm"
-             :rules="caseFormRule"
-             :model="caseForm"
-             label-width="80px">
-      <el-form-item label="用例名称"
-                    prop="caseName">
-        <el-input v-model="caseForm.caseName"></el-input>
-      </el-form-item>
-      <el-form-item label="用例描述">
-        <el-input v-model="caseForm.caseDesc"></el-input>
-      </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-        <el-button @click="childDialogVisible = false">取 消</el-button>
-        <el-button type="primary"
-                   v-if="caseActionFlag === 'add'"
-                   @click="addCase">确 定</el-button>
-        <el-button type="primary"
-                   v-if="caseActionFlag === 'edit'"
-                   @click="editCaseAction">确 定</el-button>
-      </span>
-  </el-dialog>
   <!-- 步骤新增 -->
   <el-dialog title="用例步骤"
              :visible.sync="caseStepDialogVisible"
@@ -338,16 +384,14 @@
 
 <script>
 import {
+  addNode,
   addModule,
   delModule,
-  getList,
   getCase,
   addCase,
   editCase,
   delCase,
-  getCaseList,
   getTree,
-  getCaseTree,
   getCaseStepList,
   addCaseStep,
   runCase,
@@ -356,10 +400,10 @@ import {
   delCaseStep,
   getCaseStepDetail
 } from 'api/case.js'
-import JsonFormat from '@/components/JsonFormat'
+// import JsonFormat from '@/components/JsonFormat'
 export default {
   name: 'ItfCaseManage',
-  components: { JsonFormat },
+  // components: { JsonFormat },
   data () {
     return {
       projectId: localStorage.getItem('projectId'),
@@ -367,10 +411,12 @@ export default {
       caseId: '',
       actionFlag: '',
       caseActionFlag: '',
+      nodeActionFlag: '',
       dialogVisible: false,
       childDialogVisible: false,
       caseStepDialogVisible: false,
       stepResDialogVisible: false,
+      nodeDialogVisible: false,
       tableData: [],
       dataList: [],
       pageNum: 1,
@@ -394,6 +440,14 @@ export default {
         moduleId: '',
         caseName: '',
         caseDesc: ''
+      },
+      nodeForm: {
+        projectId: '',
+        nodeType: '',
+        nodeId: '',
+        pNodeId: '',
+        nodeName: '',
+        nodeDesc: ''
       },
       caseStepForm: {
         caseId: '',
@@ -435,7 +489,17 @@ export default {
           message: '请输入用例名称',
           trigger: 'blur'
         }]
-      }
+      },
+      nodeOptions: [
+        {
+          label: '模块',
+          value: '模块'
+        },
+        {
+          label: '用例',
+          value: '用例'
+        }
+      ]
     }
   },
   filters: {
@@ -496,6 +560,35 @@ export default {
         this.pageNum = res.pageNum
         this.pageSize = res.pageSize
         this.total = res.total
+      })
+    },
+    /**
+     * @name: addNode
+     * @description: 新增节点
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    addNode (data) {
+      this.nodeDialogVisible = true
+      this.nodeActionFlag = 'add'
+      this.nodeForm.pNodeId = data.nodeId
+    },
+
+    /**
+     * @name: addNodeAction
+     * @description: 新增节点接口调用
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    addNodeAction () {
+      this.nodeForm.projectId = this.projectId
+      console.log(this.nodeForm)
+      addNode(this.nodeForm).then((res) => {
+        this.$message({
+          message: '恭喜你,新增成功',
+          type: 'success'
+        })
+        this.nodeDialogVisible = false
       })
     },
     /**
@@ -673,33 +766,6 @@ export default {
         this.getCaseStepList(data.value)
       }
       // this.loadNode(node)
-    },
-    loadNode (node, resolve) {
-      if (node.level === 1) {
-        getList({ projectId: this.projectId }).then((res) => {
-          return resolve(res)
-        })
-      } else if (node.level === 2) {
-        let reqInfo = {
-          moduleId: node.data.value,
-          pageNum: 1,
-          pageSize: 10
-        }
-        getCaseTree(reqInfo).then((res) => {
-          console.log(res.length)
-          if (res !== null && res.length !== undefined) {
-            for (let index in res) {
-              res[index].leaf = true
-            }
-            return resolve(res)
-          } else {
-            return resolve([])
-          }
-        })
-      } else {
-        return resolve([])
-      }
-      // if (node.level > 3) return resolve([])
     },
     getNodeList () {
       // this.$router.projectId

@@ -5,6 +5,7 @@ type CaseTreeInfoVO struct {
 	NodeId    string            `json:"nodeId"`
 	PNodeId   string            `json:"pNodeId"`
 	NodeName  string            `json:"nodeName"`
+	NodeType  string            `json:"nodeType"`
 	NodeDesc  string            `json:"nodeDesc"`
 	Children  []*CaseTreeInfoVO `json:"children"`
 }

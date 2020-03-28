@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"salotto/model/InterfaceTestPartEntity"
+	"salotto/model/vo"
 	"salotto/service/InterfaceTestPartSrv"
 	"salotto/utils"
 	"salotto/utils/qjson"
@@ -107,6 +108,16 @@ func InitTree(c *gin.Context) {
 		ReqInfo: utils.GetJsonBody(c),
 	}
 	if err := InterfaceTestPartSrv.TestCaseSrv.InitTree(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "成功", nil)
+	}
+}
+
+func AddNode(c *gin.Context) {
+	var nodeInfoVO vo.CaseTreeInfoVO
+	c.ShouldBind(&nodeInfoVO)
+	if err := InterfaceTestPartSrv.TestCaseSrv.AddNode(&nodeInfoVO); err != nil {
 		utils.ResponseOkWithMsg(c, "失败", nil)
 	} else {
 		utils.ResponseOkWithMsg(c, "成功", nil)

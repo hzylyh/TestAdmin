@@ -150,6 +150,7 @@ func (tcs testCaseService) GetCaseTreeNode(q *qjson.QJson) (nodeInfo *vo.CaseTre
 				NodeId:    nodeInfo.NodeId,
 				PNodeId:   nodeInfo.PNodeId,
 				NodeName:  nodeInfo.NodeName,
+				NodeType:  nodeInfo.NodeType,
 				NodeDesc:  nodeInfo.NodeDesc,
 				Children:  nil,
 			}
@@ -179,6 +180,23 @@ func (tcs testCaseService) InitTree(q *qjson.QJson) error {
 		NodeDesc:  "",
 	}
 	if err := service.DB.Create(&projectTreeRoot).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (tcs testCaseService) AddNode(ct *vo.CaseTreeInfoVO) error {
+	fmt.Println(ct)
+	newNodeInfo := InterfaceTestPartEntity.TNodeInfo{
+		ProjectId: ct.ProjectId,
+		NodeId:    utils.GenerateUUID(),
+		PNodeId:   ct.PNodeId,
+		NodeNum:   "",
+		NodeName:  ct.NodeName,
+		NodeType:  ct.NodeType,
+		NodeDesc:  ct.NodeDesc,
+	}
+	if err := service.DB.Create(&newNodeInfo).Error; err != nil {
 		return err
 	}
 	return nil

@@ -8,6 +8,14 @@
  */
 import request from '../utils/request'
 
+export function addNode (params) {
+  return request({
+    url: '/api/itfPart/case/tree/add',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function addModule (params) {
   return request({
     url: '/api/itfPart/module/add',

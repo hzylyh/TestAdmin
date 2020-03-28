@@ -74,6 +74,7 @@ func MapRoutes() *gin.Engine {
 
 	caseTreePart := itfTestCaseApi.Group("/tree")
 	caseTreePart.POST("/init", InterfaceTestPartCtl.InitTree)
+	caseTreePart.POST("/add", InterfaceTestPartCtl.AddNode)
 
 	// 用例步骤
 	itfCaseStepApi = itfTestCaseApi.Group("/step")
