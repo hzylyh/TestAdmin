@@ -8,9 +8,25 @@
  */
 import request from '../utils/request'
 
+export function getSingleNodeInfo (params) {
+  return request({
+    url: '/api/itfPart/case/tree/get',
+    method: 'POST',
+    params: params
+  })
+}
+
 export function addNode (params) {
   return request({
     url: '/api/itfPart/case/tree/add',
+    method: 'POST',
+    params: params
+  })
+}
+
+export function editNode (params) {
+  return request({
+    url: '/api/itfPart/case/tree/edit',
     method: 'POST',
     params: params
   })

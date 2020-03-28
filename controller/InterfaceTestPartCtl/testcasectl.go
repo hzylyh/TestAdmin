@@ -124,6 +124,27 @@ func AddNode(c *gin.Context) {
 	}
 }
 
+func GetSingleNodeInfo(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if res, err := InterfaceTestPartSrv.TestCaseSrv.GetSingleNodeInfo(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "查询失败", nil)
+	} else {
+		utils.ResponseOk(c, res)
+	}
+}
+
+func EditNode(c *gin.Context) {
+	var nodeInfoVO vo.CaseTreeInfoVO
+	c.ShouldBind(&nodeInfoVO)
+	if err := InterfaceTestPartSrv.TestCaseSrv.EditNode(&nodeInfoVO); err != nil {
+		utils.ResponseOkWithMsg(c, "失败", nil)
+	} else {
+		utils.ResponseOkWithMsg(c, "成功", nil)
+	}
+}
+
 func DelNode(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

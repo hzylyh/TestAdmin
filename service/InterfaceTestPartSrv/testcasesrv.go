@@ -190,6 +190,34 @@ func (tcs testCaseService) DelNode(q *qjson.QJson) error {
 	return nil
 }
 
+func (tcs testCaseService) EditNode(v *vo.CaseTreeInfoVO) error {
+	newNodeInfo := InterfaceTestPartEntity.TNodeInfo{
+		ProjectId: v.ProjectId,
+		NodeId:    v.NodeId,
+		NodeName:  v.NodeName,
+		NodeDesc:  v.NodeDesc,
+	}
+	if err := service.DB.Model(InterfaceTestPartEntity.TNodeInfo{}).Where("node_id = ?", v.NodeId).Update(&newNodeInfo).Error; err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}
+
+func (tcs testCaseService) GetSingleNodeInfo(q *qjson.QJson) (*InterfaceTestPartEntity.TNodeInfo, error) {
+	var (
+		nodeId string
+		ret    InterfaceTestPartEntity.TNodeInfo
+	)
+	nodeId = q.GetString("nodeId")
+
+	if err := service.DB.Where("node_id = ?", nodeId).First(&ret).Error; err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return &ret, nil
+}
+
 func runCase(caseId, beginTime string) {
 	var (
 		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo

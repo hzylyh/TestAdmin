@@ -79,6 +79,11 @@
                            class="add-btn"
                            v-if="node.level !== 1"
                            size="mini"
+                           @click.stop="editNode(data)">编辑</el-button>
+                <el-button type="text"
+                           class="add-btn"
+                           v-if="node.level !== 1"
+                           size="mini"
                            @click.stop="delNodeAction(data)">删除</el-button>
               </el-button-group>
             </span>
@@ -162,60 +167,16 @@
 
     </el-main>
   </el-container>
-  <!-- 弹出框 -->
-<!--  <el-dialog title="新增模块"-->
-<!--             :visible.sync="dialogVisible"-->
-<!--             width="30%">-->
-<!--      <el-form ref="form"-->
-<!--               :model="addModuleForm"-->
-<!--               label-width="80px">-->
-<!--        <el-form-item label="模块名称">-->
-<!--          <el-input v-model="addModuleForm.moduleName"></el-input>-->
-<!--        </el-form-item>-->
-<!--         <el-form-item label="模块描述">-->
-<!--          <el-input v-model="addModuleForm.moduleDesc"></el-input>-->
-<!--        </el-form-item>-->
-<!--      </el-form>-->
-<!--      <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="dialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary" @click="addModuleAction">确 定</el-button>-->
-<!--      </span>-->
-<!--    </el-dialog>-->
-  <!-- 用例新增、修改 -->
-<!--  <el-dialog title="用例模块"-->
-<!--             :visible.sync="childDialogVisible"-->
-<!--             width="30%">-->
-<!--    <el-form ref="caseForm"-->
-<!--             :rules="caseFormRule"-->
-<!--             :model="caseForm"-->
-<!--             label-width="80px">-->
-<!--      <el-form-item label="用例名称"-->
-<!--                    prop="caseName">-->
-<!--        <el-input v-model="caseForm.caseName"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="用例描述">-->
-<!--        <el-input v-model="caseForm.caseDesc"></el-input>-->
-<!--      </el-form-item>-->
-<!--    </el-form>-->
-<!--    <span slot="footer" class="dialog-footer">-->
-<!--        <el-button @click="childDialogVisible = false">取 消</el-button>-->
-<!--        <el-button type="primary"-->
-<!--                   v-if="caseActionFlag === 'add'"-->
-<!--                   @click="addCase">确 定</el-button>-->
-<!--        <el-button type="primary"-->
-<!--                   v-if="caseActionFlag === 'edit'"-->
-<!--                   @click="editCaseAction">确 定</el-button>-->
-<!--      </span>-->
-<!--  </el-dialog>-->
 
     <el-dialog title="新增"
                :visible.sync="nodeDialogVisible"
                width="30%">
-      <el-form ref="caseForm"
+      <el-form ref="nodeForm"
                :rules="nodeFormRule"
                :model="nodeForm"
                label-width="80px">
         <el-form-item label="类型"
+                      style="text-align: left"
                       prop="nodeType">
           <el-select v-model="nodeForm.nodeType" placeholder="请选择">
             <el-option
@@ -393,6 +354,7 @@
 <script>
 import {
   addNode,
+  editNode,
   delNode,
   getTree,
   getCaseStepList,
@@ -401,7 +363,8 @@ import {
   getItfSelectOptions,
   editCaseStep,
   delCaseStep,
-  getCaseStepDetail
+  getCaseStepDetail,
+  getSingleNodeInfo
 } from 'api/case.js'
 // import JsonFormat from '@/components/JsonFormat'
 export default {
@@ -432,17 +395,6 @@ export default {
         b: {
           d: 'd'
         }
-      },
-      addModuleForm: {
-        moduleName: '',
-        moduleDesc: '',
-        projectId: ''
-      },
-      caseForm: {
-        caseId: '',
-        moduleId: '',
-        caseName: '',
-        caseDesc: ''
       },
       nodeForm: {
         projectId: '',
@@ -482,14 +434,23 @@ export default {
       },
       count: 1,
 
-      caseFormRule: {
-        caseName: [{
+      nodeFormRule: {
+        nodeType: [{
           required: true,
-          message: '请输入用例名称',
+          message: '请选择类型',
           trigger: 'change'
         }, {
           required: true,
-          message: '请输入用例名称',
+          message: '请选择类型',
+          trigger: 'blur'
+        }],
+        nodeName: [{
+          required: true,
+          message: '请输入名称',
+          trigger: 'change'
+        }, {
+          required: true,
+          message: '请输入名称',
           trigger: 'blur'
         }]
       },
@@ -578,6 +539,24 @@ export default {
     },
 
     /**
+     * @name: editNode
+     * @description: 编辑节点
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    editNode (data) {
+      this.nodeActionFlag = 'edit'
+      this.nodeForm.nodeId = data.nodeId
+      let reqInfo = {
+        nodeId: data.nodeId
+      }
+      getSingleNodeInfo(reqInfo).then(response => {
+        this.nodeForm = response
+        this.nodeDialogVisible = true
+      })
+    },
+
+    /**
      * @name: delNodeAction
      * @description: 新增节点
      * @param {type}: 默认参数
@@ -605,14 +584,45 @@ export default {
     addNodeAction () {
       this.nodeForm.projectId = this.projectId
       console.log(this.nodeForm)
-      addNode(this.nodeForm).then((res) => {
-        this.$message({
-          message: '恭喜你,新增成功',
-          type: 'success'
-        })
-        this.nodeDialogVisible = false
+      this.$refs['nodeForm'].validate((valid) => {
+        if (valid) {
+          addNode(this.nodeForm).then((res) => {
+            this.$message({
+              message: '恭喜你,新增成功',
+              type: 'success'
+            })
+            this.nodeDialogVisible = false
+            this.getNodeList()
+          })
+        } else {
+          return false
+        }
       })
-      this.getNodeList()
+    },
+
+    /**
+     * @name: editNodeAction
+     * @description: 编辑节点接口调用
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
+    editNodeAction () {
+      this.nodeForm.projectId = this.projectId
+      console.log(this.nodeForm)
+      this.$refs['nodeForm'].validate((valid) => {
+        if (valid) {
+          editNode(this.nodeForm).then((res) => {
+            this.$message({
+              message: '恭喜你,编辑成功',
+              type: 'success'
+            })
+            this.nodeDialogVisible = false
+            this.getNodeList()
+          })
+        } else {
+          return false
+        }
+      })
     },
 
     runCaseNew () {
