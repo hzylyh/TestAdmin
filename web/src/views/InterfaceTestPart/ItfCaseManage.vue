@@ -26,68 +26,43 @@
                  default-expand-all
                  node-key="id"
                  @node-click="handleNodeClick"
+                 @node-contextmenu="handleRightClick"
                  @check-change="handleCheckChange">
-            <span class="tree-line"
-                  slot-scope="{ node, data}">
-              <div>
-                <i v-if="data.nodeType === '模块'" class="el-icon-folder"></i>
-                <i v-if="data.nodeType === '用例'" class="el-icon-document"></i>
-              {{ data.nodeName }}
-              </div>
+            <el-row class="tree-line"
+                    justify="left"
+                    slot-scope="{ node, data}">
+              <el-col :span="16">
+                <div :title="data.nodeName" style="text-align: left;float: left; width: 100%; overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">
+                  <i v-if="data.nodeType === '模块'" class="el-icon-folder"></i>
+                  <i v-if="data.nodeType === '用例'" class="el-icon-document"></i>
+                  {{ data.nodeName }}
+                </div>
 
-              <el-button-group>
-<!--                <el-button type="text"-->
-<!--                           class="add-btn"-->
-<!--                           v-if="node.level === 1"-->
-<!--                           size="mini"-->
-<!--                           @click.stop="addModule">新增</el-button>-->
-<!--                <el-button type="text"-->
-<!--                           class="add-btn"-->
-<!--                           v-if="node.level === 2"-->
-<!--                           size="mini"-->
-<!--                           @click.stop="addChildDialogVisible(data)">新增</el-button>-->
-<!--                <el-button type="text"-->
-<!--                         class="add-btn"-->
-<!--                         v-if="node.level === 2"-->
-<!--                         size="mini"-->
-<!--                         @click.stop="delModule(data)">删除</el-button>-->
-<!--                <el-button type="text"-->
-<!--                           class="add-btn"-->
-<!--                           v-if="node.level === 3"-->
-<!--                           size="mini"-->
-<!--                           @click.stop="showEditCase(data)">编辑</el-button>-->
-<!--                <el-popover-->
-<!--                        placement="top"-->
-<!--                        width="160"-->
-<!--                        v-model="visible">-->
-<!--                  <p>这是一段内容这是一段内容确定删除吗？</p>-->
-<!--                  <div style="text-align: right; margin: 0">-->
-<!--                    <el-button size="mini" type="text" @click="visible = false">取消</el-button>-->
-<!--                    <el-button type="primary" size="mini" @click="visible = false">确定</el-button>-->
-<!--                  </div>-->
-<!--                </el-popover>-->
-<!--                <el-button type="text"-->
-<!--                           class="add-btn"-->
-<!--                           v-if="node.level === 3"-->
-<!--                           size="mini"-->
-<!--                           @click.stop="delCase(data)">删除</el-button>-->
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="data.nodeType !== '用例'"
-                           size="mini"
-                           @click.stop="addNode(data)">新增</el-button>
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="node.level !== 1"
-                           size="mini"
-                           @click.stop="editNode(data)">编辑</el-button>
-                <el-button type="text"
-                           class="add-btn"
-                           v-if="node.level !== 1"
-                           size="mini"
-                           @click.stop="delNodeAction(data)">删除</el-button>
-              </el-button-group>
-            </span>
+              </el-col>
+
+              <el-col :span="8">
+                <el-button-group style="float: right">
+                  <el-button type="text"
+                             class="add-btn"
+                             v-if="data.nodeType !== '用例'"
+                             size="mini"
+                             icon="el-icon-plus"
+                             @click.stop="addNode(data)"></el-button>
+                  <el-button type="text"
+                             class="add-btn"
+                             v-if="node.level !== 1"
+                             size="mini"
+                             icon="el-icon-edit"
+                             @click.stop="editNode(data)"></el-button>
+                  <el-button type="text"
+                             class="add-btn"
+                             v-if="node.level !== 1"
+                             size="mini"
+                             icon="el-icon-delete"
+                             @click.stop="delNodeAction(data)"></el-button>
+                </el-button-group>
+              </el-col>
+            </el-row>
         </el-tree>
       </el-scrollbar>
     </el-aside>
@@ -348,6 +323,13 @@
       <el-button @click="stepResDialogVisible = false">取 消</el-button>
     </span>
   </el-dialog>
+<!--  <div v-show="menuVisible">-->
+<!--    <ul id="custMenu" class="cust-menu">-->
+<!--      <li class="menu_item" @click="addNode">新增</li>-->
+<!--      <li class="menu_item" @click="editNode">编辑</li>-->
+<!--      <li class="menu_item" @click="delNodeAction">删除</li>-->
+<!--    </ul>-->
+<!--  </div>-->
 </div>
 
 </template>
@@ -379,6 +361,7 @@ export default {
       actionFlag: '',
       caseActionFlag: '',
       nodeActionFlag: '',
+      menuVisible: '',
       dialogVisible: false,
       childDialogVisible: false,
       caseStepDialogVisible: false,
@@ -485,6 +468,19 @@ export default {
     this.getNodeList()
   },
   methods: {
+    handleRightClick (e, data, node, element) {
+      this.menuVisible = false // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
+      this.menuVisible = true  // 显示模态窗口，跳出自定义菜单栏
+      var menu = document.querySelector('#custMenu')
+      document.addEventListener('click', this.foo) // 给整个document添加监听鼠标事件，点击任何位置执行foo方法
+      menu.style.display = 'block'
+      menu.style.left = e.clientX - 0 + 'px'
+      menu.style.top = e.clientY - 80 + 'px'
+    },
+    foo () { // 取消鼠标监听事件 菜单栏
+      this.menuVisible = false
+      document.removeEventListener('click', this.foo) // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
+    },
     editCaseStep (row) {
       let reqInfo = {
         stepId: row.stepId
@@ -774,13 +770,13 @@ export default {
       flex: 1;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      /*justify-content: space-between;*/
       /*justify-content: space-around;*/
       font-size: 14px;
       padding-right: 18px;
       .add-btn {
         /*display: none;*/
-        padding-right: 10px;
+        padding-right: 5px;
       }
     }
     .tree-line:hover {
@@ -830,4 +826,25 @@ export default {
   float: right;
   margin-right: -5px;
 }
+
+#custMenu {
+  height: 100px;
+  width: 80px;
+  position: absolute;
+  border-radius: 10px;
+  border: 1px solid #999999;
+  /*background-color: #f4f4f4;*/
+  background-color: #fff;
+  .menu_item {
+    line-height: 20px;
+    text-align: center;
+    margin-top: 10px;
+  }
+  li:hover {
+    background-color: #1790ff;
+    color: white;
+  }
+  li{font-size:15px}
+}
+
 </style>
