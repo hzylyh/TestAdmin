@@ -1,9 +1,3 @@
-<!--
- * @Description: 接口测试部分接口管理
- * @Author: John Holl
- * @Github: https://github.com/hzylyh
- -->
-
 <template>
   <div class='apiList'>
     <!-- 接口过滤条件 -->
@@ -163,7 +157,6 @@
                    @click="addSwaggerAction">全量同步</el-button>
       </span>
     </el-dialog>
-
     <el-dialog title="修改接口"
                :visible.sync="editDialogVisible"
                width="40%">
@@ -226,13 +219,9 @@
 </template>
 
 <script>
-// 这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
-// 例如：import 《组件名称》 from '《组件路径》';
 import { addApi, editApi, deleteApi, getList, getSingleApi, importSwagger } from '@/api/apiList.js'
 export default {
-  name: 'ItfInterfaceManage',
-  // import引入的组件需要注入到对象中才能使用
-  components: {},
+  name: 'itfInterfaceTable',
   data () {
     // 这里存放数据
     return {
@@ -243,6 +232,16 @@ export default {
       pageSize: 10,
       pageNum: 1,
       total: 0,
+      treeData: [
+        {
+          label: '全部接口',
+          children: [
+            {
+              label: '接口1'
+            }
+          ]
+        }
+      ],
       options: [{
         value: 'GET',
         label: 'GET'
@@ -280,11 +279,9 @@ export default {
       }
     }
   },
-  // 监听属性 类似于data概念
-  computed: {},
-  // 监控data中的数据变化
-  watch: {},
-  // 方法集合
+  created () {
+    this.queryApiList()
+  },
   methods: {
     addApi () {
       this.dialogVisible = true
@@ -340,11 +337,11 @@ export default {
       })
     },
     /**
-       * @name: addApiAction
-       * @description: 新增项目
-       * @param {type}: 默认参数
-       * @return {type}: 默认类型
-       */
+     * @name: addApiAction
+     * @description: 新增项目
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
     addApiAction () {
       this.form.projectId = this.projectId
       debugger
@@ -394,20 +391,20 @@ export default {
       })
     },
     /**
-       * @name: addSwagger
-       * @description: 同步swagger
-       * @param {type}: 默认参数
-       * @return {type}: 默认类型
-       */
+     * @name: addSwagger
+     * @description: 同步swagger
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
     addSwagger () {
       this.dialogVisibles = true
     },
     /**
-       * @name: addSwaggerAction
-       * @description: 同步swagger接口
-       * @param {type}: 默认参数
-       * @return {type}: 默认类型
-       */
+     * @name: addSwaggerAction
+     * @description: 同步swagger接口
+     * @param {type}: 默认参数
+     * @return {type}: 默认类型
+     */
     addSwaggerAction () {
       importSwagger(this.swaggerform).then((res) => {
         this.$message({
@@ -441,64 +438,51 @@ export default {
         this.form.headers.push(item)
       }
     }
-  },
-  // 生命周期 - 创建完成（可以访问当前this实例）
-  created () {
-    this.queryApiList()
-  },
-  // 生命周期 - 挂载完成（可以访问DOM元素）
-  mounted () {
-
-  },
-  beforeCreate () { }, // 生命周期 - 创建之前
-  beforeMount () { }, // 生命周期 - 挂载之前
-  beforeUpdate () { }, // 生命周期 - 更新之前
-  updated () { }, // 生命周期 - 更新之后
-  beforeDestroy () { }, // 生命周期 - 销毁之前
-  destroyed () { }, // 生命周期 - 销毁完成
-  activated () { } // 如果页面有keep-alive缓存功能，这个函数会触发
+  }
 }
 </script>
-<style lang='scss' scoped>
+
+<style lang="scss" scoped>
   .apiList {
-    .panle {
-      background-color: #fff;
-      border: none;
-      border-radius: 5px;
-      // position: relative;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.25);
-      box-sizing: border-box;
-    }
-    .panle {
-      .fitterRow {
-        padding: 20px 20px 10px 20px;
-      }
-    }
-    .list {
-      padding: 20px;
-    }
-    /deep/.el-form-item__content {
-      display: flex;
-    }
+    height: 100%;
+  .panle {
+    background-color: #fff;
+    border: none;
+    /*border-radius: 5px;*/
+  // position: relative;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+  }
+  .panle {
+  .fitterRow {
+    padding: 20px 20px 10px 20px;
+  }
+  }
+  .list {
+    padding: 20px;
+  }
+  /deep/.el-form-item__content {
+    display: flex;
+  }
   }
   .add {
-    // display: inline-block;
+  // display: inline-block;
     display: block;
     height: 28px;
     width: 28px;
     margin-left: 5px;
-    background: url("../../assets/img/line_add.png") center center;
+    background: url("../../../../assets/img/line_add.png") center center;
     background-size: contain;
     float: right;
     margin-right: -5px;
   }
   .reduce {
-    // display: inline-block;
+  // display: inline-block;
     display: block;
     height: 28px;
     width: 28px;
-    background: url("../../assets/img/line_reduce.png") center center;
+    background: url("../../../../assets/img/line_reduce.png") center center;
     background-size: contain;
     float: right;
     margin-right: -5px;

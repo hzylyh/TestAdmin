@@ -64,7 +64,7 @@ export default new Router({
               path: 'apiList',
               name: 'apiList',
               component: () =>
-                import('@/views/InterfaceTestPart/ItfInterfaceManage.vue')
+                import('@/views/InterfaceTestPart/ItfInterfaceManage/index.vue')
             }
           ]
         }
