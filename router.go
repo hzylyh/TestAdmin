@@ -52,6 +52,7 @@ func MapRoutes() *gin.Engine {
 	overviewApi = apiRoot.Group("/overview")
 	overviewApi.POST("/getProjectList", controller.GetProjectList)
 	overviewApi.POST("/addProject", controller.AddProject)
+	overviewApi.POST("/delProject", controller.DelProject)
 
 	// 定时任务部分
 	scheduleApi = apiRoot.Group("/schedule")

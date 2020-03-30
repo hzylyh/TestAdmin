@@ -29,3 +29,12 @@ func (ps *projectService) GetProjectList(qj *qjson.QJson) []*model.TProjectInfo 
 	}
 	return ret
 }
+
+func (ps *projectService) DelProject(q *qjson.QJson) error {
+	projectId := q.GetString("projectId")
+	if err := DB.Where("project_id = ?", projectId).Delete(&model.TProjectInfo{}).Error; err != nil {
+		fmt.Println(err)
+		return err
+	}
+	return nil
+}

@@ -21,6 +21,18 @@ func AddProject(c *gin.Context) {
 
 }
 
+func DelProject(c *gin.Context) {
+	reqInfo := qjson.QJson{
+		ReqInfo: utils.GetJsonBody(c),
+	}
+	if err := service.ProjectSrv.DelProject(&reqInfo); err != nil {
+		utils.ResponseOkWithMsg(c, "删除失败", err)
+	} else {
+		utils.ResponseOkWithMsg(c, "删除成功", nil)
+	}
+
+}
+
 func GetProjectList(c *gin.Context) {
 	reqInfo := qjson.QJson{
 		ReqInfo: utils.GetJsonBody(c),

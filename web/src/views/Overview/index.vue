@@ -17,8 +17,13 @@
           <li v-for="(item,index) in projectList"
               :key="index"
               class="child-item"
+              style="position: relative"
               @click="goToProject(item)">
 <!--            <div v-if="!item.isAdd">-->
+            <div class="handle-btn" style="position: absolute; right: 10px; top: 5px">
+              <el-button type="text" @click.stop="editProject(item)">编辑</el-button>
+              <el-button type="text" @click.stop="delProjectAction(item)">删除</el-button>
+            </div>
             <div>
               <div>{{item.projectName}}</div>
               <div>{{item.projetcDesc}}</div>
@@ -73,7 +78,11 @@
 
 <script>
 import undeveloped from '@/components/Dev/undeveloped.vue'
-import { addProject, getProjectList } from '@/api/overView.js'
+import {
+  addProject,
+  getProjectList,
+  delProject
+} from '@/api/overView.js'
 import { addCaseTree } from '@/api/case.js'
 export default {
   name: 'index',
@@ -142,6 +151,15 @@ export default {
           name: 'ItfDashboard'
         })
       })
+    },
+    delProjectAction (projectInfo) {
+      console.log(projectInfo)
+      let reqInfo = {
+        projectId: projectInfo.projectId
+      }
+      delProject(reqInfo).then(response => {
+        this.queryProjectList()
+      })
     }
   },
   created () {
@@ -204,9 +222,15 @@ export default {
       display: flex;
       justify-content: center;
       align-items: center;
+      .handle-btn {
+        display: none;
+      }
     }
     .child-item:hover {
       border: 1px solid #409eff;
+      .handle-btn {
+        display: block;
+      }
     }
     .child-item:nth-child(4n) {
       // margin-right: 0px;

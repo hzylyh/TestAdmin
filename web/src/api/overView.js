@@ -24,6 +24,14 @@ export function getProjectList (params) {
   })
 }
 
+export function delProject (params) {
+  return request({
+    url: '/api/overview/delProject',
+    method: 'POST',
+    params: params
+  })
+}
+
 // export function SOLIDER_61(params) {
 //   return request({
 //     url: '/compcag/SOLIDER_61',
