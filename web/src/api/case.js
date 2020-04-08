@@ -11,166 +11,167 @@ import request from '../utils/request'
 export function getSingleNodeInfo (params) {
   return request({
     url: '/api/itfPart/case/tree/get',
-    method: 'POST',
-    params: params
+    // method: 'POST',
+    method: 'post',
+    data: params
   })
 }
 
 export function addNode (params) {
   return request({
     url: '/api/itfPart/case/tree/add',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function editNode (params) {
   return request({
     url: '/api/itfPart/case/tree/edit',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function delNode (params) {
   return request({
     url: '/api/itfPart/case/tree/delete',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function addModule (params) {
   return request({
     url: '/api/itfPart/module/add',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function delModule (params) {
   return request({
     url: '/api/itfPart/module/delete',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getCaseList (params) {
   return request({
     url: '/api/itfPart/case/getList',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getTree (params) {
   return request({
     url: '/api/itfPart/case/getTree',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getList (params) {
   return request({
     url: '/api/itfPart/module/getList',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 export function addCase (params) {
   return request({
     url: '/api/itfPart/case/add',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function addCaseTree (params) {
   return request({
     url: '/api/itfPart/case/tree/init',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function editCase (params) {
   return request({
     url: '/api/itfPart/case/edit',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getCase (params) {
   return request({
     url: '/api/itfPart/case/get',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function delCase (params) {
   return request({
     url: '/api/itfPart/case/delete',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getCaseStepList (params) {
   return request({
     url: '/api/itfPart/case/step/getList',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function addCaseStep (params) {
   return request({
     url: '/api/itfPart/case/step/add',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getCaseStepDetail (params) {
   return request({
     url: '/api/itfPart/case/step/get',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function editCaseStep (params) {
   return request({
     url: '/api/itfPart/case/step/edit',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function delCaseStep (params) {
   return request({
     url: '/api/itfPart/case/step/delete',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function runCase (params) {
   return request({
     url: '/api/itfPart/case/run',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getItfSelectOptions (params) {
   return request({
     url: '/api/itfPart/interface/getSelectOptions',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }

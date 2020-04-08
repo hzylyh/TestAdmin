@@ -11,31 +11,31 @@ import request from '../utils/request'
 export function addProject (params) {
   return request({
     url: '/api/overview/addProject',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getProjectList (params) {
   return request({
     url: '/api/overview/getProjectList',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function delProject (params) {
   return request({
     url: '/api/overview/delProject',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 // export function SOLIDER_61(params) {
 //   return request({
 //     url: '/compcag/SOLIDER_61',
-//     method: 'POST',
-//     params: params
+//     method: 'post',
+//     data: params
 //   })
 // }

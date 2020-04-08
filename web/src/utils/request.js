@@ -1,7 +1,7 @@
 /*
  * @Description:
- * @Author: 吴文周
- * @Github: https://github.com/fodelf
+ * @Author: 侯哲宇
+ * @Github: https://github.com/hzylyh
  * @Date: 2019-08-14 19:09:48
  * @LastEditors: 侯哲宇
  * @LastEditTime: 2019-11-17 13:56:58
@@ -12,14 +12,18 @@ import store from '@/store'
 import { getToken } from '@/utils/auth'
 
 // create an axios instance
-axios.create({
+const service = axios.create({
   baseURL: '', // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
+  // transformRequest: [function (data) {
+  //   // 这里修改请求
+  //   return data
+  // }]
 })
 
 // request interceptor
-axios.interceptors.request.use(
+service.interceptors.request.use(
   config => {
     // do something before request is sent
 
@@ -46,7 +50,7 @@ axios.interceptors.request.use(
 )
 
 // response interceptor
-axios.interceptors.response.use(
+service.interceptors.response.use(
   /**
    * If you want to get http information such as headers or status
    * Please return  response => response
@@ -85,7 +89,7 @@ axios.interceptors.response.use(
       // }
       return Promise.reject(res.msg || 'error')
     } else {
-      return res
+      return res.data
     }
   },
   error => {
@@ -100,47 +104,4 @@ axios.interceptors.response.use(
   }
 )
 
-/**
- * 封装请求方法
- * @param url
- * @param data
- * @returns {Promise}
- */
-
-export default function request (args) {
-  let method = args.method ? args.method : 'POST'
-  let params = args.params ? args.params : { msg: '' }
-  let url = args.url ? args.url : ''
-  // let resParams = {
-  //   'msg': JSON.stringify(params.msg)
-  // }
-  let resParams = params
-  switch (method) {
-    case 'POST':
-      return new Promise((resolve, reject) => {
-        axios.post(url, resParams).then(
-          res => {
-            let data = res.data ? res.data : {}
-            resolve(data)
-          },
-          err => {
-            reject(err)
-          }
-        )
-      })
-    default:
-      return new Promise((resolve, reject) => {
-        axios
-          .get(url, {
-            params: resParams
-          })
-          .then(res => {
-            let data = res.data ? res.data : {}
-            resolve(data)
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
-  }
-}
+export default service

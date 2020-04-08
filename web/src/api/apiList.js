@@ -11,54 +11,54 @@ import request from '../utils/request'
 export function addApi (params) {
   return request({
     url: '/api/itfPart/interface/add',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function editApi (params) {
   return request({
     url: '/api/itfPart/interface/edit',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function deleteApi (params) {
   return request({
     url: '/api/itfPart/interface/delete',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getList (params) {
   return request({
     url: '/api/itfPart/interface/getList',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 export function importSwagger (params) {
   return request({
     url: '/api/itfPart/interface/importSwagger',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 export function getSingleApi (params) {
   return request({
     url: '/api/itfPart/interface/get',
-    method: 'POST',
-    params: params
+    method: 'post',
+    data: params
   })
 }
 
 // export function SOLIDER_61(params) {
 //   return request({
 //     url: '/compcag/SOLIDER_61',
-//     method: 'POST',
-//     params: params
+//     method: 'post',
+//     data: params
 //   })
 // }
