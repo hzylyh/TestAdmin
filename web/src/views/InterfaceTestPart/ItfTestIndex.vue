@@ -7,40 +7,41 @@
   <el-container class="sl-itf-main">
     <el-aside width="200px"
               class="sl-itf-nav">
-      <el-scrollbar style="height: 100%">
-        <el-menu default-active="activeIndex"
-                 router
-                 class="sl-itf-nav-menu"
-                 background-color="#1C2B36"
-                 text-color="white"
-                 active-text-color="#1b867b"
-                 style="height: 100%;">
-          <el-menu-item index="1"
-                        :route="{ name: 'ItfDashboard' }">
-            <i class="el-icon-odometer"></i>
-            <span slot="title"
-                  class="title">仪表盘</span>
-          </el-menu-item>
-          <el-menu-item index="2"
-                        :route="{ name: 'apiList' }">
-            <i class="el-icon-document"></i>
-            <span slot="title"
-                  class="title">接口管理</span>
-          </el-menu-item>
-          <el-menu-item index="3"
-                        :route="{ name: 'ItfCaseManage' }">
-            <i class="el-icon-menu"></i>
-            <span slot="title"
-                  class="title">用例管理</span>
-          </el-menu-item>
+      <side-nav></side-nav>
+<!--      <el-scrollbar style="height: 100%">-->
+<!--        <el-menu default-active="activeIndex"-->
+<!--                 router-->
+<!--                 class="sl-itf-nav-menu"-->
+<!--                 background-color="#1C2B36"-->
+<!--                 text-color="white"-->
+<!--                 active-text-color="#1b867b"-->
+<!--                 style="height: 100%;">-->
+<!--          <el-menu-item index="1"-->
+<!--                        :route="{ name: 'ItfDashboard' }">-->
+<!--            <i class="el-icon-odometer"></i>-->
+<!--            <span slot="title"-->
+<!--                  class="title">仪表盘</span>-->
+<!--          </el-menu-item>-->
+<!--          <el-menu-item index="2"-->
+<!--                        :route="{ name: 'apiList' }">-->
+<!--            <i class="el-icon-document"></i>-->
+<!--            <span slot="title"-->
+<!--                  class="title">接口管理</span>-->
+<!--          </el-menu-item>-->
+<!--          <el-menu-item index="3"-->
+<!--                        :route="{ name: 'ItfCaseManage' }">-->
+<!--            <i class="el-icon-menu"></i>-->
+<!--            <span slot="title"-->
+<!--                  class="title">用例管理</span>-->
+<!--          </el-menu-item>-->
 
-          <!-- <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <span slot="title"
-                  class="title">变量管理</span>
-          </el-menu-item> -->
-        </el-menu>
-      </el-scrollbar>
+<!--          &lt;!&ndash; <el-menu-item index="4">-->
+<!--            <i class="el-icon-setting"></i>-->
+<!--            <span slot="title"-->
+<!--                  class="title">变量管理</span>-->
+<!--          </el-menu-item> &ndash;&gt;-->
+<!--        </el-menu>-->
+<!--      </el-scrollbar>-->
     </el-aside>
     <el-main :span="20"
              style="height: 100%;padding:15px">
@@ -50,8 +51,12 @@
 </template>
 
 <script>
+import SideNav from '@/components/SideNav'
 export default {
   name: 'ItfTestIndex',
+  components: {
+    SideNav
+  },
   data () {
     return {
       activeIndex: '1'
