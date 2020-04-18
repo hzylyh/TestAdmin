@@ -183,7 +183,8 @@
     </el-dialog>
   <!-- 步骤新增 -->
   <el-dialog title="用例步骤"
-             :visible.sync="caseStepDialogVisible"
+             :visible="caseStepDialogVisible"
+             @close="caseStepDialogVisible = false"
              width="40%">
     <el-form ref="form"
              :model="caseStepForm"
@@ -226,7 +227,9 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="请求体">
-                  <el-input v-model="caseStepForm.reqData"></el-input>
+                  <el-input type="textarea"
+                            :rows="5"
+                            v-model="caseStepForm.reqData"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -308,7 +311,7 @@
 
     </el-form>
     <span slot="footer" class="dialog-footer">
-        <el-button @click="childDialogVisible = false">取 消</el-button>
+        <el-button @click="caseStepDialogVisible = false">取 消</el-button>
         <el-button v-if="actionFlag === 'add'" type="primary" @click="addCaseStepAction">确 定</el-button>
         <el-button v-if="actionFlag === 'edit'" type="primary" @click="editCaseStepAction">确 定</el-button>
     </span>

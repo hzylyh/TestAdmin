@@ -71,11 +71,12 @@ func (tcs testCaseService) RunCase(qj *qjson.QJson) error {
 	nodeList := qj.GetArray("nodeList")
 	beginTime = stime.GetCurTime()
 
+	properties := make(map[string]string)
 	for _, nodeInfo := range nodeList {
 		mapstructure.Decode(nodeInfo, &transNodeInfo)
 		if transNodeInfo.NodeType == "用例" {
 			fmt.Println(transNodeInfo)
-			runCase(transNodeInfo.NodeId, beginTime)
+			runCase(transNodeInfo.NodeId, beginTime, properties)
 		}
 	}
 
@@ -218,11 +219,10 @@ func (tcs testCaseService) GetSingleNodeInfo(q *qjson.QJson) (*InterfaceTestPart
 	return &ret, nil
 }
 
-func runCase(caseId, beginTime string) {
+func runCase(caseId, beginTime string, properties map[string]string) {
 	var (
-		stepInfos  []InterfaceTestPartEntity.TItfCaseStepInfo
-		properties = make(map[string]string)
-		Ihandler   parse.TokenHandler
+		stepInfos []InterfaceTestPartEntity.TItfCaseStepInfo
+		Ihandler  parse.TokenHandler
 	)
 
 	Ihandler = &parse.VariableTokenHandler{

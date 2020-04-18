@@ -19,6 +19,7 @@ type TItfCaseStepInfo struct {
 
 type TCaseStepVarInfo struct {
 	conf.Model
+	VariableId      string `json:"variableId"`
 	StepId          string `json:"stepId"`
 	CollectCol      string `json:"collectCol"`
 	CollectColAlias string `json:"collectColAlias"`
@@ -26,6 +27,7 @@ type TCaseStepVarInfo struct {
 
 type TAssertInfo struct {
 	conf.Model
+	AssertId  string `json:"assertId"`
 	StepId    string `json:"stepId"`
 	AssertCol string `json:"assertCol"`
 	Method    string `json:"method"`

@@ -2,6 +2,7 @@ package parse
 
 import (
 	"fmt"
+	"salotto/utils/stringext"
 	"strings"
 )
 
@@ -47,7 +48,9 @@ func (gtp *GenericTokenParser) Parse(text string) string {
 	}
 
 	// 查找有没有openToken，如果没有，直接返回
-	start = strings.Index(text, gtp.OpenToken)
+	//start = strings.Index(text, gtp.OpenToken)
+	// 解决中文索引位置错误问题
+	start = stringext.UnicodeIndex(text, gtp.OpenToken)
 	if start == -1 {
 		return text
 	}
@@ -143,8 +146,11 @@ func indexOf(src, target string, offset int) int {
 	//	}
 	//}
 	//return -1
-	subString := src[offset:]
-	subStrIndex := strings.Index(subString, target)
+	//subString := src[offset:]
+	newText := []rune(src)
+	subString := string(newText[offset:])
+	//subStrIndex := strings.Index(subString, target)
+	subStrIndex := stringext.UnicodeIndex(subString, target)
 	if subStrIndex == -1 {
 		return -1
 	} else {

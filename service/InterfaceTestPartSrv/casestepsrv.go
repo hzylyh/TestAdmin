@@ -80,6 +80,10 @@ func (css *caseStepService) AddCaseStep(caseStepInfo *vo.CaseStepInfoVO) error {
 }
 
 func (css *caseStepService) EditCaseStep(caseStepInfo *vo.CaseStepInfoVO) interface{} {
+	var (
+		total float64
+	)
+
 	caseStepId := caseStepInfo.StepId
 	newCaseStepInfo := &InterfaceTestPartEntity.TItfCaseStepInfo{
 		ItfId:    caseStepInfo.ItfId,
@@ -100,27 +104,59 @@ func (css *caseStepService) EditCaseStep(caseStepInfo *vo.CaseStepInfoVO) interf
 
 	for _, assertInfo := range newAssertInfos {
 		newAssertInfo := &InterfaceTestPartEntity.TAssertInfo{
+			StepId:    caseStepId,
 			AssertCol: assertInfo.AssertCol,
 			Method:    assertInfo.Method,
 			ExpValue:  assertInfo.ExpValue,
 		}
-		if err := tx.Model(&InterfaceTestPartEntity.TAssertInfo{}).Where("id = ?", assertInfo.ID).Update(newAssertInfo).Error; err != nil {
-			tx.Rollback()
-			fmt.Println(err)
+
+		if err := tx.Model(&InterfaceTestPartEntity.TAssertInfo{}).Where("id = ?", assertInfo.ID).Count(&total).Error; err != nil {
 			return err
+		} else {
+			if total == 0 {
+				newAssertInfo.AssertId = utils.GenerateUUID()
+				if err := tx.Create(newAssertInfo).Error; err != nil {
+					fmt.Println(err)
+					tx.Rollback()
+					return nil
+				}
+			} else {
+				if err := tx.Model(&InterfaceTestPartEntity.TAssertInfo{}).Where("id = ?", assertInfo.ID).Update(newAssertInfo).Error; err != nil {
+					tx.Rollback()
+					fmt.Println(err)
+					return err
+				}
+			}
 		}
+
 	}
 
 	for _, varInfo := range newVarInfos {
 		newVarInfo := &InterfaceTestPartEntity.TCaseStepVarInfo{
+			StepId:          caseStepId,
 			CollectCol:      varInfo.CollectCol,
 			CollectColAlias: varInfo.CollectColAlias,
 		}
-		if err := tx.Model(&InterfaceTestPartEntity.TCaseStepVarInfo{}).Where("id = ?", varInfo.ID).Update(newVarInfo).Error; err != nil {
-			tx.Rollback()
-			fmt.Println(err)
+
+		if err := tx.Model(&InterfaceTestPartEntity.TCaseStepVarInfo{}).Where("id = ?", varInfo.ID).Count(&total).Error; err != nil {
 			return err
+		} else {
+			if total == 0 {
+				newVarInfo.VariableId = utils.GenerateUUID()
+				if err := tx.Create(newVarInfo).Error; err != nil {
+					fmt.Println(err)
+					tx.Rollback()
+					return nil
+				}
+			} else {
+				if err := tx.Model(&InterfaceTestPartEntity.TCaseStepVarInfo{}).Where("id = ?", varInfo.ID).Update(newVarInfo).Error; err != nil {
+					tx.Rollback()
+					fmt.Println(err)
+					return err
+				}
+			}
 		}
+
 	}
 
 	//// 修改变量表
