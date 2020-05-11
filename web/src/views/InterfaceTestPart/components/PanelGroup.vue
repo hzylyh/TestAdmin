@@ -3,52 +3,52 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <i class="iconfont el-icon-third-bug card-icon"></i>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
-            指标1
+            用例运行情况
           </div>
-          <count-to :start-val="0" :end-val="102400" :duration="2600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="panelData['totalCase']" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('messages')">
         <div class="card-panel-icon-wrapper icon-message">
-          <svg-icon icon-class="message" class-name="card-panel-icon" />
+          <i class="iconfont el-icon-third-bug card-icon"></i>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             指标2
           </div>
-          <count-to :start-val="0" :end-val="81212" :duration="3000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="panelData['totalCase']" :duration="3000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('purchases')">
         <div class="card-panel-icon-wrapper icon-money">
-          <svg-icon icon-class="money" class-name="card-panel-icon" />
+          <i class="iconfont el-icon-third-bug card-icon"></i>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             指标3
           </div>
-          <count-to :start-val="0" :end-val="9280" :duration="3200" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="panelData['totalCase']" :duration="3200" class="card-panel-num" />
         </div>
       </div>
     </el-col>
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class="card-panel" @click="handleSetLineChartData('shoppings')">
         <div class="card-panel-icon-wrapper icon-shopping">
-          <svg-icon icon-class="shopping" class-name="card-panel-icon" />
+          <i class="iconfont el-icon-third-bug card-icon"></i>
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">
             指标4
           </div>
-          <count-to :start-val="0" :end-val="13600" :duration="3600" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="panelData['totalCase']" :duration="3600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -58,6 +58,12 @@
 <script>
 import CountTo from 'vue-count-to'
 export default {
+  props: {
+    panelData: {
+      type: Object,
+      default: []
+    }
+  },
   components: {
     CountTo
   },
@@ -85,6 +91,9 @@ export default {
       background: #fff;
       box-shadow: 4px 4px 40px rgba(0, 0, 0, .05);
       border-color: rgba(0, 0, 0, .05);
+      .card-icon {
+        font-size: 48px;
+      }
       &:hover {
         .card-panel-icon-wrapper {
           color: #fff;

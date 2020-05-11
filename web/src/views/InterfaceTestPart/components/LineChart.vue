@@ -89,10 +89,10 @@ export default {
           }
         },
         legend: {
-          data: ['expected', 'actual']
+          data: ['失败数', '成功数']
         },
         series: [{
-          name: 'expected',
+          name: '失败数',
           itemStyle: {
             normal: {
               color: '#FF005A',
@@ -102,15 +102,15 @@ export default {
               }
             }
           },
-          smooth: true,
+          smooth: false,
           type: 'line',
           data: expectedData,
           animationDuration: 2800,
           animationEasing: 'cubicInOut'
         },
         {
-          name: 'actual',
-          smooth: true,
+          name: '成功数',
+          smooth: false,
           type: 'line',
           itemStyle: {
             normal: {
