@@ -5,9 +5,9 @@
  -->
 
 <template>
-  <div class='apiList'>
+  <div class='sl-api-main'>
     <!-- 接口过滤条件 -->
-    <div class="panle">
+    <el-row class="sl-api-handle white-back">
       <el-form>
         <el-row type="flex"
                 justify="start"
@@ -34,56 +34,120 @@
         </span>
 
       </el-form>
-    </div>
+    </el-row>
     <!-- 接口列表 -->
-    <div class="panle list">
-      <el-table :data="tableData"
-                stripe
-                style="width: 100%">
-        <el-table-column prop="name"
-                         label="接口名称"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="url"
-                         label="接口地址"
-                         show-overflow-tooltip
-                         width="300">
-        </el-table-column>
-        <el-table-column prop="type"
-                         label="请求方式"
-                         width="100">
-        </el-table-column>
-        <el-table-column prop="mimeType"
-                         label="mime类型"
-                         width="250">
-        </el-table-column>
-        <el-table-column prop="dec"
-                         label="接口描述">
-        </el-table-column>
-        <el-table-column label="操作"
-                         width="130">
-          <template slot-scope="scope">
-            <el-button @click="handleClick(scope.row)"
-                       type="text"
-                       size="small">查看</el-button>
-            <el-button type="text"
-                       size="small"
-                       @click="showEditApi(scope.row)">编辑</el-button>
-            <el-button type="text"
-                       size="small"
-                       @click="deleteApiAction(scope.row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <el-pagination background
-                     @current-change="handleCurrentChange"
-                     layout="prev, pager, next"
-                     :current-page="pageNum"
-                     :page-size="pageSize"
-                     :total="total"
-                     style="margin-top:20px">
-      </el-pagination>
-    </div>
+<!--    <div class="panel list">-->
+<!--      <el-table :data="tableData"-->
+<!--                stripe-->
+<!--                style="width: 100%">-->
+<!--        <el-table-column prop="name"-->
+<!--                         label="接口名称"-->
+<!--                         width="150">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="url"-->
+<!--                         label="接口地址"-->
+<!--                         show-overflow-tooltip-->
+<!--                         width="400">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column prop="type"-->
+<!--                         label="请求方式"-->
+<!--                         width="130">-->
+<!--        </el-table-column>-->
+<!--&lt;!&ndash;        <el-table-column prop="mimeType"&ndash;&gt;-->
+<!--&lt;!&ndash;                         label="mime类型"&ndash;&gt;-->
+<!--&lt;!&ndash;                         width="250">&ndash;&gt;-->
+<!--&lt;!&ndash;        </el-table-column>&ndash;&gt;-->
+<!--        <el-table-column prop="dec"-->
+<!--                         label="接口描述">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="操作"-->
+<!--                         width="130">-->
+<!--          <template slot-scope="scope">-->
+<!--            <el-button @click="handleClick(scope.row)"-->
+<!--                       type="text"-->
+<!--                       size="small">查看</el-button>-->
+<!--            <el-button type="text"-->
+<!--                       size="small"-->
+<!--                       @click="showEditApi(scope.row)">编辑</el-button>-->
+<!--            <el-button type="text"-->
+<!--                       size="small"-->
+<!--                       @click="deleteApiAction(scope.row)">删除</el-button>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--      </el-table>-->
+<!--      <div style="position: absolute; bottom: 5px; right: 5px">-->
+<!--&lt;!&ndash;        <el-pagination background&ndash;&gt;-->
+<!--&lt;!&ndash;                       @current-change="handleCurrentChange"&ndash;&gt;-->
+<!--&lt;!&ndash;                       layout="prev, pager, next"&ndash;&gt;-->
+<!--&lt;!&ndash;                       :current-page="pageNum"&ndash;&gt;-->
+<!--&lt;!&ndash;                       :page-size="pageSize"&ndash;&gt;-->
+<!--&lt;!&ndash;                       :total="total"&ndash;&gt;-->
+<!--&lt;!&ndash;                       style="margin-top:20px">&ndash;&gt;-->
+<!--&lt;!&ndash;        </el-pagination>&ndash;&gt;-->
+<!--        <el-pagination-->
+<!--                @size-change="handleSizeChange"-->
+<!--                @current-change="handleCurrentChange"-->
+<!--                :current-page="pageNum"-->
+<!--                background-->
+<!--                :page-size="pageSize"-->
+<!--                layout="total, sizes, prev, pager, next, jumper"-->
+<!--                :total="total">-->
+<!--        </el-pagination>-->
+<!--      </div>-->
+<!--    </div>-->
+    <el-row class="sl-api-table white-back">
+      <el-scrollbar style="height: calc(100% - 56px)">
+        <el-table :data="tableData"
+                  stripe
+                  class="white-back">
+          <el-table-column prop="name"
+                           label="接口名称"
+                           width="150">
+          </el-table-column>
+          <el-table-column prop="url"
+                           label="接口地址"
+                           show-overflow-tooltip
+                           width="400">
+          </el-table-column>
+          <el-table-column prop="type"
+                           label="请求方式"
+                           width="130">
+          </el-table-column>
+          <!--        <el-table-column prop="mimeType"-->
+          <!--                         label="mime类型"-->
+          <!--                         width="250">-->
+          <!--        </el-table-column>-->
+          <el-table-column prop="dec"
+                           label="接口描述">
+          </el-table-column>
+          <el-table-column label="操作"
+                           width="130">
+            <template slot-scope="scope">
+              <el-button @click="handleClick(scope.row)"
+                         type="text"
+                         size="small">查看</el-button>
+              <el-button type="text"
+                         size="small"
+                         @click="showEditApi(scope.row)">编辑</el-button>
+              <el-button type="text"
+                         size="small"
+                         @click="deleteApiAction(scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-scrollbar>
+      <div style="position: absolute; bottom: 5px; right: 5px">
+        <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="pageNum"
+                background
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="total">
+        </el-pagination>
+      </div>
+    </el-row>
     <el-dialog title="新增接口"
                :visible.sync="
                dialogVisible"
@@ -460,23 +524,23 @@ export default {
 }
 </script>
 <style lang='scss' scoped>
-  .apiList {
-    .panle {
-      background-color: #fff;
-      border: none;
-      border-radius: 5px;
-      // position: relative;
-      margin-bottom: 20px;
-      box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.25);
-      box-sizing: border-box;
+  .sl-api-main {
+    height: 100%;
+    padding: 0px 5px 0px 5px;
+    .sl-api-handle {
+      padding-top: 15px;
+      margin-bottom: 10px;
     }
-    .panle {
-      .fitterRow {
-        padding: 20px 20px 10px 20px;
+    .sl-api-table {
+      padding: 0px 5px 0px 5px;
+      width: 100%;
+      height: calc(100% - 90px);;
+      /*.el-table {*/
+      /*  height: calc(100% - 56px);*/
+      /*}*/
+      /deep/.el-scrollbar__wrap {
+        overflow-x: hidden;
       }
-    }
-    .list {
-      padding: 20px;
     }
     /deep/.el-form-item__content {
       display: flex;
@@ -502,5 +566,8 @@ export default {
     background-size: contain;
     float: right;
     margin-right: -5px;
+  }
+  .white-back {
+    background: #fff;
   }
 </style>

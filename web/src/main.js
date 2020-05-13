@@ -5,8 +5,10 @@ import store from './store'
 import ElementUI from 'element-ui'
 import locale from 'element-ui/lib/locale/lang/zh-CN'
 import './styles.scss'
+// icon
+import '@/icons/iconfont.css'
 
-import './icons' // icon
+// import './icons' // icon
 
 Vue.config.productionTip = false
 
