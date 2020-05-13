@@ -17,6 +17,11 @@ test automation
 
 掘金视频 
 
+### 感谢
+
+<img src="https://github.com/hzylyh/TestAdmin/raw/master/web/src/assets/jetbrains-variant-4.png" alt="图片替换文本" width="150" height="100" align="bottom" />
+[感谢 JetBrains 提供的免费开源 License](https://www.jetbrains.com/?from=TestAdmin)
+
 ### Features
 
 1. 自动化接口测试
