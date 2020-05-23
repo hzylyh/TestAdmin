@@ -23,6 +23,7 @@ func MapRoutes() *gin.Engine {
 		overviewApi      *gin.RouterGroup
 		itfManageApi     *gin.RouterGroup
 		itfCaseStepApi   *gin.RouterGroup
+		dashboardApi     *gin.RouterGroup
 	)
 	router = gin.New()
 
@@ -62,6 +63,10 @@ func MapRoutes() *gin.Engine {
 
 	// 接口测试部分
 	interfaceTestApi = apiRoot.Group("/itfPart")
+
+	// 仪表盘部分
+	dashboardApi = interfaceTestApi.Group("/dashboard")
+	dashboardApi.POST("/caseRunInfo", InterfaceTestPartCtl.GetCaseRunInfo)
 
 	// 用例部分
 	itfTestCaseApi = interfaceTestApi.Group("/case")

@@ -60,17 +60,24 @@ export default {
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },
-    setOptions ({ expectedData, actualData } = {}) {
+    setOptions ({ xData, expectedData, actualData } = {}) {
       this.chart.setOption({
         xAxis: {
-          data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
+          data: xData,
           boundaryGap: false,
           axisTick: {
             show: false
+          },
+          axisLabel: { // 坐标轴刻度标签的相关设置。
+            interval: 0,
+            rotate: '45',
+            formatter: function (value) {
+              return value.split(' ').join('\n')
+            }
           }
         },
         grid: {
-          left: 10,
+          left: 50,
           right: 10,
           bottom: 20,
           top: 30,
